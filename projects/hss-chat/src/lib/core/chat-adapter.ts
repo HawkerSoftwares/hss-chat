@@ -7,7 +7,7 @@ import { IChatParticipant } from './chat-participant';
 export abstract class ChatAdapter
 {
     // ### Abstract adapter methods ###
-    public abstract listFriends(search?: string, size?: number, page?: number) : Observable<ParticipantResponse[]>;
+    public abstract listFriends(search: string, pageSize: number, page: number) : Observable<ParticipantResponse[]>;
     
     public abstract getMessageHistory(destinataryId: any): Observable<Message[]>;
 

@@ -28,7 +28,7 @@
 				<img *ngIf="user.avatar" alt="" class="avatar" height="30" width="30"  [src]="user.avatar | sanitize"/>
 				<div class="meta">
 					<strong class="name" title="{{user.displayName}}">{{user.displayName}}</strong>
-					<ng-container *ngIf="recentMessage(user).length > 0">
+					<ng-container *ngIf="participantsMeta.has(user.id) && participantsMeta.get(user.id).recentMessage">
 						<br/><span class="ng-chat-recent-message">{{recentMessage(user)}}</span>
 					</ng-container>
 				</div>
@@ -40,7 +40,7 @@
 			<div class="loader">Loading more...</div>
 		</div>
 		<div *ngIf="hasMoreParticipants && !isLoadingMore" class="ng-chat-load-participants">
-			<a class="load-history-action" (click)="onfetchMoreParticipants()">{{localization.loadMorePlaceholder}}</a>
+			<a class="load-history-action" (click)="onfetchMoreParticipantsClick()">{{localization.loadMorePlaceholder}}</a>
 		</div>
 	</ul>
 </div>

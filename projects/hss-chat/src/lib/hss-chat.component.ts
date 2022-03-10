@@ -24,6 +24,7 @@ import { IChatParticipant } from "./core/chat-participant";
 import { map } from 'rxjs/operators';
 import { NgChatWindowComponent } from './components/ng-chat-window/ng-chat-window.component';
 import { NgChatFriendsListComponent } from './components/ng-chat-friends-list/ng-chat-friends-list.component';
+import { HssChatService } from './service/hss-chat.service';
 
 @Component({
     selector: 'ng-chat',
@@ -39,7 +40,7 @@ import { NgChatFriendsListComponent } from './components/ng-chat-friends-list/ng
 })
 
 export class NgChat implements OnInit, IChatController {
-    constructor(private _httpClient: HttpClient) { }
+    constructor(private _httpClient: HttpClient, private hssChatService: HssChatService) { }
 
     // Exposes enums for the ng-template
     public ChatParticipantType = ChatParticipantType;
@@ -175,8 +176,6 @@ export class NgChat implements OnInit, IChatController {
     @Output()
     public onMessagesSeen: EventEmitter<Message[]> = new EventEmitter<Message[]>();
 
-    @ViewChild('chatParticipants') chatParticipants: NgChatFriendsListComponent;
-
     private browserNotificationsBootstrapped: boolean = false;
 
     public hasPagedHistory: boolean = false;
@@ -223,6 +222,7 @@ export class NgChat implements OnInit, IChatController {
     isMobileViewPort: boolean = false;
 
     @ViewChildren('chatWindow') chatWindows!: QueryList<NgChatWindowComponent>;
+    @ViewChild(NgChatFriendsListComponent) viewChatParticipants: NgChatFriendsListComponent;
 
     ngOnInit() {
         this.onResize();
@@ -370,25 +370,16 @@ export class NgChat implements OnInit, IChatController {
     // Sends a request to load the friends list
     private fetchFriendsList(isBootstrapping: boolean): void
     {
-        this.adapter.listFriends()
-        .pipe(
-            map((participantsResponse: ParticipantResponse[]) => {
-                this.participantsResponse = participantsResponse;
+        this.hssChatService.loadParticipants.next(isBootstrapping);
+    }
 
-                this.participants = participantsResponse.map((response: ParticipantResponse) => {
-                    return response.participant;
-                });
-
-                if(this.chatParticipants){
-                    this.chatParticipants.onParticipantsLoaded(participantsResponse);
-                }
-            })
-        ).subscribe(() => {
-            if (isBootstrapping)
-            {
-                this.restoreWindowsState();
-            }
-        });
+    participantsLoaded({ participants, participantsResponse, isBootstrapping }) {
+        this.participants = participants;
+        this.participantsResponse = participantsResponse;
+        if (isBootstrapping)
+        {
+            this.restoreWindowsState();
+        }
     }
 
     fetchMessageHistory(window: Window) {
@@ -654,7 +645,7 @@ export class NgChat implements OnInit, IChatController {
     // Saves current windows state into local storage if persistence is enabled
     private updateWindowsState(windows: Window[]): void
     {
-        if (this.persistWindowsState)
+        if (this.persistWindowsState && this.participants && this.participants.length)
         {
             const participantIds = windows.map((w) => {
                 return w.participant.id;

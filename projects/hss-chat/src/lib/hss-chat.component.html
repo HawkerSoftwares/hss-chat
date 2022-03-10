@@ -1,7 +1,7 @@
 <link *ngIf="customTheme" rel="stylesheet" [href]='customTheme | sanitize'>
 
 <div id="ng-chat" *ngIf="!isDisabled && isBootstrapped && !unsupportedViewport" [ngClass]="theme">
-    <ng-chat-friends-list #chatParticipants [ngStyle]="{'visibility': hideFriendsList ? 'hidden' : 'visible'}"
+    <ng-chat-friends-list [ngStyle]="{'visibility': hideFriendsList ? 'hidden' : 'visible'}"
         [localization]="localization"
         [pageSize]="historyPageSize"
         [adapter]="adapter"
@@ -9,11 +9,10 @@
         [userId]="userId"
         [isCollapsed]="isCollapsed"
         [searchEnabled]="searchEnabled"
-        [participants]="participants"
-        [participantsResponse]="participantsResponse"
         [participantsInteractedWith]="participantsInteractedWith"
         [windows]="windows"
         [currentActiveOption]="currentActiveOption"
+        (onParticipantsLoaded)="participantsLoaded($event)"
         (onParticipantClicked)="onParticipantClickedFromFriendsList($event)"
         (onOptionPromptCanceled)="onOptionPromptCanceled()"
         (onOptionPromptConfirmed)="onOptionPromptConfirmed($event)"

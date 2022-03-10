@@ -12,6 +12,9 @@ import { chatParticipantStatusDescriptor } from '../../core/chat-participant-sta
 import { ChatAdapter } from '../../core/chat-adapter';
 import { debounce, debounceTime, distinctUntilChanged, distinctUntilKeyChanged, filter, fromEvent, interval, map, Observable, Subject, Subscription, switchMap } from 'rxjs';
 import { ScrollDirection } from '../../core/scroll-direction.enum';
+import { identifierName } from '@angular/compiler';
+import { ParticipantMetadata } from '../../core/participant-metadata';
+import { HssChatService } from '../../service/hss-chat.service';
 
 @Component({
     selector: 'ng-chat-friends-list',
@@ -28,12 +31,6 @@ export class NgChatFriendsListComponent implements OnChanges, OnDestroy, AfterVi
 
     @Input()
     public pageSize: number = 0;
-
-    @Input()
-    public participants: IChatParticipant[];
-
-    @Input()
-    public participantsResponse: ParticipantResponse[];
 
     @Input()
     public participantsInteractedWith: IChatParticipant[] = [];
@@ -71,32 +68,46 @@ export class NgChatFriendsListComponent implements OnChanges, OnDestroy, AfterVi
     @Output()
     public onOptionPromptConfirmed: EventEmitter<any> = new EventEmitter();
 
+    @Output()
+    public onParticipantsLoaded: EventEmitter<any> = new EventEmitter();
+
     @ViewChild('chatParticipants') chatParticipants: any;
     @ViewChild('searchParticipants') searchParticipants: ElementRef;
 
     public selectedUsersFromFriendsList: User[] = [];
-
+    public participants: IChatParticipant[] = [];
+    public participantsResponse: ParticipantResponse[] = [];
     public searchInput: string = '';
-    private subscription: Subscription;
+    private searchSubscription: Subscription;
+    private loadParticipantsSubscription: Subscription;
+    public participantsMeta: Map<number, ParticipantMetadata> = new Map();
+    private isBootstrapping:boolean;
 
     // Exposes enums and functions for the ng-template
     public ChatParticipantStatus = ChatParticipantStatus;
     public chatParticipantStatusDescriptor = chatParticipantStatusDescriptor;
 
-    constructor() {}
+    constructor(private hssChatService: HssChatService) {}
 
     ngAfterViewInit(): void {
         const searchBox = document.getElementById('ng-chat-search_friend') as HTMLInputElement;
-        this.subscription = fromEvent(searchBox, 'input').pipe(
+        this.searchSubscription = fromEvent(searchBox, 'input').pipe(
             map(e => (e.target as HTMLInputElement).value),
             debounceTime(1000),
             distinctUntilChanged(),
             switchMap((search) => {
                 this.participants = [];
-                this.page = -1;
+                this.participantsResponse = [];
+                this.participantsMeta.clear();
+                this.page = 0;
                 return this.fetchMoreParticipants();
             })
         ).subscribe();
+
+        this.loadParticipantsSubscription = this.hssChatService.loadParticipants.subscribe(isBootstrapping => { 
+            this.isBootstrapping = isBootstrapping;
+            this.fetchMoreParticipants().subscribe();
+        });
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -111,7 +122,8 @@ export class NgChatFriendsListComponent implements OnChanges, OnDestroy, AfterVi
     }
 
     ngOnDestroy(): void {
-        this.subscription.unsubscribe();
+        this.searchSubscription.unsubscribe();
+        this.loadParticipantsSubscription.unsubscribe();
     }
 
     isUserSelectedFromFriendsList(user: User) : boolean
@@ -129,7 +141,8 @@ export class NgChatFriendsListComponent implements OnChanges, OnDestroy, AfterVi
         else
         {
             let totalUnreadMessages = this.participantsResponse
-                .filter(x => x.participant.id == participant.id && !this.participantsInteractedWith.find(u => u.id == participant.id) && x.metadata && x.metadata.totalUnreadMessages > 0)
+                .filter(x => x.participant.id == participant.id)
+                .filter(x => !this.participantsInteractedWith.find(u => u.id == participant.id) && x.metadata && x.metadata.totalUnreadMessages > 0)
                 .map((participantResponse) => {
                     return participantResponse.metadata.totalUnreadMessages
                 })[0];
@@ -139,11 +152,9 @@ export class NgChatFriendsListComponent implements OnChanges, OnDestroy, AfterVi
     }
 
     recentMessage(participant: IChatParticipant): string {
-        return this.participantsResponse
-                .filter(x => x.participant.id == participant.id)
-                .map((participantResponse) => {
-                    return participantResponse.metadata.recentMessage ? participantResponse.metadata.recentMessage.message : '';
-                })[0];
+        const metadata = this.participantsMeta.get(participant.id);
+        const message = metadata?.recentMessage?.message;
+        return message;
     }
 
     cleanUpUserSelection = () => this.selectedUsersFromFriendsList = [];
@@ -182,7 +193,7 @@ export class NgChatFriendsListComponent implements OnChanges, OnDestroy, AfterVi
         this.cleanUpUserSelection();
     }
 
-    onfetchMoreParticipants() {
+    onfetchMoreParticipantsClick() {
         this.fetchMoreParticipants().subscribe();
     }
 
@@ -192,25 +203,28 @@ export class NgChatFriendsListComponent implements OnChanges, OnDestroy, AfterVi
         .pipe(
             map((participantsResponse: ParticipantResponse[]) => {
                 const newParticipants = participantsResponse.map((response: ParticipantResponse) => {
+                    if(response.metadata && (response.metadata.recentMessage || response.metadata.totalUnreadMessages)){
+                        this.participantsMeta.set(response.participant.id, response.metadata);
+                    }
                     return response.participant;
                 });
-                this.participants = newParticipants.concat(this.participants);
+                this.participants = [...this.participants, ...newParticipants];
+                this.participantsResponse = [...this.participantsResponse, ...participantsResponse];
                 this.isLoadingMore = false;
                 const direction: ScrollDirection = (this.page == 0) ? ScrollDirection.Top : ScrollDirection.Bottom;
-                setTimeout(() => this.onFetchMoreParticipantsLoaded(participantsResponse, direction));
+                setTimeout(() => {
+                    this.onFetchMoreParticipantsLoaded(participantsResponse, direction);
+                    this.onParticipantsLoaded.emit({ participants: this.participants, participantsResponse: this.participantsResponse, isBootstrapping: this.isBootstrapping });
+                    this.isBootstrapping = false;
+                },1);
             })
         );
     }
 
-    // Verifies if Load more button should be visible
-    onParticipantsLoaded(participants: ParticipantResponse[]) {
-        this.isLoadingMore = false;
-        this.hasMoreParticipants = participants.length == this.pageSize;
-    }
-
     private onFetchMoreParticipantsLoaded(participants: ParticipantResponse[], direction: ScrollDirection): void
     {
-        this.onParticipantsLoaded(participants);
+        this.isLoadingMore = false;
+        this.hasMoreParticipants = participants.length == this.pageSize;
         this.scrollChatWindow(direction);
     }
 

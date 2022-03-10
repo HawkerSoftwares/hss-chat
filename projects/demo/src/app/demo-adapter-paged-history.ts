@@ -2,6 +2,7 @@ import { ChatAdapter, IChatGroupAdapter, Group, User, Message, ChatParticipantSt
 import { Observable, of } from 'rxjs';
 import { DemoAdapter } from './demo-adapter';
 import { delay } from "rxjs/operators";
+import { IChatParticipant } from 'hss-chat';
 
 export class DemoAdapterPagedHistory extends PagedHistoryChatAdapter implements IChatGroupAdapter
 {
@@ -35,20 +36,24 @@ export class DemoAdapterPagedHistory extends PagedHistoryChatAdapter implements 
        return of(mockedHistory).pipe(delay(500));
     }
     
-    public getMessageHistoryByPage(destinataryId: any, size: number, page: number) : Observable<Message[]> {
-       let startPosition: number = (page - 1) * size;
-       let endPosition: number = page * size;
+    public getMessageHistoryByPage(destinataryId: any, pageSize: number, page: number) : Observable<Message[]> {
+       let startPosition: number = (page - 1) * pageSize;
+       let endPosition: number = page * pageSize;
        let mockedHistory: Array<Message> = this.historyMessages.slice(startPosition, endPosition);
        return of(mockedHistory.reverse()).pipe(delay(5000));
     }
     
-    public listFriends(search?: string, size?: number, page?: number) : Observable<ParticipantResponse[]> {
+    public listFriends(search?: string, pageSize?: number, page?: number) : Observable<ParticipantResponse[]> {
         console.log(search);
-        return of(DemoAdapter.mockedParticipants
+        let startPosition: number = (page-1) * pageSize;
+        let endPosition: number = (page) * pageSize;
+        let mockedParticipants: Array<IChatParticipant> = DemoAdapter.mockedParticipants
             .filter(user => {
                 const isMatched = search && search.length ? user.displayName.toLowerCase().search(search.trim().toLowerCase())>=0 : true;
                 return isMatched;
-            })
+            }).slice(startPosition, endPosition);
+
+        return of(mockedParticipants
             .map(user => {
                 let participantResponse = new ParticipantResponse();
                 participantResponse.participant = user;
