@@ -211,7 +211,7 @@ export class NgChatFriendsListComponent implements OnChanges, OnDestroy, AfterVi
                 this.participants = [...this.participants, ...newParticipants];
                 this.participantsResponse = [...this.participantsResponse, ...participantsResponse];
                 this.isLoadingMore = false;
-                const direction: ScrollDirection = (this.page == 0) ? ScrollDirection.Top : ScrollDirection.Bottom;
+                const direction: ScrollDirection = (this.page == 1) ? ScrollDirection.Top : ScrollDirection.Bottom;
                 setTimeout(() => {
                     this.onFetchMoreParticipantsLoaded(participantsResponse, direction);
                     this.onParticipantsLoaded.emit({ participants: this.participants, participantsResponse: this.participantsResponse, isBootstrapping: this.isBootstrapping });
