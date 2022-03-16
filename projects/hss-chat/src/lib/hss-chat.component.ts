@@ -31,6 +31,7 @@ import { HssChatService } from './service/hss-chat.service';
     templateUrl: 'hss-chat.component.html',
     styleUrls: [
         'assets/icons.css',
+        '../../../../node_modules/@ctrl/ngx-emoji-mart/picker.css',
         'assets/loading-spinner.css',
         'assets/ng-chat.component.default.css',
         'assets/themes/ng-chat.theme.default.scss',

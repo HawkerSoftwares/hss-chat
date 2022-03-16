@@ -22,6 +22,7 @@ import { ChatAdapter } from '../../core/chat-adapter';
     encapsulation: ViewEncapsulation.None
 })
 export class NgChatWindowComponent {
+    emojiPopupDisplay: boolean;
     constructor() { }
 
     @Input()
@@ -78,6 +79,7 @@ export class NgChatWindowComponent {
     @ViewChild('chatMessages') chatMessages: any;
     @ViewChild('nativeFileInput') nativeFileInput: ElementRef;
     @ViewChild('chatWindowInput') chatWindowInput: any;
+    sheetSize: 16 | 20 | 32 | 64 | 72 = 32;
 
     // File upload state
     public fileUploadersInUse: string[] = []; // Id bucket of uploaders in use
@@ -314,4 +316,9 @@ export class NgChatWindowComponent {
                 });
         }
     }
+
+    addEmoji({ emoji }, window: Window) {
+        window.newMessage = `${window.newMessage ? window.newMessage : ''}${emoji.native}`;
+    }
+    
 }

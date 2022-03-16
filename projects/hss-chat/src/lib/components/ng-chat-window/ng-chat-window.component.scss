@@ -13,7 +13,7 @@
 	.ng-chat-footer {
 		box-sizing: border-box;
 		padding: 0;
-		display: block;
+		display: flex;
 		height: calc(10%);
 		width: 100%;
 		border: none;
@@ -43,6 +43,31 @@
 			position: absolute;
 			right: 14px;
 			bottom: 8px;
+		}
+		.emoji-block {
+			position: relative;
+			cursor: pointer;
+			display: flex;
+			&> span{
+			  display: flex;
+			  padding: 5px 5px 5px 1px;
+			  svg {
+				  opacity: .4;
+				  margin: auto;
+			  }
+			}
+			.dropdown-content {
+				display: none;
+				z-index: 99;
+				left: unset !important;
+				right: -1px !important;
+				top: 2px !important;
+			}
+			&.show {
+				.dropdown-content {
+					display: block;
+				}
+			}
 		}
 	}
 	.ng-chat-load-history {
@@ -181,9 +206,11 @@
 		height: auto;
 	}
 }
+
 .ng-chat-window-collapsed {
 	height: 30px !important;
 }
+
 @media only screen and (max-width: 581px) {
 	.ng-chat-window {
 		position: initial;
