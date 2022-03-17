@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChildren, QueryList, HostListener, Output, EventEmitter, ViewEncapsulation, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChildren, QueryList, HostListener, Output, EventEmitter, ViewEncapsulation, ViewChild, TemplateRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { ChatAdapter } from './core/chat-adapter';
@@ -53,7 +53,8 @@ export class NgChat implements OnInit, IChatController {
     get isDisabled(): boolean {
         return this._isDisabled;
     }
-
+    @Input() imageMessageTemplate: TemplateRef<any>;
+    @Input() fileMessageTemplate: TemplateRef<any>;
     @Input()
     set isDisabled(value: boolean) {
         this._isDisabled = value;

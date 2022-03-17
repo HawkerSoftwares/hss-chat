@@ -8,4 +8,12 @@
 </div>
 
 <ng-chat [adapter]="adapter" [userId]="999" [historyEnabled]="true" [historyPageSize]="7" [hideFriendsList]="false"
-  (onMessagesSeen)="messageSeen($event)" [isViewportOnMobileEnabled]="true" [emojisEnabled]="true"></ng-chat>
+  (onMessagesSeen)="messageSeen($event)" [isViewportOnMobileEnabled]="true" [emojisEnabled]="true" [imageMessageTemplate]="imageMessageTemplate">
+</ng-chat>
+
+<ng-template #imageMessageTemplate let-message="message">
+	<div [ngClass]="{'sent-chat-message-container': message.fromId == userId, 'received-chat-message-container': message.fromId != userId}">
+		<img [src]="message.mediaUrl" class="image-message" />
+		<span [innerHtml]="message.message"></span>
+	</div>
+</ng-template>
