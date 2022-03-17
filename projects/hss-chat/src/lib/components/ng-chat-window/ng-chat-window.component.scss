@@ -56,15 +56,16 @@
 				  margin: auto;
 			  }
 			}
-			.dropdown-content {
+			.emoji-dropdown-content {
 				display: none;
 				z-index: 99;
 				left: unset !important;
 				right: -1px !important;
-				top: 2px !important;
+				bottom: 33px !important;
+				position: absolute;
 			}
 			&.show {
-				.dropdown-content {
+				.emoji-dropdown-content {
 					display: block;
 				}
 			}

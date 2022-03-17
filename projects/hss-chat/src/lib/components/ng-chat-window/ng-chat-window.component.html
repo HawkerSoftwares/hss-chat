@@ -85,7 +85,7 @@
 			(ngModelChange)="window.newMessage=$event" [placeholder]="localization.messagePlaceholder"
 			[ngClass]="{'chat-window-input': true, 'has-side-action': fileUploadAdapter}"
 			(keydown)="onChatInputTyped($event, window)" (blur)="toggleWindowFocus(window)"
-			(focus)="toggleWindowFocus(window)" />
+			(focus)="toggleWindowFocus(window);emojiPopupDisplay = false;" />
 
 		<!-- File Upload -->
 		<ng-container *ngIf="fileUploadAdapter">
@@ -96,13 +96,13 @@
 				(change)="onFileChosen(window)" />
 			<div *ngIf="isUploadingFile(window)" class="loader"></div>
 		</ng-container>
-		<div ngbDropdown class="emoji-block" *ngIf="emojisEnabled">
-			<span title="Emoji" ngbDropdownToggle>
+		<div class="emoji-block custom-dropdown" [class.show]="emojiPopupDisplay" *ngIf="emojisEnabled">
+			<span title="Emoji" (click)="emojiPopupDisplay = !emojiPopupDisplay;">
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18">
 					<path d="M12 0a12 12 0 1 0 0 24 12 12 0 0 0 0-24m0 22a10 10 0 1 1 0-20 10 10 0 0 1 0 20M8 7a2 2 0 1 0 0 4 2 2 0 0 0 0-4m8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-.8 8c-.7 1.2-1.8 2-3.3 2-1.5 0-2.7-.8-3.4-2H15m3-2H6a6 6 0 1 0 12 0"></path>
 				</svg>
 			</span>
-			<div ngbDropdownMenu class="dropdown-content">
+			<div class="emoji-dropdown-content">
 				<emoji-mart [style]="{ width: '302px'}" (emojiClick)="addEmoji($event, window)" [exclude]="[]" [sheetSize]="sheetSize" [showPreview]="false"></emoji-mart>
 			</div>
 		</div>
