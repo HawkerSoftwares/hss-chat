@@ -1,4 +1,4 @@
-import { ChatAdapter, IChatGroupAdapter, Group, User, Message, ChatParticipantStatus, PagedHistoryChatAdapter, ParticipantResponse, ParticipantMetadata } from 'projects/hss-chat/src/public-api';
+import { ChatAdapter, IChatGroupAdapter, Group, User, Message, ChatParticipantStatus, PagedHistoryChatAdapter, ParticipantResponse, ParticipantMetadata, MessageType } from 'projects/hss-chat/src/public-api';
 import { Observable, of } from 'rxjs';
 import { DemoAdapter } from './demo-adapter';
 import { delay } from "rxjs/operators";
@@ -11,13 +11,25 @@ export class DemoAdapterPagedHistory extends PagedHistoryChatAdapter implements 
     constructor() {
         super();
         for(let i: number = 0; i < 20; i++) {
-            let msg = {
+            let msg: any = {
                 fromId: 1,
                 toId: 999,
                 message: `${20-i}. Hi there, just type any message bellow to test this Angular module.`,
                 dateSent: new Date()
             };
-            
+            if (i % 4 === 0) {
+                msg.type = MessageType.Image;
+                msg.mediaUrl = 'https://images.urbndata.com/is/image/FreePeople/65516759_060_a';
+            }
+            if (i % 4 === 1) {
+                msg.type = MessageType.File;
+                msg = {
+                    ...msg,
+                    downloadUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+                    message: 'Dummy PDF file',
+                    fileSizeInBytes: 23234
+                };
+            }
             this.historyMessages.push(msg);
         }
     }

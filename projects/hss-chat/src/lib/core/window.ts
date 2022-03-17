@@ -4,7 +4,6 @@ import { ChatParticipantType } from "./chat-participant-type.enum";
 import { ChatParticipantStatus } from "./chat-participant-status.enum";
 import { Group } from "./group";
 import { IChatParticipant } from "./chat-participant";
-import { FileMessage } from "./file-message";
 
 export class Window
 {
