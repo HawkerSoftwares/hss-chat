@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewEncapsulation, ViewChild, ElementRef, TemplateRef } from '@angular/core';
 
 import { Message } from "../../core/message";
 import { MessageType } from "../../core/message-type.enum";
@@ -25,6 +25,8 @@ export class NgChatWindowComponent {
     emojiPopupDisplay: boolean;
     constructor() { }
 
+    @Input() imageMessageTemplate: TemplateRef<any>;
+    @Input() fileMessageTemplate: TemplateRef<any>;
     @Input()
     public fileUploadAdapter: IFileUploadAdapter;
 

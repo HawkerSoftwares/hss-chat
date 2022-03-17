@@ -1,3 +1,4 @@
+
 /* Mobile viewport only */
 .ng-chat-window {
 	right: 260px;
@@ -139,7 +140,7 @@
 				float: right;
 				width: 202px;
 				border-style: solid;
-				border-width: 3px;
+				border-width: 1px;
 				border-radius: 5px;
 				overflow: hidden;
 				margin-bottom: 5px;
@@ -195,7 +196,7 @@
 				padding-top: 7px;
 				padding-bottom: 7px;
 				border-style: solid;
-				border-width: 3px;
+				border-width: 1px;
 				margin-top: 0;
 				margin-bottom: 5px;
 			}
@@ -204,6 +205,7 @@
 	.image-message {
 		width: 100%;
 		height: auto;
+		margin-bottom: 5px;
 	}
 }
 

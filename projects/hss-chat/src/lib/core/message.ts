@@ -9,4 +9,8 @@ export class Message
     public message: string;
     public dateSent?: Date;
     public dateSeen?: Date;
+    public mediaUrl?: string;
+    public downloadUrl?: string;
+    public mimeType?: string;
+    public fileSizeInBytes?: number = 0;
 }
