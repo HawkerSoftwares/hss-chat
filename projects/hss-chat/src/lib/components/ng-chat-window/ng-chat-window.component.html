@@ -53,8 +53,7 @@
 				<div *ngSwitchCase="MessageType.Text"
 					[ngClass]="{'sent-chat-message-container': message.fromId == userId, 'received-chat-message-container': message.fromId != userId}">
 					<span [innerHtml]="message.message | emojify:emojisEnabled | linkfy:linkfyEnabled"></span>
-					<span *ngIf="showMessageDate && message.dateSent" class="message-sent-date">{{message.dateSent |
-						date:messageDatePipeFormat}}</span>
+					<ng-container *ngTemplateOutlet="reactionsTemplate; context: {message}"></ng-container>
 				</div>
 
 				<ng-container *ngSwitchCase="MessageType.Image">
@@ -74,7 +73,7 @@
 			(ngModelChange)="window.newMessage=$event" [placeholder]="localization.messagePlaceholder"
 			[ngClass]="{'chat-window-input': true, 'has-side-action': fileUploadAdapter}"
 			(keydown)="onChatInputTyped($event, window)" (blur)="toggleWindowFocus(window)"
-			(focus)="toggleWindowFocus(window)" />
+			(focus)="toggleWindowFocus(window);emojiPopupDisplay = false;" />
 
 		<!-- File Upload -->
 		<ng-container *ngIf="fileUploadAdapter">
@@ -85,13 +84,13 @@
 				(change)="onFileChosen(window)" />
 			<div *ngIf="isUploadingFile(window)" class="loader"></div>
 		</ng-container>
-		<div ngbDropdown class="emoji-block" *ngIf="emojisEnabled">
-			<span title="Emoji" ngbDropdownToggle>
+		<div class="emoji-block custom-dropdown" [class.show]="emojiPopupDisplay" *ngIf="emojisEnabled">
+			<span title="Emoji" (click)="emojiPopupDisplay = !emojiPopupDisplay;">
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18">
 					<path d="M12 0a12 12 0 1 0 0 24 12 12 0 0 0 0-24m0 22a10 10 0 1 1 0-20 10 10 0 0 1 0 20M8 7a2 2 0 1 0 0 4 2 2 0 0 0 0-4m8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-.8 8c-.7 1.2-1.8 2-3.3 2-1.5 0-2.7-.8-3.4-2H15m3-2H6a6 6 0 1 0 12 0"></path>
 				</svg>
 			</span>
-			<div ngbDropdownMenu class="dropdown-content">
+			<div class="emoji-dropdown-content">
 				<emoji-mart [style]="{ width: '302px'}" (emojiClick)="addEmoji($event, window)" [exclude]="[]" [sheetSize]="sheetSize" [showPreview]="false"></emoji-mart>
 			</div>
 		</div>
@@ -102,22 +101,33 @@
 	<div [ngClass]="{'sent-chat-message-container': message.fromId == userId, 'received-chat-message-container': message.fromId != userId}">
 		<img [src]="message.mediaUrl" class="image-message" />
 		<span [innerHtml]="message.message | emojify:emojisEnabled | linkfy:linkfyEnabled"></span>
-		<span *ngIf="showMessageDate && message.dateSent" class="message-sent-date">{{message.dateSent |
-			date:messageDatePipeFormat}}</span>
+		<ng-container *ngTemplateOutlet="reactionsTemplate; context: {message}"></ng-container>
 	</div>
 </ng-template>
 
 <ng-template #defaultFileMessageTemplate let-message="message">
 	<div [ngClass]="{'file-message-container': true, 'received': message.fromId != userId}">
-		<div class="file-message-icon-container">
-			<i class="paperclip-icon"></i>
+		<div class="file-info">
+			<div class="file-message-icon-container">
+				<i class="paperclip-icon"></i>
+			</div>
+			<a class="file-details" [attr.href]="message?.downloadUrl" target="_blank" rel="noopener noreferrer"
+				(click)="markMessagesAsRead([message])" download>
+				<span class="file-message-title" [attr.title]="message.message">{{message.message}}</span>
+				<span *ngIf="message?.fileSizeInBytes" class="file-message-size">
+					{{message?.fileSizeInBytes}} Bytes
+				</span>
+			</a>
 		</div>
-		<a class="file-details" [attr.href]="message?.downloadUrl" target="_blank" rel="noopener noreferrer"
-			(click)="markMessagesAsRead([message])" download>
-			<span class="file-message-title" [attr.title]="message.message">{{message.message}}</span>
-			<span *ngIf="message?.fileSizeInBytes" class="file-message-size">
-				{{message?.fileSizeInBytes}} Bytes
-			</span>
-		</a>
+		<ng-container *ngTemplateOutlet="reactionsTemplate; context: {message}"></ng-container>
 	</div>
+</ng-template>
+
+<ng-template #reactionsTemplate let-message="message">
+	<div class="reactions-list" *ngIf="message.reactions">
+		<div class="reaction" *ngFor="let reaction of message.reactions" [innerHTML]="reaction"></div>
+	</div>
+	<span *ngIf="showMessageDate && message.dateSent" class="message-sent-date">
+		{{message.dateSent | date:messageDatePipeFormat}}
+	</span>
 </ng-template>

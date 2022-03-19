@@ -17,6 +17,12 @@ export class DemoAdapterPagedHistory extends PagedHistoryChatAdapter implements 
                 message: `${20-i}. Hi there, just type any message bellow to test this Angular module.`,
                 dateSent: new Date()
             };
+            if (i % 2 === 0) {
+                msg.reactions = ['😍'];
+            }
+            if (i % 3 === 0) {
+                msg.reactions = ['😍', '😜', '😇'];
+            }
             if (i % 4 === 0) {
                 msg.type = MessageType.Image;
                 msg.mediaUrl = 'https://images.urbndata.com/is/image/FreePeople/65516759_060_a';
