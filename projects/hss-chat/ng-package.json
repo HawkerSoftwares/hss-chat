@@ -1,6 +1,6 @@
 {
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
-  "dest": "C:\\Users\\Neelam\\Documents\\GitHub\\Qatch\\Qatch_Website\\qatch-frontend\\node_modules\\hss-chat",
+  "dest": "../../dist/hss-chat",
   "lib": {
     "entryFile": "src/public-api.ts"
   }
