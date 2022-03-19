@@ -119,6 +119,17 @@
 				text-overflow: ellipsis;
 				max-width: 180px;
 			}
+			.reactions-list {
+				display: flex;
+				&>.reaction {
+                    padding: 2px 5px;
+					margin: 3px;
+					border: 1px solid #ddddd7;
+					background: #fafafa;
+					border-radius: 10px;
+					transform: scale(1.1);
+				}
+			}
 			.message-sent-date {
 				font-size: 0.8em;
 				display: block;
@@ -150,37 +161,39 @@
 				font-size: 0.9em;
 				padding: 0;
 				box-sizing: border-box;
-				>.file-message-icon-container {
-					width: 20px;
-					height: 35px;
-					padding: 10px 5px;
-					float: left;
-					i {
-						margin-top: 8px;
+				padding: 10px;
+				&>.file-info {
+					display: flex;
+					>.file-message-icon-container {
+						width: 20px;
+						height: 35px;
+						padding: 10px 5px;
+						i {
+							margin-top: 8px;
+						}
 					}
-				}
-				>.file-details {
-					float: left;
-					padding: 10px;
-					width: calc(100% - 60px);
-					color: currentColor;
-					text-decoration: none;
-					&:hover {
-						text-decoration: underline;
-					}
-					span {
-						display: block;
-						width: 100%;
-						text-overflow: ellipsis;
-						overflow: hidden;
-						white-space: nowrap;
-					}
-					.file-message-title {
-						font-weight: bold;
-					}
-					.file-message-size {
-						font-size: 0.8em;
-						margin-top: 5px;
+					>.file-details {
+						padding: 10px;
+						width: calc(100% - 60px);
+						color: currentColor;
+						text-decoration: none;
+						&:hover {
+							text-decoration: underline;
+						}
+						span {
+							display: block;
+							width: 100%;
+							text-overflow: ellipsis;
+							overflow: hidden;
+							white-space: nowrap;
+						}
+						.file-message-title {
+							font-weight: bold;
+						}
+						.file-message-size {
+							font-size: 0.8em;
+							margin-top: 5px;
+						}
 					}
 				}
 			}
