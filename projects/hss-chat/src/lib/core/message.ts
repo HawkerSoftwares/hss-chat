@@ -13,4 +13,6 @@ export class Message
     public downloadUrl?: string;
     public mimeType?: string;
     public fileSizeInBytes?: number = 0;
+    public formattedDate?: string | null;
+    public newDateStarted?: boolean;
 }

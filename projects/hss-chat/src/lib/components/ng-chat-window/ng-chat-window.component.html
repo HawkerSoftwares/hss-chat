@@ -37,35 +37,38 @@
 			<a class="load-history-action"
 				(click)="fetchMessageHistory(window)">{{localization.loadMessageHistoryPlaceholder}}</a>
 		</div>
-
-		<div *ngFor="let message of window.messages; let i = index"
-			[ngClass]="{'ng-chat-message': true, 'ng-chat-message-received': message.fromId != userId}">
-			<ng-container *ngIf="isAvatarVisible(window, message, i)">
-				<div *ngIf="!getChatWindowAvatar(window.participant, message)" class="icon-wrapper">
-					<i class="user-icon"></i>
-				</div>
-				<img *ngIf="getChatWindowAvatar(window.participant, message)" alt="" class="avatar" height="30"
-					width="30" [src]="getChatWindowAvatar(window.participant, message) | sanitize" />
-				<span *ngIf="window.participant.participantType == ChatParticipantType.Group"
-					class="ng-chat-participant-name">{{window.participant | groupMessageDisplayName:message}}</span>
-			</ng-container>
-			<ng-container [ngSwitch]="message.type">
-				<div *ngSwitchCase="MessageType.Text"
-					[ngClass]="{'sent-chat-message-container': message.fromId == userId, 'received-chat-message-container': message.fromId != userId}">
-					<span [innerHtml]="message.message | emojify:emojisEnabled | linkfy:linkfyEnabled"></span>
-					<ng-container *ngTemplateOutlet="reactionsTemplate; context: {message}"></ng-container>
-				</div>
-
-				<ng-container *ngSwitchCase="MessageType.Image">
-					<ng-container *ngTemplateOutlet="imageMessageTemplate ? imageMessageTemplate : defaultImageMessageTemplate; context: {message}"></ng-container>
+        <ng-container *ngFor="let message of window.messages; let i = index">
+			<div *ngIf="message.newDateStarted && !message.formattedDate" class="messages-date" [innerText]="message.dateSent | date:'longDate'"></div>
+			<div *ngIf="message.newDateStarted && message.formattedDate" class="messages-date" [innerText]="message.formattedDate"></div>
+			<div [ngClass]="{'ng-chat-message': true, 'ng-chat-message-received': message.fromId != userId}">
+				<ng-container *ngIf="isAvatarVisible(window, message, i)">
+					<div *ngIf="!getChatWindowAvatar(window.participant, message)" class="icon-wrapper">
+						<i class="user-icon"></i>
+					</div>
+					<img *ngIf="getChatWindowAvatar(window.participant, message)" alt="" class="avatar" height="30"
+						width="30" [src]="getChatWindowAvatar(window.participant, message) | sanitize" />
+					<span *ngIf="window.participant.participantType == ChatParticipantType.Group"
+						class="ng-chat-participant-name">{{window.participant | groupMessageDisplayName:message}}</span>
 				</ng-container>
 
-				<ng-container *ngSwitchCase="MessageType.File">
-					<ng-container *ngTemplateOutlet="fileMessageTemplate ? fileMessageTemplate : defaultFileMessageTemplate; context: {message}"></ng-container>
+				<ng-container [ngSwitch]="message.type">
+					<div *ngSwitchCase="MessageType.Text"
+						[ngClass]="{'sent-chat-message-container': message.fromId == userId, 'received-chat-message-container': message.fromId != userId}">
+						<span [innerHtml]="message.message | emojify:emojisEnabled | linkfy:linkfyEnabled"></span>
+						<ng-container *ngTemplateOutlet="msgFooterTemplate; context: {message}"></ng-container>
+					</div>
+	
+					<ng-container *ngSwitchCase="MessageType.Image">
+						<ng-container *ngTemplateOutlet="imageMessageTemplate ? imageMessageTemplate : defaultImageMessageTemplate; context: {message}"></ng-container>
+					</ng-container>
+	
+					<ng-container *ngSwitchCase="MessageType.File">
+						<ng-container *ngTemplateOutlet="fileMessageTemplate ? fileMessageTemplate : defaultFileMessageTemplate; context: {message}"></ng-container>
+					</ng-container>
+	
 				</ng-container>
-
-			</ng-container>
-		</div>
+			</div>
+		</ng-container>
 	</div>
 
 	<div class="ng-chat-footer primary-outline-color primary-background">
@@ -97,11 +100,14 @@
 	</div>
 </ng-container>
 
+
+<!-- CHAT MESSAGE TEMPLATES  -->
+
 <ng-template #defaultImageMessageTemplate let-message="message">
 	<div [ngClass]="{'sent-chat-message-container': message.fromId == userId, 'received-chat-message-container': message.fromId != userId}">
 		<img [src]="message.mediaUrl" class="image-message" />
 		<span [innerHtml]="message.message | emojify:emojisEnabled | linkfy:linkfyEnabled"></span>
-		<ng-container *ngTemplateOutlet="reactionsTemplate; context: {message}"></ng-container>
+		<ng-container *ngTemplateOutlet="msgFooterTemplate; context: {message}"></ng-container>
 	</div>
 </ng-template>
 
@@ -119,15 +125,20 @@
 				</span>
 			</a>
 		</div>
-		<ng-container *ngTemplateOutlet="reactionsTemplate; context: {message}"></ng-container>
+		<ng-container *ngTemplateOutlet="msgFooterTemplate; context: {message}"></ng-container>
 	</div>
 </ng-template>
 
-<ng-template #reactionsTemplate let-message="message">
-	<div class="reactions-list" *ngIf="message.reactions">
-		<div class="reaction" *ngFor="let reaction of message.reactions" [innerHTML]="reaction"></div>
+<ng-template #msgFooterTemplate let-message="message">
+	<div class="chat-msg-footer">
+		<div class="reactions-list">
+			<ng-container *ngIf="message.reactions">
+				<div class="reaction" *ngFor="let reaction of message.reactions | slice:0:2" [innerHTML]="reaction"></div>
+				<div class="reaction" *ngIf="message.reactions.length > 2">+ {{message.reactions.length - 2}}</div>
+			</ng-container>
+		</div>
+		<span *ngIf="showMessageDate && message.dateSent" class="message-sent-date">
+			{{message.dateSent | date:messageDatePipeFormat}}
+		</span>
 	</div>
-	<span *ngIf="showMessageDate && message.dateSent" class="message-sent-date">
-		{{message.dateSent | date:messageDatePipeFormat}}
-	</span>
 </ng-template>

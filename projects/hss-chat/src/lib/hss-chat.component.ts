@@ -152,7 +152,7 @@ export class NgChat implements OnInit, IChatController {
     public customTheme?: string;
 
     @Input()
-    public messageDatePipeFormat: string = "short";
+    public messageDatePipeFormat: string = "shortTime";
 
     @Input()
     public showMessageDate: boolean = true;
@@ -423,6 +423,7 @@ export class NgChat implements OnInit, IChatController {
 
     private onFetchMessageHistoryLoaded(messages: Message[], window: Window, direction: ScrollDirection, forceMarkMessagesAsSeen: boolean = false): void
     {
+        this.addDateGroupflag(window.messages);
         this.scrollChatWindow(window, direction)
 
         if (window.hasFocus || forceMarkMessagesAsSeen)
@@ -430,6 +431,25 @@ export class NgChat implements OnInit, IChatController {
             const unseenMessages = messages.filter(m => !m.dateSeen);
 
             this.markMessagesAsRead(unseenMessages);
+        }
+    }
+    
+    addDateGroupflag(messages: Message[]) {
+        for (let index = 0; index < messages.length;) {
+            messages[index].formattedDate = null;
+            messages[index].newDateStarted = false;
+            const today = new Date(new Date().setHours(0, 0, 0, 0));
+            const currentMsgDate = new Date(new Date(messages[index].dateSent).setHours(0, 0, 0, 0));
+            if (currentMsgDate.toString() === today.toString()) {
+                messages[index].formattedDate = 'Today';
+            }
+            if (index === 0) {
+                messages[index].newDateStarted = true;
+            } else {
+                const lastMsgDate = new Date(new Date(messages[index - 1].dateSent).setHours(0, 0, 0, 0));
+                messages[index].newDateStarted = currentMsgDate > lastMsgDate ? true : false;
+            }
+            index = index + 1;
         }
     }
 

@@ -52,7 +52,7 @@ export class NgChatWindowComponent {
     public showMessageDate: boolean = true;
 
     @Input()
-    public messageDatePipeFormat: string = "short";
+    public messageDatePipeFormat: string = "shortTime";
 
     @Input()
     public hasPagedHistory: boolean = true;

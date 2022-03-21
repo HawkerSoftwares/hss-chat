@@ -36,6 +36,17 @@ export class DemoAdapterPagedHistory extends PagedHistoryChatAdapter implements 
                     fileSizeInBytes: 23234
                 };
             }
+
+            if ((20-i) > 0) {
+                msg.dateSent = '2022-02-05T18:29:13.065Z';
+            }
+            if ((20-i) > 10) {
+                msg.dateSent = '2022-03-07T18:29:13.065Z';
+            }
+            if ((20-i) > 15) {
+                msg.dateSent = new Date();
+            }
+            
             this.historyMessages.push(msg);
         }
     }
