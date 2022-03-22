@@ -51,22 +51,10 @@
 						class="ng-chat-participant-name">{{window.participant | groupMessageDisplayName:message}}</span>
 				</ng-container>
 
-				<ng-container [ngSwitch]="message.type">
-					<div *ngSwitchCase="MessageType.Text"
-						[ngClass]="{'sent-chat-message-container': message.fromId == userId, 'received-chat-message-container': message.fromId != userId}">
-						<span [innerHtml]="message.message | emojify:emojisEnabled | linkfy:linkfyEnabled"></span>
-						<ng-container *ngTemplateOutlet="msgFooterTemplate; context: {message}"></ng-container>
-					</div>
-	
-					<ng-container *ngSwitchCase="MessageType.Image">
-						<ng-container *ngTemplateOutlet="imageMessageTemplate ? imageMessageTemplate : defaultImageMessageTemplate; context: {message}"></ng-container>
-					</ng-container>
-	
-					<ng-container *ngSwitchCase="MessageType.File">
-						<ng-container *ngTemplateOutlet="fileMessageTemplate ? fileMessageTemplate : defaultFileMessageTemplate; context: {message}"></ng-container>
-					</ng-container>
-	
+				<ng-container>
+					<ng-container *ngTemplateOutlet="messageTemplate ? messageTemplate : defaultMessageTemplate; context: {message}"></ng-container>
 				</ng-container>
+
 			</div>
 		</ng-container>
 	</div>
@@ -103,28 +91,34 @@
 
 <!-- CHAT MESSAGE TEMPLATES  -->
 
-<ng-template #defaultImageMessageTemplate let-message="message">
+<ng-template #defaultMessageTemplate let-message="message">
 	<div [ngClass]="{'sent-chat-message-container': message.fromId == userId, 'received-chat-message-container': message.fromId != userId}">
-		<img [src]="message.mediaUrl" class="image-message" />
-		<span [innerHtml]="message.message | emojify:emojisEnabled | linkfy:linkfyEnabled"></span>
-		<ng-container *ngTemplateOutlet="msgFooterTemplate; context: {message}"></ng-container>
-	</div>
-</ng-template>
-
-<ng-template #defaultFileMessageTemplate let-message="message">
-	<div [ngClass]="{'file-message-container': true, 'received': message.fromId != userId}">
-		<div class="file-info">
-			<div class="file-message-icon-container">
-				<i class="paperclip-icon"></i>
-			</div>
-			<a class="file-details" [attr.href]="message?.downloadUrl" target="_blank" rel="noopener noreferrer"
-				(click)="markMessagesAsRead([message])" download>
-				<span class="file-message-title" [attr.title]="message.message">{{message.message}}</span>
-				<span *ngIf="message?.fileSizeInBytes" class="file-message-size">
-					{{message?.fileSizeInBytes}} Bytes
-				</span>
-			</a>
+		<div class="media-list">
+			<ng-container *ngFor="let media of message.medias | slice:0:4; index as indx;" [ngSwitch]="media.type">
+				<div *ngSwitchCase="MessageType.Image" class="media image" (click)="viewImagesOnFullScreen(message.medias)">
+					<img [src]="media.url" class="image-message" />
+					<div class="count-overlay" *ngIf="indx === 3">+ {{ message.medias.length - 4 }}</div>
+				</div>
+				<div *ngSwitchCase="MessageType.File" class="media file">
+				 <div class="file-info">
+					<div class="file-message-icon">
+						<i class="paperclip-icon"></i>
+					</div>
+					<div class="file-details">
+						<a [attr.href]="media?.downloadUrl" target="_blank" rel="noopener noreferrer"
+						(click)="markMessagesAsRead([message])" download>
+						<span class="file-message-title" [attr.title]="media.title">{{media.title}}</span>
+						</a>
+						<div *ngIf="media?.fileSizeInBytes" class="file-message-size">
+							{{media?.fileSizeInBytes}} Bytes
+						</div>
+					</div>
+				 </div>
+				 <div class="count-overlay" *ngIf="indx === 3">+ {{ message.medias.length - 4 }}</div>
+				</div>
+			</ng-container>
 		</div>
+		<span class="message-text" [innerHtml]="message.message | emojify:emojisEnabled | linkfy:linkfyEnabled"></span>
 		<ng-container *ngTemplateOutlet="msgFooterTemplate; context: {message}"></ng-container>
 	</div>
 </ng-template>

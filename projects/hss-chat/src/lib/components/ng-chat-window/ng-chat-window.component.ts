@@ -25,8 +25,7 @@ export class NgChatWindowComponent {
     emojiPopupDisplay: boolean;
     constructor() { }
 
-    @Input() imageMessageTemplate: TemplateRef<any>;
-    @Input() fileMessageTemplate: TemplateRef<any>;
+    @Input() messageTemplate: TemplateRef<any>;
     @Input()
     public fileUploadAdapter: IFileUploadAdapter;
 

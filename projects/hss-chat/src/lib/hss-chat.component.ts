@@ -53,8 +53,7 @@ export class NgChat implements OnInit, IChatController {
     get isDisabled(): boolean {
         return this._isDisabled;
     }
-    @Input() imageMessageTemplate: TemplateRef<any>;
-    @Input() fileMessageTemplate: TemplateRef<any>;
+    @Input() messageTemplate: TemplateRef<any>;
     @Input()
     set isDisabled(value: boolean) {
         this._isDisabled = value;
@@ -393,7 +392,6 @@ export class NgChat implements OnInit, IChatController {
             this.adapter.getMessageHistoryByPage(window.participant.id, this.historyPageSize, ++window.historyPage)
             .pipe(
                 map((result: Message[]) => {
-                    result.forEach((message) => this.assertMessageType(message));
 
                     window.messages = result.concat(window.messages);
                     window.isLoadingHistory = false;
@@ -410,11 +408,8 @@ export class NgChat implements OnInit, IChatController {
             this.adapter.getMessageHistory(window.participant.id)
             .pipe(
                 map((result: Message[]) => {
-                    result.forEach((message) => this.assertMessageType(message));
-
                     window.messages = result.concat(window.messages);
                     window.isLoadingHistory = false;
-
                     setTimeout(() => this.onFetchMessageHistoryLoaded(result, window, ScrollDirection.Bottom));
                 })
             ).subscribe();
@@ -474,8 +469,6 @@ export class NgChat implements OnInit, IChatController {
         if (participant && message)
         {
             const chatWindow = this.openChatWindow(participant);
-
-            this.assertMessageType(message);
 
             if (!chatWindow[1] || !this.historyEnabled){
                 chatWindow[0].messages.push(message);
@@ -608,14 +601,6 @@ export class NgChat implements OnInit, IChatController {
 
                 callback();
             });
-        }
-    }
-
-    private assertMessageType(message: Message): void {
-        // Always fallback to "Text" messages to avoid rendenring issues
-        if (!message.type)
-        {
-            message.type = MessageType.Text;
         }
     }
 
