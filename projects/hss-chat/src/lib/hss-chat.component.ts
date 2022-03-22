@@ -53,8 +53,7 @@ export class NgChat implements OnInit, IChatController {
     get isDisabled(): boolean {
         return this._isDisabled;
     }
-    @Input() imageMessageTemplate: TemplateRef<any>;
-    @Input() fileMessageTemplate: TemplateRef<any>;
+    @Input() messageTemplate: TemplateRef<any>;
     @Input()
     set isDisabled(value: boolean) {
         this._isDisabled = value;
@@ -152,7 +151,7 @@ export class NgChat implements OnInit, IChatController {
     public customTheme?: string;
 
     @Input()
-    public messageDatePipeFormat: string = "short";
+    public messageDatePipeFormat: string = "shortTime";
 
     @Input()
     public showMessageDate: boolean = true;
@@ -393,7 +392,6 @@ export class NgChat implements OnInit, IChatController {
             this.adapter.getMessageHistoryByPage(window.participant.id, this.historyPageSize, ++window.historyPage)
             .pipe(
                 map((result: Message[]) => {
-                    result.forEach((message) => this.assertMessageType(message));
 
                     window.messages = result.concat(window.messages);
                     window.isLoadingHistory = false;
@@ -410,11 +408,8 @@ export class NgChat implements OnInit, IChatController {
             this.adapter.getMessageHistory(window.participant.id)
             .pipe(
                 map((result: Message[]) => {
-                    result.forEach((message) => this.assertMessageType(message));
-
                     window.messages = result.concat(window.messages);
                     window.isLoadingHistory = false;
-
                     setTimeout(() => this.onFetchMessageHistoryLoaded(result, window, ScrollDirection.Bottom));
                 })
             ).subscribe();
@@ -423,6 +418,7 @@ export class NgChat implements OnInit, IChatController {
 
     private onFetchMessageHistoryLoaded(messages: Message[], window: Window, direction: ScrollDirection, forceMarkMessagesAsSeen: boolean = false): void
     {
+        this.addDateGroupflag(window.messages);
         this.scrollChatWindow(window, direction)
 
         if (window.hasFocus || forceMarkMessagesAsSeen)
@@ -430,6 +426,25 @@ export class NgChat implements OnInit, IChatController {
             const unseenMessages = messages.filter(m => !m.dateSeen);
 
             this.markMessagesAsRead(unseenMessages);
+        }
+    }
+    
+    addDateGroupflag(messages: Message[]) {
+        for (let index = 0; index < messages.length;) {
+            messages[index].formattedDate = null;
+            messages[index].newDateStarted = false;
+            const today = new Date(new Date().setHours(0, 0, 0, 0));
+            const currentMsgDate = new Date(new Date(messages[index].dateSent).setHours(0, 0, 0, 0));
+            if (currentMsgDate.toString() === today.toString()) {
+                messages[index].formattedDate = 'Today';
+            }
+            if (index === 0) {
+                messages[index].newDateStarted = true;
+            } else {
+                const lastMsgDate = new Date(new Date(messages[index - 1].dateSent).setHours(0, 0, 0, 0));
+                messages[index].newDateStarted = currentMsgDate > lastMsgDate ? true : false;
+            }
+            index = index + 1;
         }
     }
 
@@ -454,8 +469,6 @@ export class NgChat implements OnInit, IChatController {
         if (participant && message)
         {
             const chatWindow = this.openChatWindow(participant);
-
-            this.assertMessageType(message);
 
             if (!chatWindow[1] || !this.historyEnabled){
                 chatWindow[0].messages.push(message);
@@ -588,14 +601,6 @@ export class NgChat implements OnInit, IChatController {
 
                 callback();
             });
-        }
-    }
-
-    private assertMessageType(message: Message): void {
-        // Always fallback to "Text" messages to avoid rendenring issues
-        if (!message.type)
-        {
-            message.type = MessageType.Text;
         }
     }
 

@@ -1,16 +1,25 @@
 import { MessageType } from './message-type.enum';
 
+export interface IMedia {
+    id?: any;
+    title?:string;
+    type: MessageType;
+    url: string
+    downloadUrl?: string;
+    mimeType?: string;
+    fileSizeInBytes?: number;
+}
+
 export class Message
 {
     public id?: any;
-    public type?: MessageType = MessageType.Text;
     public fromId: any;
     public toId: any;
     public message: string;
     public dateSent?: Date;
     public dateSeen?: Date;
-    public mediaUrl?: string;
-    public downloadUrl?: string;
-    public mimeType?: string;
-    public fileSizeInBytes?: number = 0;
+    public medias?: IMedia[];
+    public formattedDate?: string | null;
+    public newDateStarted?: boolean;
+    public reactions?: any[]
 }

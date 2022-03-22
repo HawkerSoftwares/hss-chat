@@ -11,7 +11,7 @@ export class DemoAdapterPagedHistory extends PagedHistoryChatAdapter implements 
     constructor() {
         super();
         for(let i: number = 0; i < 20; i++) {
-            let msg: any = {
+            let msg: Message = {
                 fromId: 1,
                 toId: 999,
                 message: `${20-i}. Hi there, just type any message bellow to test this Angular module.`,
@@ -24,18 +24,41 @@ export class DemoAdapterPagedHistory extends PagedHistoryChatAdapter implements 
                 msg.reactions = ['😍', '😜', '😇'];
             }
             if (i % 4 === 0) {
-                msg.type = MessageType.Image;
-                msg.mediaUrl = 'https://images.urbndata.com/is/image/FreePeople/65516759_060_a';
+                msg.medias = [
+                    { type: MessageType.Image, url: 'https://images.urbndata.com/is/image/FreePeople/65516759_060_a' },
+                    { type: MessageType.Image, url: 'https://assets.vincecamuto.com/is/image/vincecamuto/8200000000525012_001_ss_01' },
+                    { type: MessageType.Image, url: 'https://cdn.shopify.com/s/files/1/0024/0274/6421/products/AA0122_1_a8300ad3-14f3-4df4-8f2c-efc759d48889.jpg' },
+                    { type: MessageType.Image, url: 'https://cdn.shopify.com/s/files/1/0061/8627/0804/products/1-modelinfo-Juliette-us2_442811d7-c0e2-42c6-abe5-fc041fe204c0_large.jpg' },
+                    { type: MessageType.Image, url: 'https://cottonon.com/on/demandware.static/-/Sites-catalog-master-women/default/dw36aee798/2052625/2052625-04-2.jpg' },
+                    { type: MessageType.Image, url: 'https://images.urbndata.com/is/image/FreePeople/65516759_060_a' },
+                    { type: MessageType.Image, url: 'https://images.urbndata.com/is/image/FreePeople/65516759_060_a' }
+                ];
             }
             if (i % 4 === 1) {
-                msg.type = MessageType.File;
-                msg = {
-                    ...msg,
-                    downloadUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
-                    message: 'Dummy PDF file',
-                    fileSizeInBytes: 23234
-                };
+                msg.medias = [
+                    { type: MessageType.File, url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', title: 'Dummy File 1',
+                      downloadUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', fileSizeInBytes: 23234 },
+                      { type: MessageType.File, url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', title: 'Dummy File 2',
+                      downloadUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', fileSizeInBytes: 2324 },
+                      { type: MessageType.File, url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', title: 'Dummy File 2',
+                      downloadUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', fileSizeInBytes: 2324 },
+                      { type: MessageType.File, url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', title: 'Dummy File 2',
+                      downloadUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', fileSizeInBytes: 2324 },
+                      { type: MessageType.File, url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', title: 'Dummy File 2',
+                      downloadUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', fileSizeInBytes: 2324 }
+                ];
             }
+
+            if ((20-i) > 0) {
+                msg.dateSent = new Date('2022-02-05T18:29:13.065Z');
+            }
+            if ((20-i) > 10) {
+                msg.dateSent = new Date('2022-03-07T18:29:13.065Z');
+            }
+            if ((20-i) > 15) {
+                msg.dateSent = new Date();
+            }
+            
             this.historyMessages.push(msg);
         }
     }
