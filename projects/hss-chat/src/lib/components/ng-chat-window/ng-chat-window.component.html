@@ -1,34 +1,19 @@
-<ng-container *ngIf="window && window.isCollapsed">
-	<div class="ng-chat-title secondary-background">
-		<div class="ng-chat-title-visibility-toggle-area" (click)="onChatWindowClicked(window)">
-			<strong title="{{window.participant.displayName}}">
-				{{window.participant.displayName}}
-			</strong>
-			<span
-				[ngClass]="{'ng-chat-participant-status': true, 'online': window.participant.status == ChatParticipantStatus.Online, 'busy': window.participant.status == ChatParticipantStatus.Busy, 'away': window.participant.status == ChatParticipantStatus.Away, 'offline': window.participant.status == ChatParticipantStatus.Offline}"
-				title="{{chatParticipantStatusDescriptor(window.participant.status, localization)}}"></span>
-			<span *ngIf="unreadMessagesTotal(window).length > 0"
-				class="ng-chat-unread-messages-count unread-messages-counter-container primary-text">{{unreadMessagesTotal(window)}}</span>
-		</div>
-		<a href="javascript:void(0);" class="ng-chat-close primary-text" (click)="onCloseChatWindow()">X</a>
+<div class="ng-chat-title secondary-background">
+	<div class="ng-chat-title-visibility-toggle-area" (click)="onChatWindowClicked(window)">
+		<strong title="{{window.participant.displayName}}">
+			{{window.participant.displayName}}
+		</strong>
+		<span
+			[ngClass]="{'ng-chat-participant-status': true, 'online': window.participant.status == ChatParticipantStatus.Online, 'busy': window.participant.status == ChatParticipantStatus.Busy, 'away': window.participant.status == ChatParticipantStatus.Away, 'offline': window.participant.status == ChatParticipantStatus.Offline}"
+			title="{{chatParticipantStatusDescriptor(window.participant.status, localization)}}"></span>
+		<span *ngIf="unreadMessagesTotal(window).length > 0"
+			class="ng-chat-unread-messages-count unread-messages-counter-container primary-text">{{unreadMessagesTotal(window)}}</span>
 	</div>
-</ng-container>
+	<a href="javascript:void(0);" class="ng-chat-close primary-text" (click)="onCloseChatWindow()">X</a>
+	<ng-chat-options [ngClass]="'ng-chat-options-container'" [options]="defaultWindowOptions(window)"
+		(activeOptionTrackerChange)="activeOptionTrackerChange($event)" *ngIf="window && !window.isCollapsed"></ng-chat-options>
+</div>
 <ng-container *ngIf="window && !window.isCollapsed">
-	<div class="ng-chat-title secondary-background">
-		<div class="ng-chat-title-visibility-toggle-area" (click)="onChatWindowClicked(window)">
-			<strong title="{{window.participant.displayName}}">
-				{{window.participant.displayName}}
-			</strong>
-			<span
-				[ngClass]="{'ng-chat-participant-status': true, 'online': window.participant.status == ChatParticipantStatus.Online, 'busy': window.participant.status == ChatParticipantStatus.Busy, 'away': window.participant.status == ChatParticipantStatus.Away, 'offline': window.participant.status == ChatParticipantStatus.Offline}"
-				title="{{chatParticipantStatusDescriptor(window.participant.status, localization)}}"></span>
-			<span *ngIf="unreadMessagesTotal(window).length > 0"
-				class="ng-chat-unread-messages-count unread-messages-counter-container primary-text">{{unreadMessagesTotal(window)}}</span>
-		</div>
-		<a href="javascript:void(0);" class="ng-chat-close primary-text" (click)="onCloseChatWindow()">X</a>
-		<ng-chat-options [ngClass]="'ng-chat-options-container'" [options]="defaultWindowOptions(window)"
-			(activeOptionTrackerChange)="activeOptionTrackerChange($event)"></ng-chat-options>
-	</div>
 	<div #chatMessages class="ng-chat-messages primary-background">
 		<div *ngIf="window.isLoadingHistory" class="ng-chat-loading-wrapper">
 			<div class="loader">Loading history...</div>
@@ -37,9 +22,11 @@
 			<a class="load-history-action"
 				(click)="fetchMessageHistory(window)">{{localization.loadMessageHistoryPlaceholder}}</a>
 		</div>
-        <ng-container *ngFor="let message of window.messages; let i = index">
-			<div *ngIf="message.newDateStarted && !message.formattedDate" class="messages-date" [innerText]="message.dateSent | date:'longDate'"></div>
-			<div *ngIf="message.newDateStarted && message.formattedDate" class="messages-date" [innerText]="message.formattedDate"></div>
+		<ng-container *ngFor="let message of window.messages; let i = index">
+			<div *ngIf="message.newDateStarted && !message.formattedDate" class="messages-date"
+				[innerText]="message.dateSent | date:'longDate'"></div>
+			<div *ngIf="message.newDateStarted && message.formattedDate" class="messages-date"
+				[innerText]="message.formattedDate"></div>
 			<div [ngClass]="{'ng-chat-message': true, 'ng-chat-message-received': message.fromId != userId}">
 				<ng-container *ngIf="isAvatarVisible(window, message, i)">
 					<div *ngIf="!getChatWindowAvatar(window.participant, message)" class="icon-wrapper">
@@ -51,9 +38,10 @@
 						class="ng-chat-participant-name">{{window.participant | groupMessageDisplayName:message}}</span>
 				</ng-container>
 
-				<ng-container>
-					<ng-container *ngTemplateOutlet="messageTemplate ? messageTemplate : defaultMessageTemplate; context: {message}"></ng-container>
-				</ng-container>
+				<ng-chat-message-template [message]="message" [showMessageDate]="showMessageDate"
+					[messageDatePipeFormat]="messageDatePipeFormat" [messageTemplate]="messageTemplate"
+					[userId]="userId">
+				</ng-chat-message-template>
 
 			</div>
 		</ng-container>
@@ -78,61 +66,15 @@
 		<div class="emoji-block custom-dropdown" [class.show]="emojiPopupDisplay" *ngIf="emojisEnabled">
 			<span title="Emoji" (click)="emojiPopupDisplay = !emojiPopupDisplay;">
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18">
-					<path d="M12 0a12 12 0 1 0 0 24 12 12 0 0 0 0-24m0 22a10 10 0 1 1 0-20 10 10 0 0 1 0 20M8 7a2 2 0 1 0 0 4 2 2 0 0 0 0-4m8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-.8 8c-.7 1.2-1.8 2-3.3 2-1.5 0-2.7-.8-3.4-2H15m3-2H6a6 6 0 1 0 12 0"></path>
+					<path
+						d="M12 0a12 12 0 1 0 0 24 12 12 0 0 0 0-24m0 22a10 10 0 1 1 0-20 10 10 0 0 1 0 20M8 7a2 2 0 1 0 0 4 2 2 0 0 0 0-4m8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-.8 8c-.7 1.2-1.8 2-3.3 2-1.5 0-2.7-.8-3.4-2H15m3-2H6a6 6 0 1 0 12 0">
+					</path>
 				</svg>
 			</span>
 			<div class="emoji-dropdown-content">
-				<emoji-mart [style]="{ width: '302px'}" (emojiClick)="addEmoji($event, window)" [exclude]="[]" [sheetSize]="sheetSize" [showPreview]="false"></emoji-mart>
+				<emoji-mart [style]="{ width: '302px'}" (emojiClick)="addEmoji($event, window)" [exclude]="[]"
+					[sheetSize]="sheetSize" [showPreview]="false"></emoji-mart>
 			</div>
 		</div>
 	</div>
 </ng-container>
-
-
-<!-- CHAT MESSAGE TEMPLATES  -->
-
-<ng-template #defaultMessageTemplate let-message="message">
-	<div [ngClass]="{'sent-chat-message-container': message.fromId == userId, 'received-chat-message-container': message.fromId != userId}">
-		<div class="media-list">
-			<ng-container *ngFor="let media of message.medias | slice:0:4; index as indx;" [ngSwitch]="media.type">
-				<div *ngSwitchCase="MessageType.Image" class="media image" (click)="viewImagesOnFullScreen(message.medias)">
-					<img [src]="media.url" class="image-message" />
-					<div class="count-overlay" *ngIf="indx === 3">+ {{ message.medias.length - 4 }}</div>
-				</div>
-				<div *ngSwitchCase="MessageType.File" class="media file">
-				 <div class="file-info">
-					<div class="file-message-icon">
-						<i class="paperclip-icon"></i>
-					</div>
-					<div class="file-details">
-						<a [attr.href]="media?.downloadUrl" target="_blank" rel="noopener noreferrer"
-						(click)="markMessagesAsRead([message])" download>
-						<span class="file-message-title" [attr.title]="media.title">{{media.title}}</span>
-						</a>
-						<div *ngIf="media?.fileSizeInBytes" class="file-message-size">
-							{{media?.fileSizeInBytes}} Bytes
-						</div>
-					</div>
-				 </div>
-				 <div class="count-overlay" *ngIf="indx === 3">+ {{ message.medias.length - 4 }}</div>
-				</div>
-			</ng-container>
-		</div>
-		<span class="message-text" [innerHtml]="message.message | emojify:emojisEnabled | linkfy:linkfyEnabled"></span>
-		<ng-container *ngTemplateOutlet="msgFooterTemplate; context: {message}"></ng-container>
-	</div>
-</ng-template>
-
-<ng-template #msgFooterTemplate let-message="message">
-	<div class="chat-msg-footer">
-		<div class="reactions-list">
-			<ng-container *ngIf="message.reactions">
-				<div class="reaction" *ngFor="let reaction of message.reactions | slice:0:2" [innerHTML]="reaction"></div>
-				<div class="reaction" *ngIf="message.reactions.length > 2">+ {{message.reactions.length - 2}}</div>
-			</ng-container>
-		</div>
-		<span *ngIf="showMessageDate && message.dateSent" class="message-sent-date">
-			{{message.dateSent | date:messageDatePipeFormat}}
-		</span>
-	</div>
-</ng-template>

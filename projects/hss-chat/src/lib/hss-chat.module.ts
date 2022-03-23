@@ -11,11 +11,12 @@ import { GroupMessageDisplayNamePipe } from './pipes/group-message-display-name.
 import { NgChatOptionsComponent } from './components/ng-chat-options/ng-chat-options.component';
 import { NgChatFriendsListComponent } from './components/ng-chat-friends-list/ng-chat-friends-list.component';
 import { NgChatWindowComponent } from './components/ng-chat-window/ng-chat-window.component';
-import { NGBBootstrapModule } from './modules/ngb.module';
+import { NGPrimeModule } from './modules/ngp.module';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
+import { NgChatMessageTemplateComponent } from './components/ng-chat-message-template/ng-chat-message-template.component';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, HttpClientModule, NGBBootstrapModule, PickerModule],
+  imports: [CommonModule, FormsModule, HttpClientModule, NGPrimeModule, PickerModule ],
   declarations: [
     NgChat, 
     EmojifyPipe, 
@@ -24,7 +25,7 @@ import { PickerModule } from '@ctrl/ngx-emoji-mart';
     GroupMessageDisplayNamePipe, 
     NgChatOptionsComponent, 
     NgChatFriendsListComponent, 
-    NgChatWindowComponent
+    NgChatWindowComponent, NgChatMessageTemplateComponent
   ],
   exports: [NgChat]
 })
