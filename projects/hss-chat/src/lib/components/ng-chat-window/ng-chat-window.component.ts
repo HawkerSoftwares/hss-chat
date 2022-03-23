@@ -1,7 +1,6 @@
 import { Component, Input, Output, EventEmitter, ViewEncapsulation, ViewChild, ElementRef, TemplateRef } from '@angular/core';
 
 import { Message } from "../../core/message";
-import { MessageType } from "../../core/message-type.enum";
 import { Window } from "../../core/window";
 import { ChatParticipantStatus } from "../../core/chat-participant-status.enum";
 import { ScrollDirection } from "../../core/scroll-direction.enum";
@@ -88,7 +87,6 @@ export class NgChatWindowComponent {
     // Exposes enums and functions for the ng-template
     public ChatParticipantType = ChatParticipantType;
     public ChatParticipantStatus = ChatParticipantStatus;
-    public MessageType = MessageType;
     public chatParticipantStatusDescriptor = chatParticipantStatusDescriptor;
 
     defaultWindowOptions(currentWindow: Window): IChatOption[]
@@ -321,5 +319,7 @@ export class NgChatWindowComponent {
     addEmoji({ emoji }, window: Window) {
         window.newMessage = `${window.newMessage ? window.newMessage : ''}${emoji.native}`;
     }
+
+    viewImagesOnFullScreen = false;
     
 }
