@@ -316,13 +316,13 @@ export class NgChat implements OnInit, IChatController {
             // Loading current users list
             if (this.pollFriendsList){
                 // Setting a long poll interval to update the friends list
-                this.fetchFriendsList(true);
-                this.pollingIntervalWindowInstance = window.setInterval(() => this.fetchFriendsList(false), this.pollingInterval);
+                this.fetchFriendsList(true, false);
+                this.pollingIntervalWindowInstance = window.setInterval(() => this.fetchFriendsList(false, true), this.pollingInterval);
             }
             else
             {
                 // Since polling was disabled, a friends list update mechanism will have to be implemented in the ChatAdapter.
-                this.fetchFriendsList(true);
+                this.fetchFriendsList(true, false);
             }
         }
     }
@@ -370,9 +370,9 @@ export class NgChat implements OnInit, IChatController {
     }
 
     // Sends a request to load the friends list
-    private fetchFriendsList(isBootstrapping: boolean): void
+    private fetchFriendsList(isBootstrapping: boolean, isPolling: boolean): void
     {
-        this.hssChatService.loadParticipants.next(isBootstrapping);
+        this.hssChatService.loadParticipants.next({ isBootstrapping, isPolling });
     }
 
     participantsLoaded({ participants, participantsResponse, isBootstrapping }) {

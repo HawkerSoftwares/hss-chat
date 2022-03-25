@@ -1,9 +1,9 @@
 
 <ng-chat [adapter]="adapter" [userId]="999" [historyEnabled]="true" [historyPageSize]="7" [hideFriendsList]="false"
-  (onMessagesSeen)="messageSeen($event)" [isViewportOnMobileEnabled]="true" [emojisEnabled]="true"
-  >
+  (onMessagesSeen)="messageSeen($event)" [isViewportOnMobileEnabled]="true" [emojisEnabled]="true" [pollFriendsList]="true" [pollingInterval]="30000">
 </ng-chat>
 <!-- [chatWindowHeaderTemplate]="chatWindowHeaderTemplate" -->
+
 <!-- [messageTemplate]="messageTemplate" -->
 <ng-template #messageTemplate let-message="message">
 	<div [ngClass]="{'sent-chat-message-container': message.fromId == userId, 'received-chat-message-container': message.fromId != userId}">

@@ -27,7 +27,7 @@ export class NgChatFriendsListComponent implements OnChanges, OnDestroy, AfterVi
     // UI Behavior properties
     public isLoadingMore: boolean = true;
     public hasMoreParticipants: boolean = false;
-    public page: number = 0;
+    public page: number = 1; 
 
     @Input()
     public pageSize: number = 0;
@@ -81,7 +81,8 @@ export class NgChatFriendsListComponent implements OnChanges, OnDestroy, AfterVi
     private searchSubscription: Subscription;
     private loadParticipantsSubscription: Subscription;
     public participantsMeta: Map<number, ParticipantMetadata> = new Map();
-    private isBootstrapping:boolean;
+    private isBootstrapping: boolean;
+    private isResetParticipantsList: boolean;
 
     // Exposes enums and functions for the ng-template
     public ChatParticipantStatus = ChatParticipantStatus;
@@ -96,18 +97,24 @@ export class NgChatFriendsListComponent implements OnChanges, OnDestroy, AfterVi
             debounceTime(1000),
             distinctUntilChanged(),
             switchMap((search) => {
-                this.participants = [];
-                this.participantsResponse = [];
-                this.participantsMeta.clear();
-                this.page = 0;
+                this.page = 1;
+                this.resetParticipantsList();
                 return this.fetchMoreParticipants();
             })
         ).subscribe();
 
-        this.loadParticipantsSubscription = this.hssChatService.loadParticipants.subscribe(isBootstrapping => { 
-            this.isBootstrapping = isBootstrapping;
+        this.loadParticipantsSubscription = this.hssChatService.loadParticipants.subscribe(event => { 
+            this.isBootstrapping = event.isBootstrapping;
+            this.isResetParticipantsList = event.isPolling;
+            this.page = event.isPolling ? 1 : this.page;
             this.fetchMoreParticipants().subscribe();
         });
+    }
+
+    resetParticipantsList() {
+        this.participants = [];
+        this.participantsResponse = [];
+        this.participantsMeta.clear();
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -194,14 +201,19 @@ export class NgChatFriendsListComponent implements OnChanges, OnDestroy, AfterVi
     }
 
     onfetchMoreParticipantsClick() {
+        ++this.page;
+        this.isResetParticipantsList = false;
         this.fetchMoreParticipants().subscribe();
     }
 
     fetchMoreParticipants(): Observable<any> {
         this.isLoadingMore = true;
-        return this.adapter.listFriends(this.searchInput, this.pageSize, ++this.page)
+        return this.adapter.listFriends(this.searchInput, this.pageSize, this.page)
         .pipe(
             map((participantsResponse: ParticipantResponse[]) => {
+                if(this.isResetParticipantsList) {
+                    this.resetParticipantsList();
+                }
                 const newParticipants = participantsResponse.map((response: ParticipantResponse) => {
                     if(response.metadata && (response.metadata.recentMessage || response.metadata.totalUnreadMessages)){
                         this.participantsMeta.set(response.participant.id, response.metadata);
