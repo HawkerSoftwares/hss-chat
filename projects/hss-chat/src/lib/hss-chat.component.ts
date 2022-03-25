@@ -54,6 +54,7 @@ export class NgChat implements OnInit, IChatController {
         return this._isDisabled;
     }
     @Input() messageTemplate: TemplateRef<any>;
+    @Input() chatWindowHeaderTemplate: TemplateRef<any>;
     @Input()
     set isDisabled(value: boolean) {
         this._isDisabled = value;

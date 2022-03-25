@@ -35,7 +35,7 @@
     }
     >div {
         float: right;
-        width: 182px;
+        width: 90%;
         padding: 0;
         margin-top: 0;
         border-radius: 5px;
@@ -44,6 +44,12 @@
         margin-bottom: 5px;
         font-size: 0.9em;
         word-wrap: break-word;
+        position: relative;
+        &.sent-chat-message-container {
+            border-top-right-radius: 0;
+            border-width: 1px;
+            border-style: solid;
+        }
     }
     .media-list {
         display: flex;
@@ -102,5 +108,46 @@
 :ng-deep {
     .chat-image-popup-back-drop {
         background: black !important;
+    }
+}
+
+.left-arrow {
+    background: white;
+    height: 13px;
+    width: 13px;
+    position: absolute;
+    top: -1px;
+    bottom: auto;
+    left: -13px;
+    border-top: 1px solid #E3E3E3;
+    border-bottom-left-radius: 44px;
+    &>div {
+        width: 5px;
+        height: 20px;
+        margin-top: -4px;
+        margin-left: 6px;
+        border-left: 1px solid #cfd8dc;
+        transform: rotate(-43deg);
+    }
+}
+
+.right-arrow {
+    background: #e3e3e3;
+    height: 13px;
+    width: 13px;
+    position: absolute;
+    top: -1px;
+    bottom: auto;
+    right: -13px;
+    border-top: 1px solid #E3E3E3;
+    border-bottom-right-radius: 44px;
+    &>div {
+        width: 4px;
+        height: 20px;
+        position: absolute;
+        top: -3px;
+        left: 7px;
+        transform: rotate(42deg);
+        background: #ffffff;
     }
 }
