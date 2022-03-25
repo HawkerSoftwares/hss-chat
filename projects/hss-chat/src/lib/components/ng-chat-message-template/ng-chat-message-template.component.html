@@ -1,55 +1,63 @@
-<ng-container *ngTemplateOutlet="messageTemplate ? messageTemplate : defaultMessageTemplate; context: {message}"></ng-container>
+<ng-container *ngTemplateOutlet="messageTemplate ? messageTemplate : defaultMessageTemplate; context: {message}">
+</ng-container>
 
 <ng-template #defaultMessageTemplate let-message="message">
-	<div [ngClass]="{'sent-chat-message-container': message.fromId == userId, 'received-chat-message-container': message.fromId != userId}">
+	
+	<div [ngClass]="{'sent-chat-message-container': message.fromId == userId, 'received-chat-message-container': message.fromId != userId}" 
+	    (mouseenter)="showChatMessageSetting = true;" (mouseleave)="showChatMessageSetting = false;">
+		<div class="left-arrow" *ngIf="message.fromId !== userId"><div></div></div>
+		<div class="right-arrow" *ngIf="message.fromId === userId"><div></div></div>
+		<!-- <ng-chat-message-setting *ngIf="showChatMessageSetting"></ng-chat-message-setting> -->
 		<div class="media-list">
 			<ng-container *ngFor="let media of message.medias | slice:0:4; index as indx;" [ngSwitch]="media.type">
-				<div *ngSwitchCase="MessageType.Image" class="media image" (click)="viewImagesOnFullScreen = true;activeIndex = indx">
+				<div *ngSwitchCase="MessageType.Image" class="media image"
+					(click)="viewImagesOnFullScreen = true;activeIndex = indx">
 					<img [src]="media.url" class="image-message" />
 					<div class="count-overlay" *ngIf="indx === 3">+ {{ message.medias.length - 4 }}</div>
 				</div>
 				<div *ngSwitchCase="MessageType.File" class="media file">
-				 <div class="file-info">
-					<div class="file-message-icon">
-						<i class="paperclip-icon"></i>
-					</div>
-					<div class="file-details">
-						<a [attr.href]="media?.downloadUrl" target="_blank" rel="noopener noreferrer"
-						(click)="markMessagesAsRead([message])" download>
-						<span class="file-message-title" [attr.title]="media.title">{{media.title}}</span>
-						</a>
-						<div *ngIf="media?.fileSizeInBytes" class="file-message-size">
-							{{media?.fileSizeInBytes}} Bytes
+					<div class="file-info">
+						<div class="file-message-icon">
+							<i class="paperclip-icon"></i>
+						</div>
+						<div class="file-details">
+							<a [attr.href]="media?.downloadUrl" target="_blank" rel="noopener noreferrer"
+								(click)="markMessagesAsRead([message])" download>
+								<span class="file-message-title" [attr.title]="media.title">{{media.title}}</span>
+							</a>
+							<div *ngIf="media?.fileSizeInBytes" class="file-message-size">
+								{{media?.fileSizeInBytes}} Bytes
+							</div>
 						</div>
 					</div>
-				 </div>
-				 <div class="count-overlay" *ngIf="indx === 3">+ {{ message.medias.length - 4 }}</div>
+					<div class="count-overlay" *ngIf="indx === 3">+ {{ message.medias.length - 4 }}</div>
 				</div>
 			</ng-container>
 		</div>
 		<span class="message-text" [innerHtml]="message.message | emojify:emojisEnabled | linkfy:linkfyEnabled"></span>
 		<ng-container *ngTemplateOutlet="msgFooterTemplate; context: {message}"></ng-container>
 	</div>
-	<p-dialog [(visible)]="viewImagesOnFullScreen" [modal]="true" [style]="{width: '100vw', height: '100vh'}"  [baseZIndex]="10000"
-    [draggable]="false" [resizable]="false" [showHeader]="false" [contentStyle]="{padding: '0px', background: 'black' }"
-	[maskStyleClass]="'chat-image-popup-back-drop'">
-	    <i class="close-fullscreen-popup" class="pi pi-times" 
-		style="cursor: pointer;font-size: 1.5rem;right: 10px;top: -35px;position: absolute;padding: 5px;z-index: 999999;color: #fff;" 
-		(click)="viewImagesOnFullScreen = false;"></i>
-		<p-galleria [value]="message.medias" [showItemNavigators]="true" [showThumbnails]="false" 
-		[showIndicatorsOnItem]="true" [activeIndex]="activeIndex">
+	<p-dialog *ngIf="viewImagesOnFullScreen" [(visible)]="viewImagesOnFullScreen" [modal]="true" [style]="{width: '100vw', height: '100vh'}"
+		[baseZIndex]="10000" [draggable]="false" [resizable]="false" [showHeader]="false"
+		[contentStyle]="{padding: '0px', background: 'black' }" [maskStyleClass]="'chat-image-popup-back-drop'">
+		<i class="close-fullscreen-popup" class="pi pi-times"
+			style="cursor: pointer;font-size: 1.5rem;right: 10px;top: -35px;position: absolute;padding: 5px;z-index: 999999;color: #fff;"
+			(click)="viewImagesOnFullScreen = false;"></i>
+		<p-galleria [value]="message.medias" [showItemNavigators]="true" [showThumbnails]="false"
+			[showIndicatorsOnItem]="true" [activeIndex]="activeIndex">
 			<ng-template pTemplate="item" let-item>
-				<img [src]="item.url" style="height: '90vh'; display: block;"/>
+				<img [src]="item.url" style="height: '90vh'; display: block;" />
 			</ng-template>
 		</p-galleria>
-    </p-dialog>
+	</p-dialog>
 </ng-template>
 
 <ng-template #msgFooterTemplate let-message="message">
 	<div class="chat-msg-footer">
 		<div class="reactions-list">
 			<ng-container *ngIf="message.reactions">
-				<div class="reaction" *ngFor="let reaction of message.reactions | slice:0:2" [innerHTML]="reaction"></div>
+				<div class="reaction" *ngFor="let reaction of message.reactions | slice:0:2" [innerHTML]="reaction">
+				</div>
 				<div class="reaction" *ngIf="message.reactions.length > 2">+ {{message.reactions.length - 2}}</div>
 			</ng-container>
 		</div>

@@ -20,6 +20,7 @@ export * from './lib/core/chat-group-adapter';
 export * from './lib/core/chat-participant-type.enum';
 export * from './lib/core/message-type.enum';
 export * from './lib/core/file-upload-adapter';
+export * from './lib/core/chat-participant-status-descriptor';
 export * from './lib/hss-chat.component';
 
 export * from './lib/hss-chat.module';

@@ -1,18 +1,4 @@
-<div class="ng-chat-title secondary-background">
-	<div class="ng-chat-title-visibility-toggle-area" (click)="onChatWindowClicked(window)">
-		<strong title="{{window.participant.displayName}}">
-			{{window.participant.displayName}}
-		</strong>
-		<span
-			[ngClass]="{'ng-chat-participant-status': true, 'online': window.participant.status == ChatParticipantStatus.Online, 'busy': window.participant.status == ChatParticipantStatus.Busy, 'away': window.participant.status == ChatParticipantStatus.Away, 'offline': window.participant.status == ChatParticipantStatus.Offline}"
-			title="{{chatParticipantStatusDescriptor(window.participant.status, localization)}}"></span>
-		<span *ngIf="unreadMessagesTotal(window).length > 0"
-			class="ng-chat-unread-messages-count unread-messages-counter-container primary-text">{{unreadMessagesTotal(window)}}</span>
-	</div>
-	<a href="javascript:void(0);" class="ng-chat-close primary-text" (click)="onCloseChatWindow()">X</a>
-	<ng-chat-options [ngClass]="'ng-chat-options-container'" [options]="defaultWindowOptions(window)"
-		(activeOptionTrackerChange)="activeOptionTrackerChange($event)" *ngIf="window && !window.isCollapsed"></ng-chat-options>
-</div>
+<ng-container *ngTemplateOutlet="chatWindowHeaderTemplate ? chatWindowHeaderTemplate : defaultChatWindowHeaderTemplate;context: {window, self: this}"></ng-container>
 <ng-container *ngIf="window && !window.isCollapsed">
 	<div #chatMessages class="ng-chat-messages primary-background">
 		<div *ngIf="window.isLoadingHistory" class="ng-chat-loading-wrapper">
@@ -28,16 +14,6 @@
 			<div *ngIf="message.newDateStarted && message.formattedDate" class="messages-date"
 				[innerText]="message.formattedDate"></div>
 			<div [ngClass]="{'ng-chat-message': true, 'ng-chat-message-received': message.fromId != userId}">
-				<ng-container *ngIf="isAvatarVisible(window, message, i)">
-					<div *ngIf="!getChatWindowAvatar(window.participant, message)" class="icon-wrapper">
-						<i class="user-icon"></i>
-					</div>
-					<img *ngIf="getChatWindowAvatar(window.participant, message)" alt="" class="avatar" height="30"
-						width="30" [src]="getChatWindowAvatar(window.participant, message) | sanitize" />
-					<span *ngIf="window.participant.participantType == ChatParticipantType.Group"
-						class="ng-chat-participant-name">{{window.participant | groupMessageDisplayName:message}}</span>
-				</ng-container>
-
 				<ng-chat-message-template [message]="message" [showMessageDate]="showMessageDate"
 					[messageDatePipeFormat]="messageDatePipeFormat" [messageTemplate]="messageTemplate"
 					[userId]="userId">
@@ -78,3 +54,23 @@
 		</div>
 	</div>
 </ng-container>
+
+<ng-template #defaultChatWindowHeaderTemplate let-chatWindowRef="window" let-self="self">
+	<div class="ng-chat-title secondary-background hss-chat-window-header">
+		<div class="ng-chat-title-visibility-toggle-area">
+			<div *ngIf="!self.getChatWindowAvatar(chatWindowRef.participant)" class="icon-wrapper">
+				<i class="user-icon"></i>
+			</div>
+			<img *ngIf="self.getChatWindowAvatar(chatWindowRef.participant)" alt="" class="avatar user-profile-img" height="25"
+				width="25" [src]="self.getChatWindowAvatar(chatWindowRef.participant)" />
+			<strong [title]="chatWindowRef.participant.displayName" [innerText]="chatWindowRef.participant.displayName" (click)="onDisplayNameClick(self);"></strong>
+			<span
+				[ngClass]="{'ng-chat-participant-status': true, 'online': chatWindowRef.participant.status == ChatParticipantStatus.Online, 'busy': chatWindowRef.participant.status == ChatParticipantStatus.Busy, 'away': chatWindowRef.participant.status == ChatParticipantStatus.Away, 'offline': chatWindowRef.participant.status == ChatParticipantStatus.Offline}"
+				[title]="self.chatParticipantStatusDescriptor(chatWindowRef.participant.status, self.localization)"></span>
+			<span *ngIf="self.unreadMessagesTotal(chatWindowRef).length > 0"
+				class="ng-chat-unread-messages-count unread-messages-counter-container primary-text" [innerText]="self.unreadMessagesTotal(chatWindowRef)"></span>
+		</div>
+		<i class="pi pi-chevron-{{chatWindowRef.isCollapsed ? 'up' : 'down'}} toggle-chat-window" (click)="self.onChatWindowClicked(chatWindowRef)"></i>
+		<i class="pi pi-times close-chat-window" (click)="self.onCloseChatWindow()"></i>
+	</div>
+</ng-template>

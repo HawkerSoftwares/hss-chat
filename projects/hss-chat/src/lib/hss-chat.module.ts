@@ -14,6 +14,7 @@ import { NgChatWindowComponent } from './components/ng-chat-window/ng-chat-windo
 import { NGPrimeModule } from './modules/ngp.module';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { NgChatMessageTemplateComponent } from './components/ng-chat-message-template/ng-chat-message-template.component';
+import { NgChatMessageSettingComponent } from './components/ng-chat-message-setting/ng-chat-message-setting.component';
 
 @NgModule({
   imports: [CommonModule, FormsModule, HttpClientModule, NGPrimeModule, PickerModule ],
@@ -25,7 +26,7 @@ import { NgChatMessageTemplateComponent } from './components/ng-chat-message-tem
     GroupMessageDisplayNamePipe, 
     NgChatOptionsComponent, 
     NgChatFriendsListComponent, 
-    NgChatWindowComponent, NgChatMessageTemplateComponent
+    NgChatWindowComponent, NgChatMessageTemplateComponent, NgChatMessageSettingComponent
   ],
   exports: [NgChat]
 })

@@ -100,3 +100,9 @@
     float: right;
     margin-right: 5px;
 }
+
+@media screen and (max-width: 400px) {
+	#ng-chat {
+		width: 100%;
+	}
+}
