@@ -9,6 +9,7 @@ import { MessageType } from '../../core/message-type.enum';
 })
 export class NgChatMessageTemplateComponent implements OnInit {
   activeIndex = 0;
+  showChatMessageSetting = false;
   @Input() message: Message;
   @Input() messageTemplate: TemplateRef<any>;
   @Input() userId: any;

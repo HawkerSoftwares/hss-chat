@@ -2,7 +2,7 @@
 /* Mobile viewport only */
 .ng-chat-window {
 	right: 260px;
-	height: 360px;
+	height: 385px;
 	z-index: 999;
 	bottom: 0;
 	width: 300px;
@@ -83,12 +83,13 @@
 		}
 	}
 	.ng-chat-messages {
-		padding: 10px;
+		padding: 10px 13px;
 		width: 100%;
 		height: calc(90% - 30px);
 		box-sizing: border-box;
 		position: relative;
-		overflow: auto;
+		overflow-y: auto;
+		overflow-x: hidden;
 		display: grid;
 		.messages-date {
 			text-align: center;
@@ -121,13 +122,38 @@
 		.ng-chat-message.ng-chat-message-received {
 			div.received-chat-message-container {
 				float: left;
-				margin-left: 40px;
 				padding-top: 7px;
 				padding-bottom: 7px;
 				border-style: solid;
 				border-width: 1px;
 				margin-top: 0;
 				margin-bottom: 5px;
+				border-top-left-radius: 0;
+			}
+		}
+	}
+	.ng-chat-title {
+		.user-profile-img {
+			float: left;
+            border-radius: 50%;
+			margin: 0 6px;
+            margin-top: 2px;
+		}
+		&.hss-chat-window-header {
+			display: flex !important;
+			cursor: pointer;
+			.ng-chat-title-visibility-toggle-area {
+				width: 82%;
+			}
+			.toggle-chat-window {
+				margin: auto;
+			}
+			.close-chat-window {
+				margin: auto;
+				margin-right: 3px;
+			}
+			.pi {
+				font-size: .8rem;
 			}
 		}
 	}
@@ -140,5 +166,12 @@
 @media only screen and (max-width: 581px) {
 	.ng-chat-window {
 		position: initial;
+	}
+}
+
+@media only screen and (max-width: 400px) {
+	.ng-chat-window {
+		position: initial;
+		width: 100%;
 	}
 }

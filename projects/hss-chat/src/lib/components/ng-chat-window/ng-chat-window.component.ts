@@ -25,6 +25,7 @@ export class NgChatWindowComponent {
     constructor() { }
 
     @Input() messageTemplate: TemplateRef<any>;
+    @Input() chatWindowHeaderTemplate: TemplateRef<any>;
     @Input()
     public fileUploadAdapter: IFileUploadAdapter;
 
@@ -124,7 +125,7 @@ export class NgChatWindowComponent {
         return false;
     }
 
-    getChatWindowAvatar(participant: IChatParticipant, message: Message): string | null
+    getChatWindowAvatar(participant: IChatParticipant, message?: Message): string | null
     {
         if (participant.participantType == ChatParticipantType.User)
         {
@@ -319,7 +320,5 @@ export class NgChatWindowComponent {
     addEmoji({ emoji }, window: Window) {
         window.newMessage = `${window.newMessage ? window.newMessage : ''}${emoji.native}`;
     }
-
-    viewImagesOnFullScreen = false;
     
 }
