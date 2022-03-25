@@ -59,7 +59,7 @@
 	<div class="ng-chat-title secondary-background hss-chat-window-header">
 		<div class="ng-chat-title-visibility-toggle-area">
 			<div *ngIf="!self.getChatWindowAvatar(chatWindowRef.participant)" class="icon-wrapper">
-				<i class="user-icon"></i>
+				<i class="user-icon" style="width: 25px; height:25px;"></i>
 			</div>
 			<img *ngIf="self.getChatWindowAvatar(chatWindowRef.participant)" alt="" class="avatar user-profile-img" height="25"
 				width="25" [src]="self.getChatWindowAvatar(chatWindowRef.participant)" />
