@@ -1,12 +1,22 @@
 import { Injectable } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 
+export interface LoadParticipantsEvent {
+  isBootstrapping?: boolean;
+  isPolling?: boolean;
+}
+
+export interface LoadMessagesEvent {
+  isPolling?: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class HssChatService {
 
-  loadParticipants = new ReplaySubject<boolean>(1); //Subjects which emits last value only
+  loadParticipants = new ReplaySubject<LoadParticipantsEvent>(1); //Subjects which emits last value only
+  loadMessages = new ReplaySubject<LoadMessagesEvent>(1); //Subjects which emits last value only
 
   constructor() { }
 

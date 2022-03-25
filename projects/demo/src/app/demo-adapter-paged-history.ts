@@ -64,6 +64,7 @@ export class DemoAdapterPagedHistory extends PagedHistoryChatAdapter implements 
     }
 
     getMessageHistory(destinataryId: any): Observable<Message[]> {
+       console.log(`Loading Message History for ${destinataryId}`);
        let mockedHistory: Array<Message>;
        mockedHistory = [
             {
@@ -81,6 +82,7 @@ export class DemoAdapterPagedHistory extends PagedHistoryChatAdapter implements 
        let startPosition: number = (page - 1) * pageSize;
        let endPosition: number = page * pageSize;
        let mockedHistory: Array<Message> = this.historyMessages.slice(startPosition, endPosition);
+       console.log(`Loading Message History for ${destinataryId}. Page: ${page}, PageSize: ${pageSize}`);
        return of(mockedHistory.reverse()).pipe(delay(5000));
     }
     
@@ -88,6 +90,7 @@ export class DemoAdapterPagedHistory extends PagedHistoryChatAdapter implements 
         console.log(search);
         let startPosition: number = (page-1) * pageSize;
         let endPosition: number = (page) * pageSize;
+        console.log(`Loading friends. Page: ${page}, PageSize: ${pageSize}`);
         let mockedParticipants: Array<IChatParticipant> = DemoAdapter.mockedParticipants
             .filter(user => {
                 const isMatched = search && search.length ? user.displayName.toLowerCase().search(search.trim().toLowerCase())>=0 : true;
@@ -113,6 +116,7 @@ export class DemoAdapterPagedHistory extends PagedHistoryChatAdapter implements 
     }
     
     sendMessage(message: Message): void {
+        console.log(`Sending Message: ${message}`);
         setTimeout(() => {
             let replyMessage = new Message();
 
