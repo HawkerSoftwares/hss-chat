@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter, ViewEncapsulation, OnChanges, SimpleChanges, ViewChild, ElementRef, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 
-import { Localization } from '../../core/localization';
 import { IChatOption } from '../../core/chat-option';
 import { ChatParticipantStatus } from "../../core/chat-participant-status.enum";
 import { IChatParticipant } from "../../core/chat-participant";
@@ -10,11 +9,11 @@ import { ParticipantResponse } from "../../core/participant-response";
 import { MessageCounter } from "../../core/message-counter";
 import { chatParticipantStatusDescriptor } from '../../core/chat-participant-status-descriptor';
 import { ChatAdapter } from '../../core/chat-adapter';
-import { debounce, debounceTime, distinctUntilChanged, distinctUntilKeyChanged, filter, fromEvent, interval, map, Observable, Subject, Subscription, switchMap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, fromEvent, interval, map, Observable, Subject, Subscription, switchMap } from 'rxjs';
 import { ScrollDirection } from '../../core/scroll-direction.enum';
-import { identifierName } from '@angular/compiler';
 import { ParticipantMetadata } from '../../core/participant-metadata';
 import { HssChatService } from '../../service/hss-chat.service';
+import { HSSChatConfig } from '../../core/chat.config';
 
 @Component({
     selector: 'ng-chat-friends-list',
@@ -22,15 +21,12 @@ import { HssChatService } from '../../service/hss-chat.service';
     styleUrls: ['./ng-chat-friends-list.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class NgChatFriendsListComponent implements OnChanges, OnDestroy, AfterViewInit {
-    
+export class NgChatFriendsListComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
+    @Input() config: HSSChatConfig;
     // UI Behavior properties
     public isLoadingMore: boolean = true;
     public hasMoreParticipants: boolean = false;
     public page: number = 1; 
-
-    @Input()
-    public pageSize: number = 0;
 
     @Input()
     public participantsInteractedWith: IChatParticipant[] = [];
@@ -40,9 +36,6 @@ export class NgChatFriendsListComponent implements OnChanges, OnDestroy, AfterVi
 
     @Input()
     public userId: any;
-
-    @Input()
-    public localization: Localization;
 
     @Input()
     public shouldDisplay: boolean;
@@ -79,7 +72,6 @@ export class NgChatFriendsListComponent implements OnChanges, OnDestroy, AfterVi
     public participantsResponse: ParticipantResponse[] = [];
     public searchInput: string = '';
     private searchSubscription: Subscription;
-    private loadParticipantsSubscription: Subscription;
     public participantsMeta: Map<number, ParticipantMetadata> = new Map();
     private isBootstrapping: boolean;
     private isResetParticipantsList: boolean;
@@ -88,7 +80,12 @@ export class NgChatFriendsListComponent implements OnChanges, OnDestroy, AfterVi
     public ChatParticipantStatus = ChatParticipantStatus;
     public chatParticipantStatusDescriptor = chatParticipantStatusDescriptor;
 
-    constructor(private hssChatService: HssChatService) {}
+    constructor(private hssChatService: HssChatService) {
+    }
+
+    ngOnInit() {
+        this.activateFriendListFetch();
+    }
 
     ngAfterViewInit(): void {
         const searchBox = document.getElementById('ng-chat-search_friend') as HTMLInputElement;
@@ -102,13 +99,6 @@ export class NgChatFriendsListComponent implements OnChanges, OnDestroy, AfterVi
                 return this.fetchMoreParticipants();
             })
         ).subscribe();
-
-        this.loadParticipantsSubscription = this.hssChatService.loadParticipants.subscribe(event => { 
-            this.isBootstrapping = event.isBootstrapping;
-            this.isResetParticipantsList = event.isPolling;
-            this.page = event.isPolling ? 1 : this.page;
-            this.fetchMoreParticipants().subscribe();
-        });
     }
 
     resetParticipantsList() {
@@ -130,7 +120,6 @@ export class NgChatFriendsListComponent implements OnChanges, OnDestroy, AfterVi
 
     ngOnDestroy(): void {
         this.searchSubscription.unsubscribe();
-        this.loadParticipantsSubscription.unsubscribe();
     }
 
     isUserSelectedFromFriendsList(user: User) : boolean
@@ -208,7 +197,7 @@ export class NgChatFriendsListComponent implements OnChanges, OnDestroy, AfterVi
 
     fetchMoreParticipants(): Observable<any> {
         this.isLoadingMore = true;
-        return this.adapter.listFriends(this.searchInput, this.pageSize, this.page)
+        return this.adapter.listFriends(this.searchInput, this.config.participants?.pageSize, this.page)
         .pipe(
             map((participantsResponse: ParticipantResponse[]) => {
                 if(this.isResetParticipantsList) {
@@ -236,7 +225,7 @@ export class NgChatFriendsListComponent implements OnChanges, OnDestroy, AfterVi
     private onFetchMoreParticipantsLoaded(participants: ParticipantResponse[], direction: ScrollDirection): void
     {
         this.isLoadingMore = false;
-        this.hasMoreParticipants = participants.length == this.pageSize;
+        this.hasMoreParticipants = participants.length == this.config.participants?.pageSize;
         this.scrollChatWindow(direction);
     }
 
@@ -253,4 +242,27 @@ export class NgChatFriendsListComponent implements OnChanges, OnDestroy, AfterVi
             }); 
         }
     }
+
+    private activateFriendListFetch(): void {
+        if (this.adapter)
+        {
+            // Loading current users list
+            if (this.config.participants?.polling){
+                // Setting a long poll interval to update the friends list
+                this.fetchFriendsList(true, false);
+                this.hssChatService.pollingParticipantsInstance = window.setInterval(() => this.fetchFriendsList(false, true), this.config.participants?.interval);
+            } else {
+                // Since polling was disabled, a friends list update mechanism will have to be implemented in the ChatAdapter.
+                this.fetchFriendsList(true, false);
+            }
+        }
+    }
+
+    private fetchFriendsList(isBootstrapping, isPolling) {
+        this.isBootstrapping = isBootstrapping;
+        this.isResetParticipantsList = isPolling;
+        this.page = isPolling ? 1 : this.page;
+        this.fetchMoreParticipants().subscribe();
+    }
+
 }

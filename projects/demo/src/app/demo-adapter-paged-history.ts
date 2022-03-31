@@ -77,6 +77,20 @@ export class DemoAdapterPagedHistory extends PagedHistoryChatAdapter implements 
 
        return of(mockedHistory).pipe(delay(500));
     }
+
+    override getRecentMessages(destinataryId: any, message: Message): Observable<Message[]> {
+        console.log(`Loading Recent Messages for ${destinataryId}`);
+        let mockedHistory: Array<Message>;
+        mockedHistory = [
+             {
+                 fromId: 1,
+                 toId: 999,
+                 message: "Hi there, just type any message bellow to test this Angular module.",
+                 dateSent: new Date()
+             }
+        ];
+        return of(mockedHistory).pipe(delay(500));
+     }
     
     public getMessageHistoryByPage(destinataryId: any, pageSize: number, page: number) : Observable<Message[]> {
        let startPosition: number = (page - 1) * pageSize;

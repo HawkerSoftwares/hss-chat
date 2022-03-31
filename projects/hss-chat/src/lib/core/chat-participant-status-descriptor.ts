@@ -1,8 +1,22 @@
 import { ChatParticipantStatus } from './chat-participant-status.enum';
-import { Localization } from './localization'
- 
-export function chatParticipantStatusDescriptor(status: ChatParticipantStatus, localization: Localization) {
+
+export interface StatusDescription {
+    online: string;
+    busy: string;
+    away: string;
+    offline: string;
+    [key: string]: string;
+}
+
+const statusDescription: StatusDescription = {
+    online: 'Online',
+    busy: 'Busy',
+    away: 'Away',
+    offline: 'Offline'
+};
+
+export function chatParticipantStatusDescriptor(status: ChatParticipantStatus) {
     const currentStatus = ChatParticipantStatus[status].toString().toLowerCase();
     
-    return localization.statusDescription[currentStatus];
+    return statusDescription[currentStatus];
 }

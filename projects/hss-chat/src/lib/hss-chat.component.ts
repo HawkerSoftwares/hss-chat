@@ -10,7 +10,6 @@ import { MessageType } from "./core/message-type.enum";
 import { Window } from "./core/window";
 import { ChatParticipantStatus } from "./core/chat-participant-status.enum";
 import { ScrollDirection } from "./core/scroll-direction.enum";
-import { Localization, StatusDescription } from './core/localization';
 import { IChatController } from './core/chat-controller';
 import { PagedHistoryChatAdapter } from './core/paged-history-chat-adapter';
 import { IFileUploadAdapter } from './core/file-upload-adapter';
@@ -25,6 +24,8 @@ import { map } from 'rxjs/operators';
 import { NgChatWindowComponent } from './components/ng-chat-window/ng-chat-window.component';
 import { NgChatFriendsListComponent } from './components/ng-chat-friends-list/ng-chat-friends-list.component';
 import { HssChatService } from './service/hss-chat.service';
+import { DEFAULT_CONFIG } from './constants/chat.config.const';
+import { HSSChatConfig } from './core/chat.config';
 
 @Component({
     selector: 'ng-chat',
@@ -41,7 +42,7 @@ import { HssChatService } from './service/hss-chat.service';
 })
 
 export class NgChat implements OnInit, IChatController {
-    constructor(private _httpClient: HttpClient, private hssChatService: HssChatService) { }
+    @Input() config: HSSChatConfig = DEFAULT_CONFIG;
 
     // Exposes enums for the ng-template
     public ChatParticipantType = ChatParticipantType;
@@ -50,28 +51,24 @@ export class NgChat implements OnInit, IChatController {
 
     private _isDisabled: boolean = false;
 
-    get isDisabled(): boolean {
-        return this._isDisabled;
-    }
     @Input() messageTemplate: TemplateRef<any>;
     @Input() chatWindowHeaderTemplate: TemplateRef<any>;
     @Input()
+    get isDisabled(): boolean {
+        return this._isDisabled;
+    }
     set isDisabled(value: boolean) {
         this._isDisabled = value;
 
         if (value)
         {
             // To address issue https://github.com/rpaschoal/ng-chat/issues/120
-            window.clearInterval(this.pollingIntervalWindowInstance)
-        }
-        else
-        {
-            this.activateFriendListFetch();
+            window.clearInterval(this.hssChatService.pollingParticipantsInstance)
         }
     }
 
     @Input()
-    public adapter!: ChatAdapter;
+    public adapter: ChatAdapter;
 
     @Input()
     public groupAdapter?: IChatGroupAdapter;
@@ -113,28 +110,10 @@ export class NgChat implements OnInit, IChatController {
     public persistWindowsState: boolean = true;
 
     @Input()
-    public title: string = "Friends";
-
-    @Input()
-    public messagePlaceholder: string = "Type a message";
-
-    @Input()
-    public searchPlaceholder: string = "Search";
-
-    @Input()
     public browserNotificationsEnabled: boolean = true;
 
     @Input() // TODO: This might need a better content strategy
     public browserNotificationIconSource: string = 'https://raw.githubusercontent.com/rpaschoal/ng-chat/master/src/ng-chat/assets/notification.png';
-
-    @Input()
-    public browserNotificationTitle: string = "New message from";
-
-    @Input()
-    public historyPageSize: number = 10;
-
-    @Input()
-    public localization!: Localization;
 
     @Input()
     public hideFriendsList: boolean = false;
@@ -182,14 +161,6 @@ export class NgChat implements OnInit, IChatController {
 
     public hasPagedHistory: boolean = false;
 
-    // Don't want to add this as a setting to simplify usage. Previous placeholder and title settings available to be used, or use full Localization object.
-    private statusDescription: StatusDescription = {
-        online: 'Online',
-        busy: 'Busy',
-        away: 'Away',
-        offline: 'Offline'
-    };
-
     private audioFile?: HTMLAudioElement;
 
     public participants!: IChatParticipant[];
@@ -199,8 +170,6 @@ export class NgChat implements OnInit, IChatController {
     public participantsInteractedWith: IChatParticipant[] = [];
 
     public currentActiveOption?: IChatOption | null;
-
-    private pollingIntervalWindowInstance?: number;
 
     private get localStorageKey(): string
     {
@@ -226,7 +195,16 @@ export class NgChat implements OnInit, IChatController {
     @ViewChildren('chatWindow') chatWindows!: QueryList<NgChatWindowComponent>;
     @ViewChild(NgChatFriendsListComponent) viewChatParticipants: NgChatFriendsListComponent;
 
+    constructor(private _httpClient: HttpClient, private hssChatService: HssChatService) {
+    }
+
     ngOnInit() {
+        if (this.config) {
+            this.config = {
+                ...DEFAULT_CONFIG,
+                ...this.config
+            };
+        }
         this.onResize();
         this.bootstrapChat();
     }
@@ -265,14 +243,11 @@ export class NgChat implements OnInit, IChatController {
             try
             {
                 this.initializeTheme();
-                this.initializeDefaultText();
                 this.initializeBrowserNotifications();
 
                 // Binding event listeners
                 this.adapter.messageReceivedHandler = (participant, msg) => this.onMessageReceived(participant, msg);
                 this.adapter.friendsListChangedHandler = (participantsResponse) => this.onFriendsListChanged(participantsResponse);
-
-                this.activateFriendListFetch();
 
                 this.bufferAudioFile();
 
@@ -310,23 +285,6 @@ export class NgChat implements OnInit, IChatController {
         }
     }
 
-    private activateFriendListFetch(): void {
-        if (this.adapter)
-        {
-            // Loading current users list
-            if (this.pollFriendsList){
-                // Setting a long poll interval to update the friends list
-                this.fetchFriendsList(true, false);
-                this.pollingIntervalWindowInstance = window.setInterval(() => this.fetchFriendsList(false, true), this.pollingInterval);
-            }
-            else
-            {
-                // Since polling was disabled, a friends list update mechanism will have to be implemented in the ChatAdapter.
-                this.fetchFriendsList(true, false);
-            }
-        }
-    }
-
     // Initializes browser notifications
     private async initializeBrowserNotifications()
     {
@@ -339,22 +297,6 @@ export class NgChat implements OnInit, IChatController {
         }
     }
 
-    // Initializes default text
-    private initializeDefaultText() : void
-    {
-        if (!this.localization)
-        {
-            this.localization = {
-                messagePlaceholder: this.messagePlaceholder,
-                searchPlaceholder: this.searchPlaceholder,
-                title: this.title,
-                statusDescription: this.statusDescription,
-                browserNotificationTitle: this.browserNotificationTitle,
-                loadMessageHistoryPlaceholder: "Load older messages",
-                loadMorePlaceholder: "Load more"
-            };
-        }
-    }
 
     private initializeTheme(): void
     {
@@ -369,12 +311,6 @@ export class NgChat implements OnInit, IChatController {
         }
     }
 
-    // Sends a request to load the friends list
-    private fetchFriendsList(isBootstrapping: boolean, isPolling: boolean): void
-    {
-        this.hssChatService.loadParticipants.next({ isBootstrapping, isPolling });
-    }
-
     participantsLoaded({ participants, participantsResponse, isBootstrapping }) {
         this.participants = participants;
         this.participantsResponse = participantsResponse;
@@ -384,28 +320,36 @@ export class NgChat implements OnInit, IChatController {
         }
     }
 
-    fetchMessageHistory(window: Window) {
+    fetchMessageHistory({window, polling}: any) {
         // Not ideal but will keep this until we decide if we are shipping pagination with the default adapter
-        if (this.adapter instanceof PagedHistoryChatAdapter)
-        {
-            window.isLoadingHistory = true;
-
-            this.adapter.getMessageHistoryByPage(window.participant.id, this.historyPageSize, ++window.historyPage)
+        if(polling) {
+            const messages = window.messages;
+            this.adapter.getRecentMessages(window.participant.id, messages[(messages.length > 1) ? (messages.length - 1) : (messages.length ? messages[0] : null)])
             .pipe(
                 map((result: Message[]) => {
-
+                    if(window.messages.length > 0) {
+                        window.messages = [
+                            ...window.messages,
+                            ...result
+                        ];
+                        this.addDateGroupflag(window.messages);
+                    }
+                })
+            ).subscribe();
+        } else if (this.adapter instanceof PagedHistoryChatAdapter)
+        {   
+            window.isLoadingHistory = true;
+            this.adapter.getMessageHistoryByPage(window.participant.id, this.config.participantChat.pageSize , ++window.historyPage)
+            .pipe(
+                map((result: Message[]) => {
                     window.messages = result.concat(window.messages);
                     window.isLoadingHistory = false;
-
                     const direction: ScrollDirection = (window.historyPage == 1) ? ScrollDirection.Bottom : ScrollDirection.Top;
-                    window.hasMoreMessages = result.length == this.historyPageSize;
-
+                    window.hasMoreMessages = result.length == this.config.participantChat.pageSize;
                     setTimeout(() => this.onFetchMessageHistoryLoaded(result, window, direction, true));
                 })
             ).subscribe();
-        }
-        else
-        {
+        } else {
             this.adapter.getMessageHistory(window.participant.id)
             .pipe(
                 map((result: Message[]) => {
@@ -506,10 +450,6 @@ export class NgChat implements OnInit, IChatController {
         }
     }
 
-    onOptionPromptCanceled(): void {
-        this.cancelOptionPrompt();
-    }
-
     onOptionPromptConfirmed(event: any): void {
         // For now this is fine as there is only one option available. Introduce option types and type checking if a new option is added.
         this.confirmNewGroup(event);
@@ -555,7 +495,7 @@ export class NgChat implements OnInit, IChatController {
             // Loads the chat history via an RxJs Observable
             if (this.historyEnabled)
             {
-                this.fetchMessageHistory(newChatWindow);
+                this.fetchMessageHistory({window: newChatWindow, polling: false});
             }
 
             this.windows.unshift(newChatWindow);
@@ -639,7 +579,7 @@ export class NgChat implements OnInit, IChatController {
     private emitBrowserNotification(window: Window, message: Message): void
     {
         if (this.browserNotificationsBootstrapped && !window.hasFocus && message) {
-            const notification = new Notification(`${this.localization.browserNotificationTitle} ${window.participant.displayName}`, {
+            const notification = new Notification(`${this.config.notification.title} ${window.participant.displayName}`, {
                 'body': message.message,
                 'icon': this.browserNotificationIconSource
             });

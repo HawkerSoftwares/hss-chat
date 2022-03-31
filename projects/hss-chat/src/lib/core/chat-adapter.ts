@@ -1,6 +1,5 @@
-import { Observable } from 'rxjs';
+import { delay, Observable, of } from 'rxjs';
 import { Message } from "./message";
-import { User } from "./user";
 import { ParticipantResponse } from "./participant-response";
 import { IChatParticipant } from './chat-participant';
 
@@ -24,6 +23,11 @@ export abstract class ChatAdapter
     {
         this.messageReceivedHandler(participant, message);
     }
+
+    public getRecentMessages(destinataryId: any, message: Message): Observable<Message[]> {
+        console.error('Polling not supported yet. Please override "getRecentMessages" in your ChatAdapter.');
+        return of([]).pipe(delay(500));
+    };
     
     // Event handlers
     /** @internal */

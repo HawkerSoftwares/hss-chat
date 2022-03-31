@@ -133,6 +133,22 @@
 		}
 	}
 	.ng-chat-title {
+		.icon-wrapper {
+			background-color: #BABABA;
+			overflow: hidden;
+			width: 25px;
+			height: 25px;
+			border-radius: 500%;
+			margin-top: 1px;
+			margin-right: 5px;
+			.user-icon {
+				width: 27px;
+				height: 18px;
+				color: #FFF;
+				transform: scale(0.6);
+				background-color: #FFF;
+			}
+		}
 		.user-profile-img {
 			float: left;
             border-radius: 50%;
@@ -144,6 +160,7 @@
 			cursor: pointer;
 			.ng-chat-title-visibility-toggle-area {
 				width: 82%;
+				display: flex;
 			}
 			.toggle-chat-window {
 				margin: auto;

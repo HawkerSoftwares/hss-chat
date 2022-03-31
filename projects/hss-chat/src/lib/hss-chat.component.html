@@ -2,8 +2,7 @@
 
 <div id="ng-chat" *ngIf="!isDisabled && isBootstrapped && !unsupportedViewport" [ngClass]="theme">
     <ng-chat-friends-list [ngStyle]="{'visibility': hideFriendsList ? 'hidden' : 'visible'}"
-        [localization]="localization"
-        [pageSize]="historyPageSize"
+        [config]="config"
         [adapter]="adapter"
         [shouldDisplay]="true"
         [userId]="userId"
@@ -14,7 +13,7 @@
         [currentActiveOption]="currentActiveOption"
         (onParticipantsLoaded)="participantsLoaded($event)"
         (onParticipantClicked)="onParticipantClickedFromFriendsList($event)"
-        (onOptionPromptCanceled)="onOptionPromptCanceled()"
+        (onOptionPromptCanceled)="cancelOptionPrompt()"
         (onOptionPromptConfirmed)="onOptionPromptConfirmed($event)"
     >
     </ng-chat-friends-list>
@@ -22,9 +21,9 @@
     <div *ngFor="let window of windows; let i = index" [ngClass]="{'ng-chat-window': true, 'primary-outline-color': true, 'ng-chat-window-collapsed': window.isCollapsed}" [ngStyle]="{'right': (!hideFriendsList ? friendsListWidth : 0) + 20 + windowSizeFactor * i + 'px'}">
         <ng-chat-window
             #chatWindow
+            [config]="config"
             [fileUploadAdapter]="fileUploadAdapter"
             [adapter]="adapter"
-            [localization]="localization"
             [userId]="userId"
             [window]="window"
             [showOptions]="showOptions"
