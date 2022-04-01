@@ -1,10 +1,9 @@
-import { Component, Input, Output, EventEmitter, ViewEncapsulation, ViewChild, ElementRef, TemplateRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewEncapsulation, ViewChild, ElementRef, TemplateRef, OnInit } from '@angular/core';
 
 import { Message } from "../../core/message";
 import { Window } from "../../core/window";
 import { ChatParticipantStatus } from "../../core/chat-participant-status.enum";
 import { ScrollDirection } from "../../core/scroll-direction.enum";
-import { Localization } from '../../core/localization';
 import { IFileUploadAdapter } from '../../core/file-upload-adapter';
 import { IChatOption } from '../../core/chat-option';
 import { Group } from "../../core/group";
@@ -13,6 +12,8 @@ import { IChatParticipant } from "../../core/chat-participant";
 import { MessageCounter } from "../../core/message-counter";
 import { chatParticipantStatusDescriptor } from '../../core/chat-participant-status-descriptor';
 import { ChatAdapter } from '../../core/chat-adapter';
+import { HssChatService } from '../../service/hss-chat.service';
+import { HSSChatConfig } from '../../core/chat.config';
 
 @Component({
     selector: 'ng-chat-window',
@@ -20,10 +21,9 @@ import { ChatAdapter } from '../../core/chat-adapter';
     styleUrls: ['./ng-chat-window.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class NgChatWindowComponent {
+export class NgChatWindowComponent implements OnInit {
     emojiPopupDisplay: boolean;
-    constructor() { }
-
+    @Input() config: HSSChatConfig;
     @Input() messageTemplate: TemplateRef<any>;
     @Input() chatWindowHeaderTemplate: TemplateRef<any>;
     @Input()
@@ -34,9 +34,6 @@ export class NgChatWindowComponent {
 
     @Input()
     public userId: any;
-
-    @Input()
-    public localization: Localization;
 
     @Input()
     public showOptions: boolean;
@@ -75,7 +72,7 @@ export class NgChatWindowComponent {
     public onOptionTriggered: EventEmitter<IChatOption> = new EventEmitter();
 
     @Output()
-    public onLoadHistoryTriggered: EventEmitter<Window> = new EventEmitter();
+    public onLoadHistoryTriggered: EventEmitter<{window: Window, polling: boolean}> = new EventEmitter();
 
     @ViewChild('chatMessages') chatMessages: any;
     @ViewChild('nativeFileInput') nativeFileInput: ElementRef;
@@ -89,6 +86,13 @@ export class NgChatWindowComponent {
     public ChatParticipantType = ChatParticipantType;
     public ChatParticipantStatus = ChatParticipantStatus;
     public chatParticipantStatusDescriptor = chatParticipantStatusDescriptor;
+
+    constructor(private hssChatService: HssChatService) { 
+    }
+
+    ngOnInit(): void {
+        this.fetchRecentMessages();
+    }
 
     defaultWindowOptions(currentWindow: Window): IChatOption[]
     {
@@ -214,7 +218,7 @@ export class NgChatWindowComponent {
     }
 
     fetchMessageHistory(window: Window): void {
-        this.onLoadHistoryTriggered.emit(window);
+        this.onLoadHistoryTriggered.emit({window: window, polling: false});
     }
 
     // Closes a chat window via the close 'X' button
@@ -314,6 +318,14 @@ export class NgChatWindowComponent {
 
                     // TODO: Invoke a file upload adapter error here
                 });
+        }
+    }
+
+    
+    fetchRecentMessages(): void {
+        if (this.config.participantChat.polling){
+            // Setting a long poll interval to update the friends list
+            window.setInterval(() => this.onLoadHistoryTriggered.emit({window: this.window, polling: true}), this.config.participantChat.interval);
         }
     }
 

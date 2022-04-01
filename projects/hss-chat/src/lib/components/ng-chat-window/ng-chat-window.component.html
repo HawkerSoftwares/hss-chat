@@ -6,7 +6,7 @@
 		</div>
 		<div *ngIf="hasPagedHistory && window.hasMoreMessages && !window.isLoadingHistory" class="ng-chat-load-history">
 			<a class="load-history-action"
-				(click)="fetchMessageHistory(window)">{{localization.loadMessageHistoryPlaceholder}}</a>
+				(click)="fetchMessageHistory(window)" [innerText]="config.participantChat?.loadMoreContentText"></a>
 		</div>
 		<ng-container *ngFor="let message of window.messages; let i = index">
 			<div *ngIf="message.newDateStarted && !message.formattedDate" class="messages-date"
@@ -25,7 +25,7 @@
 
 	<div class="ng-chat-footer primary-outline-color primary-background">
 		<input #chatWindowInput type="text" [ngModel]="window.newMessage | emojify:emojisEnabled"
-			(ngModelChange)="window.newMessage=$event" [placeholder]="localization.messagePlaceholder"
+			(ngModelChange)="window.newMessage=$event" [placeholder]="config.participantChat?.inputPlaceholder"
 			[ngClass]="{'chat-window-input': true, 'has-side-action': fileUploadAdapter}"
 			(keydown)="onChatInputTyped($event, window)" (blur)="toggleWindowFocus(window)"
 			(focus)="toggleWindowFocus(window);emojiPopupDisplay = false;" />
@@ -59,16 +59,16 @@
 	<div class="ng-chat-title secondary-background hss-chat-window-header">
 		<div class="ng-chat-title-visibility-toggle-area">
 			<div *ngIf="!self.getChatWindowAvatar(chatWindowRef.participant)" class="icon-wrapper">
-				<i class="user-icon" style="width: 25px; height:25px;"></i>
+				<i class="user-icon"></i>
 			</div>
 			<img *ngIf="self.getChatWindowAvatar(chatWindowRef.participant)" alt="" class="avatar user-profile-img" height="25"
 				width="25" [src]="self.getChatWindowAvatar(chatWindowRef.participant)" />
 			<strong [title]="chatWindowRef.participant.displayName" [innerText]="chatWindowRef.participant.displayName" (click)="onDisplayNameClick(self);"></strong>
-			<span
+			<span *ngIf="self.config.showAvailabilityStatus"
 				[ngClass]="{'ng-chat-participant-status': true, 'online': chatWindowRef.participant.status == ChatParticipantStatus.Online, 'busy': chatWindowRef.participant.status == ChatParticipantStatus.Busy, 'away': chatWindowRef.participant.status == ChatParticipantStatus.Away, 'offline': chatWindowRef.participant.status == ChatParticipantStatus.Offline}"
-				[title]="self.chatParticipantStatusDescriptor(chatWindowRef.participant.status, self.localization)"></span>
-			<span *ngIf="self.unreadMessagesTotal(chatWindowRef).length > 0"
-				class="ng-chat-unread-messages-count unread-messages-counter-container primary-text" [innerText]="self.unreadMessagesTotal(chatWindowRef)"></span>
+				[title]="self.chatParticipantStatusDescriptor(chatWindowRef.participant.status)"></span>
+			<!-- <span *ngIf="self.unreadMessagesTotal(chatWindowRef).length > 0"
+				class="ng-chat-unread-messages-count unread-messages-counter-container primary-text" [innerText]="self.unreadMessagesTotal(chatWindowRef)"></span> -->
 		</div>
 		<i class="pi pi-chevron-{{chatWindowRef.isCollapsed ? 'up' : 'down'}} toggle-chat-window" (click)="self.onChatWindowClicked(chatWindowRef)"></i>
 		<i class="pi pi-times close-chat-window" (click)="self.onCloseChatWindow()"></i>

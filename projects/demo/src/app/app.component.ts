@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ChatParticipantStatus, ChatParticipantType } from 'hss-chat';
-import { ChatAdapter } from 'projects/hss-chat/src/public-api';
+import { ChatAdapter, HSSChatConfig } from 'projects/hss-chat/src/public-api';
 import { DemoAdapterPagedHistory } from './demo-adapter-paged-history';
 
 @Component({
@@ -13,8 +13,13 @@ export class AppComponent {
   ChatParticipantType = ChatParticipantType;
   ChatParticipantStatus = ChatParticipantStatus;
   // chatParticipantStatusDescriptor = chatParticipantStatusDescriptor;
-
-  public adapter: ChatAdapter = new DemoAdapterPagedHistory();
+  config: HSSChatConfig = {
+    showAvailabilityStatus: false
+  }
+  isDisabled = false;
+  adapter: ChatAdapter = new DemoAdapterPagedHistory();
+  constructor() {
+  }
 
   public messageSeen(event: any) {
     console.log(event);
