@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "local-link": "cd dist/hss-chat && npm unlink && cd ../../ && npm run build && cd dist/hss-chat && npm link"
+    "local-link": "cd dist/hss-chat && npm unlink && cd ../../ && rm -R dist/hss-chat && npm run build && cd dist/hss-chat && npm link"
   },
   "private": true,
   "dependencies": {
