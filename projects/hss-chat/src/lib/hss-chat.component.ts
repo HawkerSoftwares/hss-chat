@@ -326,12 +326,15 @@ export class NgChat implements OnInit, IChatController {
             const messages = window.messages;
             this.adapter.getRecentMessages(window.participant.id, messages[(messages.length > 1) ? (messages.length - 1) : (messages.length ? messages[0] : null)])
             .pipe(
-                map((result: Message[]) => {
-                    if(window.messages.length > 0) {
-                        window.messages = [
-                            ...window.messages,
-                            ...result
-                        ];
+                map((messages: Message[]) => {
+                    if(messages.length > 0) {
+                        messages.map(message => {
+                            this.onMessageReceived(window.participant, message);
+                        });
+                        // window.messages = [
+                        //     ...window.messages,
+                        //     ...result
+                        // ];
                         this.addDateGroupflag(window.messages);
                     }
                 })
@@ -368,9 +371,7 @@ export class NgChat implements OnInit, IChatController {
 
         if (window.hasFocus || forceMarkMessagesAsSeen)
         {
-            const unseenMessages = messages.filter(m => !m.dateSeen);
-
-            this.markMessagesAsRead(unseenMessages);
+            this.markMessagesAsRead(messages);
         }
     }
     
@@ -417,12 +418,12 @@ export class NgChat implements OnInit, IChatController {
 
             if (!chatWindow[1] || !this.historyEnabled){
                 chatWindow[0].messages.push(message);
-
-                this.scrollChatWindow(chatWindow[0], ScrollDirection.Bottom);
-
-                if (chatWindow[0].hasFocus)
-                {
-                    this.markMessagesAsRead([message]);
+                const chatWindowInst = this.getChatWindowComponentInstance(chatWindow[0]);
+                const hasScrolledChatWindow = chatWindowInst.hasScrolledChatWindow();
+                console.log(" window.messages  == =", chatWindow[0])
+                if (!hasScrolledChatWindow) {
+                    this.markMessagesAsRead(chatWindow[0].messages, chatWindow[0]);
+                    this.scrollChatWindow(chatWindow[0], ScrollDirection.Bottom);
                 }
             }
 
@@ -546,14 +547,19 @@ export class NgChat implements OnInit, IChatController {
     }
 
     // Marks all messages provided as read with the current time.
-    markMessagesAsRead(messages: Message[]): void
+    markMessagesAsRead(messages: Message[], window?: Window): void
     {
         const currentDate = new Date();
-
+        const unseenMessages = [];
         messages.forEach((msg)=>{
-            msg.dateSeen = currentDate;
+            if (!msg.dateSeen) {
+                unseenMessages.push(msg);
+                msg.dateSeen = currentDate;
+            }
         });
-
+        if (window) {
+            window.messages = messages;
+        }
         this.onMessagesSeen.emit(messages);
     }
 

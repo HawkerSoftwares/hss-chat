@@ -176,10 +176,19 @@ export class NgChatWindowComponent implements OnInit {
             setTimeout(() => {
                 if (this.chatMessages){
                     let element = this.chatMessages.nativeElement;
-                    let position = ( direction === ScrollDirection.Top ) ? 0 : element.scrollHeight;
+                    let position = ( direction === ScrollDirection.Top ) ? 0 : element.scrollHeight + 1000;
                     element.scrollTop = position;
                 }
             }); 
+        }
+    }
+
+    hasScrolledChatWindow(): boolean {
+        if (!this.window.isCollapsed) {
+            let element: HTMLDivElement = this.chatMessages.nativeElement;
+            return ((element.scrollHeight - element.scrollTop) > 350);
+        } else {
+            return true;
         }
     }
 
@@ -331,6 +340,10 @@ export class NgChatWindowComponent implements OnInit {
 
     addEmoji({ emoji }, window: Window) {
         window.newMessage = `${window.newMessage ? window.newMessage : ''}${emoji.native}`;
+    }
+
+    scrollDownToUnseenMessages() {
+        this.scrollChatWindow(this.window, ScrollDirection.Bottom);
     }
     
 }
