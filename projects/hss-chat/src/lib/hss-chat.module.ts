@@ -5,7 +5,6 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { NgChat } from './hss-chat.component';
 import { EmojifyPipe } from './pipes/emojify.pipe';
-import { LinkfyPipe } from './pipes/linkfy.pipe';
 import { SanitizePipe } from './pipes/sanitize.pipe';
 import { GroupMessageDisplayNamePipe } from './pipes/group-message-display-name.pipe';
 import { NgChatOptionsComponent } from './components/ng-chat-options/ng-chat-options.component';
@@ -15,13 +14,13 @@ import { NGPrimeModule } from './modules/ngp.module';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { NgChatMessageTemplateComponent } from './components/ng-chat-message-template/ng-chat-message-template.component';
 import { NgChatMessageSettingComponent } from './components/ng-chat-message-setting/ng-chat-message-setting.component';
+import { LinkyModule } from 'ngx-linky';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, HttpClientModule, NGPrimeModule, PickerModule ],
+  imports: [CommonModule, FormsModule, HttpClientModule, NGPrimeModule, PickerModule, LinkyModule ],
   declarations: [
     NgChat, 
     EmojifyPipe, 
-    LinkfyPipe, 
     SanitizePipe, 
     GroupMessageDisplayNamePipe, 
     NgChatOptionsComponent, 

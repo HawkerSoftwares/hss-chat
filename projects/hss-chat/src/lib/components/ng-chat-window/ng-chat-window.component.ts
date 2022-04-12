@@ -41,9 +41,6 @@ export class NgChatWindowComponent implements OnInit {
     @Input()    
     public emojisEnabled: boolean = true;
 
-    @Input()    
-    public linkfyEnabled: boolean = true;
-
     @Input()
     public showMessageDate: boolean = true;
 
@@ -343,7 +340,7 @@ export class NgChatWindowComponent implements OnInit {
     }
 
     scrollDownToUnseenMessages() {
-        this.scrollChatWindow(this.window, ScrollDirection.Bottom);
+        document.getElementById('unreadMessages').scrollIntoView();
     }
     
 }

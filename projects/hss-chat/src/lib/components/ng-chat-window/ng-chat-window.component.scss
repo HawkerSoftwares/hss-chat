@@ -91,11 +91,24 @@
 		overflow-y: auto;
 		overflow-x: hidden;
 		display: grid;
+		scroll-behavior: smooth;
 		.messages-date {
 			text-align: center;
 			padding: 8px;
 			font-weight: bold;
 			font-size: .8em;
+		}
+		.unread-messages {
+			text-align: center;
+			width: 80%;
+			margin: auto;
+			background: #fff;
+			box-shadow: 0px 0px 2px 0px #cbc6c6;
+			margin-top: 5px;
+			margin-bottom: 10px;
+			border-radius: 10px;
+			font-size: 12px;
+			padding: 2px;
 		}
 		.ng-chat-message {
 			clear: both;

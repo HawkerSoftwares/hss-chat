@@ -34,7 +34,7 @@
 				</div>
 			</ng-container>
 		</div>
-		<span class="message-text" [innerHtml]="message.message | emojify:emojisEnabled | linkfy:linkfyEnabled"></span>
+		<span class="message-text" [innerHtml]="message.message | emojify:emojisEnabled | linky"></span>
 		<ng-container *ngTemplateOutlet="msgFooterTemplate; context: {message}"></ng-container>
 	</div>
 	<p-dialog *ngIf="viewImagesOnFullScreen" [(visible)]="viewImagesOnFullScreen" [modal]="true" [style]="{width: '100vw', height: '100vh'}"

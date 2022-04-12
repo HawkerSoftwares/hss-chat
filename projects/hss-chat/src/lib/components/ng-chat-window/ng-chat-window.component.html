@@ -9,10 +9,14 @@
 				(click)="fetchMessageHistory(window)" [innerText]="config.participantChat?.loadMoreContentText"></a>
 		</div>
 		<ng-container *ngFor="let message of window.messages; let i = index">
+
 			<div *ngIf="message.newDateStarted && !message.formattedDate" class="messages-date"
 				[innerText]="message.dateSent | date:'longDate'"></div>
 			<div *ngIf="message.newDateStarted && message.formattedDate" class="messages-date"
 				[innerText]="message.formattedDate"></div>
+
+			<div  id="unreadMessages" class="unread-messages" *ngIf="i > 0 && !message.dateSeen && window.messages[i - 1].dateSeen && unreadMessagesTotal(window).length > 0"> {{unreadMessagesTotal(window)}} Unread messages</div>
+
 			<div [ngClass]="{'ng-chat-message': true, 'ng-chat-message-received': message.fromId != userId}">
 				<ng-chat-message-template [message]="message" [showMessageDate]="showMessageDate"
 					[messageDatePipeFormat]="messageDatePipeFormat" [messageTemplate]="messageTemplate"
@@ -70,7 +74,7 @@
 			<span *ngIf="self.unreadMessagesTotal(chatWindowRef).length > 0"
 				class="ng-chat-unread-messages-count unread-messages-counter-container primary-text" (click)="scrollDownToUnseenMessages()">
 				{{ self.unreadMessagesTotal(chatWindowRef) }}
-				<i class="pi pi-arrow-down"></i>
+				<i class="pi pi-arrow-down" style="font-size: 0.6rem;"></i>
 			</span>
 		</div>
 		<i class="pi pi-chevron-{{chatWindowRef.isCollapsed ? 'up' : 'down'}} toggle-chat-window" (click)="self.onChatWindowClicked(chatWindowRef)"></i>
