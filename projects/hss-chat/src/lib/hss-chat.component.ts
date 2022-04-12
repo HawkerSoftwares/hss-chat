@@ -95,9 +95,6 @@ export class NgChat implements OnInit, IChatController {
     public emojisEnabled: boolean = true;
 
     @Input()
-    public linkfyEnabled: boolean = true;
-
-    @Input()
     public audioEnabled: boolean = true;
 
     @Input()
