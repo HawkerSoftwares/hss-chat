@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { ChatParticipantStatus, ChatParticipantType } from 'hss-chat';
+import { ChatParticipantStatus, ChatParticipantType, DEFAULT_CONFIG } from 'hss-chat';
 import { ChatAdapter, HSSChatConfig } from 'projects/hss-chat/src/public-api';
+import { BehaviorSubject } from 'rxjs';
 import { DemoAdapterPagedHistory } from './demo-adapter-paged-history';
 
 @Component({
@@ -13,20 +14,27 @@ export class AppComponent {
   ChatParticipantType = ChatParticipantType;
   ChatParticipantStatus = ChatParticipantStatus;
   // chatParticipantStatusDescriptor = chatParticipantStatusDescriptor;
-  config: HSSChatConfig = {
-    showAvailabilityStatus: false
-  }
+  hssChatConfig: BehaviorSubject<HSSChatConfig> = new BehaviorSubject<HSSChatConfig>(DEFAULT_CONFIG);
   isDisabled = false;
   adapter: ChatAdapter = new DemoAdapterPagedHistory();
   constructor() {
   }
 
-  public messageSeen(event: any) {
+  
+  updateConfig() {
+    this.hssChatConfig.next({
+      showAvailabilityStatus: false,
+      preDefinedMessages: ['Hi there, just type any message bellow to test this Angular module.', 'Option 2', 'Option 3', 'Option 4', 'Option 5']
+    })
+  }
+  
+  
+  messageSeen(event: any) {
     console.log(event);
   }
 
-  onDisplayNameClick(self) {
-    console.log(self.userId);
+  onDisplayNameClick(user) {
+    console.log(user);
   }
 
 }

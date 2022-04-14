@@ -14,6 +14,7 @@ import { chatParticipantStatusDescriptor } from '../../core/chat-participant-sta
 import { ChatAdapter } from '../../core/chat-adapter';
 import { HssChatService } from '../../service/hss-chat.service';
 import { HSSChatConfig } from '../../core/chat.config';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
     selector: 'ng-chat-window',
@@ -23,6 +24,7 @@ import { HSSChatConfig } from '../../core/chat.config';
 })
 export class NgChatWindowComponent implements OnInit {
     emojiPopupDisplay: boolean;
+    preDefineMessagesPopup: boolean;
     @Input() config: HSSChatConfig;
     @Input() messageTemplate: TemplateRef<any>;
     @Input() chatWindowHeaderTemplate: TemplateRef<any>;
@@ -341,6 +343,15 @@ export class NgChatWindowComponent implements OnInit {
 
     scrollDownToUnseenMessages() {
         document.getElementById('unreadMessages').scrollIntoView();
+    }
+
+    togglePreDefineMsgsPopup(event) {
+        this.preDefineMessagesPopup = !this.preDefineMessagesPopup;
+        this.emojiPopupDisplay = false;
+        if (event && event.value) {
+            this.window.newMessage = event.value;
+            this.onChatInputTyped({keyCode: 13}, this.window);
+        }
     }
     
 }

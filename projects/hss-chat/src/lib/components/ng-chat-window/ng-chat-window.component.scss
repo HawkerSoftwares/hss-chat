@@ -71,6 +71,30 @@
 				}
 			}
 		}
+		.predefined-messages-block {
+			position: relative;
+			cursor: pointer;
+			display: flex;
+			&> span{
+			  display: flex;
+			  padding: 5px 5px 5px 1px;
+			  i {
+				  margin: auto;
+			  }
+			}
+			.predefined-messages-dropdown-content {
+				z-index: 99;
+				left: unset!important;
+				right: -25px!important;
+				bottom: 37px!important;
+				position: absolute;
+				min-width: 155px;
+				max-width: 300px;
+				width: max-content;
+				max-height: 360px;
+				overflow-y: auto;
+			}
+		}
 	}
 	.ng-chat-load-history {
 		height: 30px;
@@ -191,6 +215,12 @@
 				padding: 0 10px;
 				line-height: 22px;
 				height: 22px;
+				display: flex;
+				i.pi {
+					font-size: 0.6rem;
+					margin: auto;
+					margin-left: 2px;
+				}
 			}
 		}
 	}
@@ -198,6 +228,12 @@
 
 .ng-chat-window-collapsed {
 	height: 30px !important;
+}
+
+.predefined-messages-dropdown-item .p-listbox-item {
+	padding: 8px 5px!important;
+    border-bottom: 1px solid #efefef !important;
+    font-size: .9em;
 }
 
 @media only screen and (max-width: 581px) {

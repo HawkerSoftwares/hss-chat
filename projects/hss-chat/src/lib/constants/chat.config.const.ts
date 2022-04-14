@@ -8,7 +8,7 @@ export const DEFAULT_CONFIG: HSSChatConfig = {
     },
     participants: {
       polling: true,
-      interval: 5000,
+      interval: 30000,
       pageSize: 10,
       searchInputPlaceholder: 'Search',
       loadMoreContentText: 'Load more',
@@ -16,7 +16,7 @@ export const DEFAULT_CONFIG: HSSChatConfig = {
     },
     participantChat: {
       polling: true,
-      interval: 5000,
+      interval: 30000,
       pageSize: 10,
       inputPlaceholder: 'Type a message',
       loadMoreContentText: 'Load older messages'

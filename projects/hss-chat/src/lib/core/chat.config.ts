@@ -17,7 +17,8 @@ export interface HSSParticipantChatWindowConfig {
 }
 
 export interface HSSChatConfig {
-    showAvailabilityStatus: boolean;
+    showAvailabilityStatus?: boolean;
+    preDefinedMessages?: string[];
     notification?: {
         title: string,
         icon: string;

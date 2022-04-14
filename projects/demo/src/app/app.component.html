@@ -1,10 +1,14 @@
 
 <ng-chat *ngIf="adapter" [adapter]="adapter" [userId]="999" [historyEnabled]="true" [hideFriendsList]="false"
   (onMessagesSeen)="messageSeen($event)" [isViewportOnMobileEnabled]="true" [emojisEnabled]="true" 
-  [config]="config" [isDisabled]="isDisabled">
+  [hssChatConfig]="hssChatConfig" [isDisabled]="isDisabled">
 </ng-chat>
 
-<button (click)="isDisabled = !isDisabled;">Toggle</button>
+<button (click)="isDisabled = !isDisabled;">Toggle Chat</button>
+
+
+<button (click)="updateConfig();">Update Config</button>
+
 <!-- [chatWindowHeaderTemplate]="chatWindowHeaderTemplate" -->
 
 <!-- [messageTemplate]="messageTemplate" -->
