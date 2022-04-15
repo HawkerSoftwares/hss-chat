@@ -26,6 +26,7 @@ import { NgChatFriendsListComponent } from './components/ng-chat-friends-list/ng
 import { HssChatService } from './service/hss-chat.service';
 import { DEFAULT_CONFIG } from './constants/chat.config.const';
 import { HSSChatConfig } from './core/chat.config';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
     selector: 'ng-chat',
@@ -42,8 +43,8 @@ import { HSSChatConfig } from './core/chat.config';
 })
 
 export class NgChat implements OnInit, IChatController {
-    @Input() config: HSSChatConfig = DEFAULT_CONFIG;
-
+    @Input() hssChatConfig: BehaviorSubject<HSSChatConfig>;
+    config: HSSChatConfig = DEFAULT_CONFIG; 
     // Exposes enums for the ng-template
     public ChatParticipantType = ChatParticipantType;
     public ChatParticipantStatus = ChatParticipantStatus;
@@ -193,14 +194,19 @@ export class NgChat implements OnInit, IChatController {
     @ViewChild(NgChatFriendsListComponent) viewChatParticipants: NgChatFriendsListComponent;
 
     constructor(private _httpClient: HttpClient, private hssChatService: HssChatService) {
+        
     }
 
     ngOnInit() {
-        if (this.config) {
-            this.config = {
-                ...DEFAULT_CONFIG,
-                ...this.config
-            };
+        if (this.hssChatConfig) {
+            this.hssChatConfig.subscribe( cnfg => {
+                if (this.config) {
+                    this.config = {
+                        ...DEFAULT_CONFIG,
+                        ...cnfg
+                    };
+                }
+            });
         }
         this.onResize();
         this.bootstrapChat();
@@ -417,7 +423,6 @@ export class NgChat implements OnInit, IChatController {
                 chatWindow[0].messages.push(message);
                 const chatWindowInst = this.getChatWindowComponentInstance(chatWindow[0]);
                 const hasScrolledChatWindow = chatWindowInst.hasScrolledChatWindow();
-                console.log(" window.messages  == =", chatWindow[0])
                 if (!hasScrolledChatWindow) {
                     this.markMessagesAsRead(chatWindow[0].messages, chatWindow[0]);
                     this.scrollChatWindow(chatWindow[0], ScrollDirection.Bottom);
