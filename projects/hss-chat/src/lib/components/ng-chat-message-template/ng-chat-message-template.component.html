@@ -1,7 +1,7 @@
-<ng-container *ngTemplateOutlet="messageTemplate ? messageTemplate : defaultMessageTemplate; context: {message}">
+<ng-container *ngTemplateOutlet="messageTemplate ? messageTemplate : defaultMessageTemplate; context: {message, self: this}">
 </ng-container>
 
-<ng-template #defaultMessageTemplate let-message="message">
+<ng-template #defaultMessageTemplate let-message="message" let-self="self">
 	
 	<div [ngClass]="{'sent-chat-message-container': message.fromId == userId, 'received-chat-message-container': message.fromId != userId}" 
 	    (mouseenter)="showChatMessageSetting = true;" (mouseleave)="showChatMessageSetting = false;">
@@ -22,7 +22,7 @@
 						</div>
 						<div class="file-details">
 							<a [attr.href]="media?.downloadUrl" target="_blank" rel="noopener noreferrer"
-								(click)="markMessagesAsRead([message])" download>
+								(click)="markMessagesAsRead ? markMessagesAsRead([message]) : ''" download>
 								<span class="file-message-title" [attr.title]="media.title">{{media.title}}</span>
 							</a>
 							<div *ngIf="media?.fileSizeInBytes" class="file-message-size">

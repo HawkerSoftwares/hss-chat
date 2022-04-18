@@ -14,7 +14,6 @@ import { chatParticipantStatusDescriptor } from '../../core/chat-participant-sta
 import { ChatAdapter } from '../../core/chat-adapter';
 import { HssChatService } from '../../service/hss-chat.service';
 import { HSSChatConfig } from '../../core/chat.config';
-import { BehaviorSubject } from 'rxjs';
 
 @Component({
     selector: 'ng-chat-window',
