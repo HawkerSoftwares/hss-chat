@@ -12,7 +12,6 @@ import { IChatParticipant } from "../../core/chat-participant";
 import { MessageCounter } from "../../core/message-counter";
 import { chatParticipantStatusDescriptor } from '../../core/chat-participant-status-descriptor';
 import { ChatAdapter } from '../../core/chat-adapter';
-import { HssChatService } from '../../service/hss-chat.service';
 import { HSSChatConfig } from '../../core/chat.config';
 
 @Component({
@@ -85,7 +84,7 @@ export class NgChatWindowComponent implements OnInit {
     public ChatParticipantStatus = ChatParticipantStatus;
     public chatParticipantStatusDescriptor = chatParticipantStatusDescriptor;
 
-    constructor(private hssChatService: HssChatService) { 
+    constructor() {
     }
 
     ngOnInit(): void {
@@ -345,12 +344,26 @@ export class NgChatWindowComponent implements OnInit {
     }
 
     togglePreDefineMsgsPopup(event) {
-        this.preDefineMessagesPopup = !this.preDefineMessagesPopup;
-        this.emojiPopupDisplay = false;
         if (event && event.value) {
             this.window.newMessage = event.value;
             this.onChatInputTyped({keyCode: 13}, this.window);
+            this._togglePredefinedMessages();
+        } else if(this.isPredefinedMessagesEnabled()) {
+            this._togglePredefinedMessages();
+            this.adapter.getPresetMessages(this.window.participant.id).subscribe(texts => {
+                this.window.preDefinedMessages = texts;
+            });
+        } else {
+            this._togglePredefinedMessages();
         }
     }
-    
+
+    isPredefinedMessagesEnabled() {
+        return !Array.isArray(this.window.preDefinedMessages) || this.window.preDefinedMessages.length<1;
+    }
+
+    _togglePredefinedMessages(){
+        this.preDefineMessagesPopup = !this.preDefineMessagesPopup;
+        this.emojiPopupDisplay = false;
+    }
 }

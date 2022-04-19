@@ -495,6 +495,11 @@ export class NgChat implements OnInit, IChatController {
 
             const newChatWindow: Window = new Window(participant, this.historyEnabled, collapseWindow);
 
+            // Set PresetTexts if HSSParticipantChatWindowConfig.preDefinedMessagesEnabled=false
+            if(!this.config.participantChat.preDefinedMessagesEnabled) {
+                newChatWindow.preDefinedMessages = this.config.preDefinedMessages;
+            }
+
             // Loads the chat history via an RxJs Observable
             if (this.historyEnabled)
             {

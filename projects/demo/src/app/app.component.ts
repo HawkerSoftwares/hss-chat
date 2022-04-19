@@ -13,7 +13,6 @@ export class AppComponent {
   title = 'HSS Chat';
   ChatParticipantType = ChatParticipantType;
   ChatParticipantStatus = ChatParticipantStatus;
-  // chatParticipantStatusDescriptor = chatParticipantStatusDescriptor;
   hssChatConfig: BehaviorSubject<HSSChatConfig> = new BehaviorSubject<HSSChatConfig>(DEFAULT_CONFIG);
   isDisabled = false;
   adapter: ChatAdapter = new DemoAdapterPagedHistory();
@@ -24,7 +23,11 @@ export class AppComponent {
   updateConfig() {
     this.hssChatConfig.next({
       showAvailabilityStatus: false,
-      preDefinedMessages: ['Hi there, just type any message bellow to test this Angular module.', 'Option 2', 'Option 3', 'Option 4', 'Option 5']
+      // participantChat: {
+      //   ...DEFAULT_CONFIG.participantChat,
+      //   preDefinedMessagesEnabled: true
+      // }
+      preDefinedMessages: ['Preset Text 1', 'Preset Text 2', 'Preset Text 3']
     })
   }
   

@@ -173,5 +173,9 @@ export class DemoAdapterPagedHistory extends PagedHistoryChatAdapter implements 
         this.listFriends().subscribe(response => {
             this.onFriendsListChanged(response);
         });
-    }   
+    }
+
+    public override getPresetMessages(destinataryId: any): Observable<string[]> {
+        return of(['Preset Text 1 thru adapter', 'Preset Text 2 thru adapter', 'Preset Text 3 thru adapter']).pipe(delay(5000));
+    }
 }

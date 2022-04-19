@@ -44,13 +44,17 @@
 			<div *ngIf="isUploadingFile(window)" class="loader"></div>
 		</ng-container>
 		<div class="predefined-messages-block custom-dropdown"
-		*ngIf="config.preDefinedMessages && config.preDefinedMessages.length">
+			*ngIf="(window.preDefinedMessages && window.preDefinedMessages.length) || config.participantChat.preDefinedMessagesEnabled">
 			<span title="Messages" (click)="togglePreDefineMsgsPopup();">
 				<i class="pi pi-list"></i>
 			</span>
 			<div class="predefined-messages-dropdown-content" *ngIf="preDefineMessagesPopup">
-				<p-listbox [options]="config.preDefinedMessages" listStyleClass="predefined-messages-dropdown-item"
-				(onClick)="togglePreDefineMsgsPopup($event);"></p-listbox>
+				<p-listbox *ngIf="window.preDefinedMessages && window.preDefinedMessages.length" [options]="window.preDefinedMessages" listStyleClass="predefined-messages-dropdown-item"
+					(onClick)="togglePreDefineMsgsPopup($event);">
+				</p-listbox>
+				<div *ngIf="!window.preDefinedMessages || window.preDefinedMessages.length==0" class="ng-chat-loading-wrapper">
+					<div class="loader">Loading...</div>
+				</div>
 			</div>
 		</div>
 		<div class="emoji-block custom-dropdown" [class.show]="emojiPopupDisplay" *ngIf="emojisEnabled">

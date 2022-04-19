@@ -96,6 +96,15 @@
 				max-height: 360px;
 				overflow-y: auto;
 				box-shadow: 0px 0px 0px #888, 0px -2px 8px #888;
+				background-color: #fff;
+				min-height: 40px;
+
+				.loader {
+					position: absolute;
+					right: 0;
+					left: 0;
+					top: 10px;
+				}
 			}
 		}
 	}

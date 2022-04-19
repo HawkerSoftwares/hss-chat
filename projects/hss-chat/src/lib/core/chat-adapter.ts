@@ -28,6 +28,11 @@ export abstract class ChatAdapter
         console.error('Polling not supported yet. Please override "getRecentMessages" in your ChatAdapter.');
         return of([]).pipe(delay(500));
     };
+
+    public getPresetMessages(destinataryId: any): Observable<string[]> {
+        console.error('Preset Messages not supported yet. Please override "getPresetMessages" in your ChatAdapter.');
+        return of([]).pipe(delay(500));
+    };
     
     // Event handlers
     /** @internal */

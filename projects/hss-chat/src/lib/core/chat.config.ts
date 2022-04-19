@@ -14,6 +14,7 @@ export interface HSSParticipantChatWindowConfig {
     pageSize?: number;
     inputPlaceholder?: string;
     loadMoreContentText?: string;
+    preDefinedMessagesEnabled?: boolean;
 }
 
 export interface HSSChatConfig {
