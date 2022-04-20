@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ViewEncapsulation, ViewChild, ElementRef, TemplateRef, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewEncapsulation, ViewChild, ElementRef, TemplateRef, OnInit, OnChanges, DoCheck, SimpleChanges } from '@angular/core';
 
 import { Message } from "../../core/message";
 import { Window } from "../../core/window";
@@ -20,7 +20,8 @@ import { HSSChatConfig } from '../../core/chat.config';
     styleUrls: ['./ng-chat-window.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class NgChatWindowComponent implements OnInit {
+export class NgChatWindowComponent implements OnInit, OnChanges, DoCheck {
+    windowPollingRef = null;
     emojiPopupDisplay: boolean;
     preDefineMessagesPopup: boolean;
     @Input() config: HSSChatConfig;
@@ -89,6 +90,20 @@ export class NgChatWindowComponent implements OnInit {
 
     ngOnInit(): void {
         this.fetchRecentMessages();
+    }
+
+    ngDoCheck(): void {
+        
+    }
+
+    ngOnChanges(changes: any): void {
+        if (changes.config) {
+            if (changes.config.currentValue.participantChat.polling && !this.windowPollingRef) {
+                this.fetchRecentMessages();
+            } else if (this.windowPollingRef) {
+                window.clearInterval(this.windowPollingRef);
+            }
+        }
     }
 
     defaultWindowOptions(currentWindow: Window): IChatOption[]
@@ -331,7 +346,7 @@ export class NgChatWindowComponent implements OnInit {
     fetchRecentMessages(): void {
         if (this.config.participantChat.polling){
             // Setting a long poll interval to update the friends list
-            window.setInterval(() => this.onLoadHistoryTriggered.emit({window: this.window, polling: true}), this.config.participantChat.interval);
+            this.windowPollingRef = window.setInterval(() => this.onLoadHistoryTriggered.emit({window: this.window, polling: true}), this.config.participantChat.interval);
         }
     }
 
