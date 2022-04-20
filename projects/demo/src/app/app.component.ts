@@ -23,10 +23,15 @@ export class AppComponent {
   updateConfig() {
     this.hssChatConfig.next({
       showAvailabilityStatus: false,
-      // participantChat: {
-      //   ...DEFAULT_CONFIG.participantChat,
-      //   preDefinedMessagesEnabled: true
-      // }
+      participantChat: {
+        ...DEFAULT_CONFIG.participantChat,
+        preDefinedMessagesEnabled: true,
+        polling: false
+      },
+      participants: {
+        ...DEFAULT_CONFIG.participants,
+        polling: false
+      },
       preDefinedMessages: ['Preset Text 1', 'Preset Text 2', 'Preset Text 3']
     })
   }

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ViewEncapsulation, ViewChild, ElementRef, TemplateRef, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewEncapsulation, ViewChild, ElementRef, TemplateRef, OnInit, OnChanges, DoCheck, SimpleChanges } from '@angular/core';
 
 import { Message } from "../../core/message";
 import { Window } from "../../core/window";
@@ -13,6 +13,7 @@ import { MessageCounter } from "../../core/message-counter";
 import { chatParticipantStatusDescriptor } from '../../core/chat-participant-status-descriptor';
 import { ChatAdapter } from '../../core/chat-adapter';
 import { HSSChatConfig } from '../../core/chat.config';
+import { interval, takeWhile, timer } from 'rxjs';
 
 @Component({
     selector: 'ng-chat-window',
@@ -20,7 +21,7 @@ import { HSSChatConfig } from '../../core/chat.config';
     styleUrls: ['./ng-chat-window.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class NgChatWindowComponent implements OnInit {
+export class NgChatWindowComponent implements OnInit, OnChanges {
     emojiPopupDisplay: boolean;
     preDefineMessagesPopup: boolean;
     @Input() config: HSSChatConfig;
@@ -78,7 +79,7 @@ export class NgChatWindowComponent implements OnInit {
 
     // File upload state
     public fileUploadersInUse: string[] = []; // Id bucket of uploaders in use
-
+    
     // Exposes enums and functions for the ng-template
     public ChatParticipantType = ChatParticipantType;
     public ChatParticipantStatus = ChatParticipantStatus;
@@ -90,6 +91,8 @@ export class NgChatWindowComponent implements OnInit {
     ngOnInit(): void {
         this.fetchRecentMessages();
     }
+
+    ngOnChanges(changes: any): void {}
 
     defaultWindowOptions(currentWindow: Window): IChatOption[]
     {
@@ -329,10 +332,9 @@ export class NgChatWindowComponent implements OnInit {
 
     
     fetchRecentMessages(): void {
-        if (this.config.participantChat.polling){
-            // Setting a long poll interval to update the friends list
-            window.setInterval(() => this.onLoadHistoryTriggered.emit({window: this.window, polling: true}), this.config.participantChat.interval);
-        }
+        interval(this.config.participantChat.interval)
+            .pipe(takeWhile(i => this.config.participantChat.polling))
+            .subscribe(n =>  this.onLoadHistoryTriggered.emit({window: this.window, polling: true}));
     }
 
     addEmoji({ emoji }, window: Window) {
@@ -348,18 +350,18 @@ export class NgChatWindowComponent implements OnInit {
             this.window.newMessage = event.value;
             this.onChatInputTyped({keyCode: 13}, this.window);
             this._togglePredefinedMessages();
-        } else if(this.isPredefinedMessagesEnabled()) {
-            this._togglePredefinedMessages();
-            this.adapter.getPresetMessages(this.window.participant.id).subscribe(texts => {
-                this.window.preDefinedMessages = texts;
-            });
         } else {
             this._togglePredefinedMessages();
+            if(this.preDefineMessagesPopup) {
+                if (this.config.preDefinedMessages && this.config.preDefinedMessages.length) {
+                    this.window.preDefinedMessages = this.config.preDefinedMessages;
+                } else if (!this.window.preDefinedMessages || !this.window.preDefinedMessages?.length) {
+                    this.adapter.getPresetMessages(this.window.participant.id).subscribe(texts => {
+                        this.window.preDefinedMessages = texts ? texts : [];
+                    });
+                }
+            }
         }
-    }
-
-    isPredefinedMessagesEnabled() {
-        return !Array.isArray(this.window.preDefinedMessages) || this.window.preDefinedMessages.length<1;
     }
 
     _togglePredefinedMessages(){

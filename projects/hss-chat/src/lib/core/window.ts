@@ -21,7 +21,7 @@ export class Window
     public participant: IChatParticipant;    
     public messages: Message[] = [];
     public newMessage?: string = "";
-    public preDefinedMessages?: string[];
+    public preDefinedMessages?: string[] = [];
 
     // UI Behavior properties
     public isCollapsed?: boolean = false; 
