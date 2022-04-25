@@ -22,6 +22,7 @@ export * from './lib/core/message-type.enum';
 export * from './lib/core/file-upload-adapter';
 export * from './lib/core/chat-participant-status-descriptor';
 export * from './lib/constants/chat.config.const';
+export * from './lib/service/hss-chat.service';
 export * from './lib/hss-chat.component';
 
 export * from './lib/hss-chat.module';

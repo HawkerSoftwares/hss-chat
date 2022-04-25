@@ -9,7 +9,7 @@ import { ParticipantResponse } from "../../core/participant-response";
 import { MessageCounter } from "../../core/message-counter";
 import { chatParticipantStatusDescriptor } from '../../core/chat-participant-status-descriptor';
 import { ChatAdapter } from '../../core/chat-adapter';
-import { debounceTime, distinctUntilChanged, fromEvent, interval, map, Observable, Subject, Subscription, switchMap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, fromEvent, interval, map, Observable, Subscription, switchMap } from 'rxjs';
 import { ScrollDirection } from '../../core/scroll-direction.enum';
 import { ParticipantMetadata } from '../../core/participant-metadata';
 import { HssChatService } from '../../service/hss-chat.service';
@@ -26,7 +26,7 @@ export class NgChatFriendsListComponent implements OnInit, OnChanges, OnDestroy,
     // UI Behavior properties
     public isLoadingMore: boolean = true;
     public hasMoreParticipants: boolean = false;
-    public page: number = 1; 
+    public page: number = 1;
 
     @Input()
     public participantsInteractedWith: IChatParticipant[] = [];
@@ -74,6 +74,7 @@ export class NgChatFriendsListComponent implements OnInit, OnChanges, OnDestroy,
     public participantsResponse: ParticipantResponse[] = [];
     public searchInput: string = '';
     private searchSubscription: Subscription;
+    private refreshSubscription: Subscription;
     public participantsMeta: Map<number, ParticipantMetadata> = new Map();
     private isBootstrapping: boolean;
     private isResetParticipantsList: boolean;
@@ -87,20 +88,23 @@ export class NgChatFriendsListComponent implements OnInit, OnChanges, OnDestroy,
 
     ngOnInit() {
         this.activateFriendListFetch();
+        this.refreshSubscription = this.hssChatService._refreshParticipants$.subscribe(() => {
+            this.clearAndSearchParticipants().subscribe();
+        });
     }
 
     ngAfterViewInit(): void {
         const searchBox = document.getElementById('ng-chat-search_friend') as HTMLInputElement;
-        this.searchSubscription = fromEvent(searchBox, 'input').pipe(
+        this.searchSubscription = fromEvent(searchBox, 'input')
+        .pipe(
             map(e => (e.target as HTMLInputElement).value),
             debounceTime(1000),
             distinctUntilChanged(),
             switchMap((search) => {
-                this.page = 1;
-                this.resetParticipantsList();
-                return this.fetchMoreParticipants();
+                return this.clearAndSearchParticipants();
             })
-        ).subscribe();
+        )
+        .subscribe();
     }
 
     resetParticipantsList() {
@@ -122,22 +126,26 @@ export class NgChatFriendsListComponent implements OnInit, OnChanges, OnDestroy,
 
     ngOnDestroy(): void {
         this.searchSubscription.unsubscribe();
+        this.refreshSubscription.unsubscribe();
     }
 
-    isUserSelectedFromFriendsList(user: User) : boolean
-    {
-       return (this.selectedUsersFromFriendsList.filter(item => item.id == user.id)).length > 0
+    clearAndSearchParticipants() {
+        this.page = 1;
+        this.resetParticipantsList();
+        return this.fetchMoreParticipants();
     }
 
-    unreadMessagesTotalByParticipant(participant: IChatParticipant): string
-    {
+    isUserSelectedFromFriendsList(user: User): boolean {
+        return (this.selectedUsersFromFriendsList.filter(item => item.id == user.id)).length > 0
+    }
+
+    unreadMessagesTotalByParticipant(participant: IChatParticipant): string {
         let openedWindow = this.windows.find(x => x.participant.id == participant.id);
 
-        if (openedWindow){
+        if (openedWindow) {
             return MessageCounter.unreadMessagesTotal(openedWindow, this.userId);
         }
-        else
-        {
+        else {
             let totalUnreadMessages = this.participantsResponse
                 .filter(x => x.participant.id == participant.id)
                 .filter(x => !this.participantsInteractedWith.find(u => u.id == participant.id) && x.metadata && x.metadata.totalUnreadMessages > 0)
@@ -158,35 +166,29 @@ export class NgChatFriendsListComponent implements OnInit, OnChanges, OnDestroy,
     cleanUpUserSelection = () => this.selectedUsersFromFriendsList = [];
 
     // Toggle friends list visibility
-    onChatTitleClicked(): void
-    {
+    onChatTitleClicked(): void {
         this.isCollapsed = !this.isCollapsed;
     }
 
-    onFriendsListCheckboxChange(selectedUser: User, isChecked: boolean): void
-    {
-        if(isChecked) {
+    onFriendsListCheckboxChange(selectedUser: User, isChecked: boolean): void {
+        if (isChecked) {
             this.selectedUsersFromFriendsList.push(selectedUser);
-        } 
-        else 
-        {
+        }
+        else {
             this.selectedUsersFromFriendsList.splice(this.selectedUsersFromFriendsList.indexOf(selectedUser), 1);
         }
     }
 
-    onUserClick(clickedUser: User): void
-    {
+    onUserClick(clickedUser: User): void {
         this.onParticipantClicked.emit(clickedUser);
     }
 
-    onFriendsListActionCancelClicked(): void
-    {
+    onFriendsListActionCancelClicked(): void {
         this.onOptionPromptCanceled.emit();
         this.cleanUpUserSelection();
     }
 
-    onFriendsListActionConfirmClicked() : void
-    {
+    onFriendsListActionConfirmClicked(): void {
         this.onOptionPromptConfirmed.emit(this.selectedUsersFromFriendsList);
         this.cleanUpUserSelection();
     }
@@ -200,67 +202,64 @@ export class NgChatFriendsListComponent implements OnInit, OnChanges, OnDestroy,
     fetchMoreParticipants(): Observable<any> {
         this.isLoadingMore = true;
         return this.adapter.listFriends(this.searchInput, this.config.participants?.pageSize, this.page)
-        .pipe(
-            map((participantsResponse: ParticipantResponse[]) => {
-                if(this.isResetParticipantsList) {
-                    this.resetParticipantsList();
-                }
-                const newParticipants = participantsResponse.map((response: ParticipantResponse) => {
-                    if(response.metadata && (response.metadata.recentMessage || response.metadata.totalUnreadMessages)){
-                        this.participantsMeta.set(response.participant.id, response.metadata);
+            .pipe(
+                map((participantsResponse: ParticipantResponse[]) => {
+                    if (this.isResetParticipantsList) {
+                        this.resetParticipantsList();
                     }
-                    return response.participant;
-                });
-                this.participants = [...this.participants, ...newParticipants];
-                this.participantsResponse = [...this.participantsResponse, ...participantsResponse];
-                this.isLoadingMore = false;
-                const direction: ScrollDirection = (this.page == 1) ? ScrollDirection.Top : ScrollDirection.Bottom;
-                setTimeout(() => {
-                    this.onFetchMoreParticipantsLoaded(participantsResponse, direction);
-                    this.onParticipantsLoaded.emit({ participants: this.participants, participantsResponse: this.participantsResponse, isBootstrapping: this.isBootstrapping });
-                    this.isBootstrapping = false;
-                },1);
-            })
-        );
+                    const newParticipants = participantsResponse.map((response: ParticipantResponse) => {
+                        if (response.metadata && (response.metadata.recentMessage || response.metadata.totalUnreadMessages)) {
+                            this.participantsMeta.set(response.participant.id, response.metadata);
+                        }
+                        return response.participant;
+                    });
+                    this.participants = [...this.participants, ...newParticipants];
+                    this.participantsResponse = [...this.participantsResponse, ...participantsResponse];
+                    this.isLoadingMore = false;
+                    const direction: ScrollDirection = (this.page == 1) ? ScrollDirection.Top : ScrollDirection.Bottom;
+                    setTimeout(() => {
+                        this.onFetchMoreParticipantsLoaded(participantsResponse, direction);
+                        this.onParticipantsLoaded.emit({ participants: this.participants, participantsResponse: this.participantsResponse, isBootstrapping: this.isBootstrapping });
+                        this.isBootstrapping = false;
+                    }, 1);
+                })
+            );
     }
 
-    private onFetchMoreParticipantsLoaded(participants: ParticipantResponse[], direction: ScrollDirection): void
-    {
+    private onFetchMoreParticipantsLoaded(participants: ParticipantResponse[], direction: ScrollDirection): void {
         this.isLoadingMore = false;
         this.hasMoreParticipants = participants.length == this.config.participants?.pageSize;
         this.scrollChatWindow(direction);
     }
 
     // Scrolls flow to the bottom or top
-    private scrollChatWindow(direction: ScrollDirection): void
-    {
-        if (!this.isCollapsed){
+    private scrollChatWindow(direction: ScrollDirection): void {
+        if (!this.isCollapsed) {
             setTimeout(() => {
-                if (this.chatParticipants){
+                if (this.chatParticipants) {
                     let element = this.chatParticipants.nativeElement;
-                    let position = ( direction === ScrollDirection.Top ) ? 0 : element.scrollHeight;
+                    let position = (direction === ScrollDirection.Top) ? 0 : element.scrollHeight;
                     element.scrollTop = position;
                 }
-            }); 
+            });
         }
     }
 
     private activateFriendListFetch(): void {
-        if (this.adapter)
-        {
+        if (this.adapter) {
             // Loading current users list
-            if (this.config.participants?.polling){
+            if (this.config.participants?.polling) {
                 // Setting a long poll interval to update the friends list
-                this.fetchFriendsList(true, false);
-                this.hssChatService.pollingParticipantsInstance = window.setInterval(() => this.fetchFriendsList(false, true), this.config.participants?.interval);
+                this.fetchParticipantsList(true, false);
+                this.hssChatService.pollingParticipantsInstance = window.setInterval(() => this.fetchParticipantsList(false, true), this.config.participants?.interval);
             } else {
                 // Since polling was disabled, a friends list update mechanism will have to be implemented in the ChatAdapter.
-                this.fetchFriendsList(true, false);
+                this.fetchParticipantsList(true, false);
             }
         }
     }
 
-    private fetchFriendsList(isBootstrapping, isPolling) {
+    private fetchParticipantsList(isBootstrapping, isPolling) {
         this.isBootstrapping = isBootstrapping;
         this.isResetParticipantsList = isPolling;
         this.page = isPolling ? 1 : this.page;
