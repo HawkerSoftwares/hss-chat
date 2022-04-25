@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ViewEncapsulation, OnChanges, SimpleChanges, ViewChild, ElementRef, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewEncapsulation, OnChanges, SimpleChanges, ViewChild, ElementRef, OnInit, OnDestroy, AfterViewInit, TemplateRef } from '@angular/core';
 
 import { IChatOption } from '../../core/chat-option';
 import { ChatParticipantStatus } from "../../core/chat-participant-status.enum";
@@ -51,6 +51,8 @@ export class NgChatFriendsListComponent implements OnInit, OnChanges, OnDestroy,
 
     @Input()
     public adapter!: ChatAdapter;
+
+    @Input() friendsListWindowHeaderTemplate: TemplateRef<any>;
 
     @Output()
     public onParticipantClicked: EventEmitter<IChatParticipant> = new EventEmitter();
