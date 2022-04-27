@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { ChatParticipantStatus, ChatParticipantType, DEFAULT_CONFIG } from 'hss-chat';
-import { ChatAdapter, HSSChatConfig } from 'projects/hss-chat/src/public-api';
-import { BehaviorSubject } from 'rxjs';
+import { ChatAdapter, HSSChatConfig, HssChatService } from 'projects/hss-chat/src/public-api';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, fromEvent, switchMap } from 'rxjs';
 import { DemoAdapterPagedHistory } from './demo-adapter-paged-history';
 
 @Component({
@@ -9,16 +9,22 @@ import { DemoAdapterPagedHistory } from './demo-adapter-paged-history';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements AfterViewInit {
+  
   title = 'HSS Chat';
   ChatParticipantType = ChatParticipantType;
   ChatParticipantStatus = ChatParticipantStatus;
   hssChatConfig: BehaviorSubject<HSSChatConfig> = new BehaviorSubject<HSSChatConfig>(DEFAULT_CONFIG);
   isDisabled = false;
   adapter: ChatAdapter = new DemoAdapterPagedHistory();
-  constructor() {
+
+  constructor(private hssChatService: HssChatService) {
+    
   }
 
+  ngAfterViewInit(): void {
+    this.initRefreshParticipantsEventListener();
+  }
   
   updateConfig() {
     this.hssChatConfig.next({
@@ -36,7 +42,6 @@ export class AppComponent {
     })
   }
   
-  
   messageSeen(event: any) {
     console.log(event);
   }
@@ -45,4 +50,15 @@ export class AppComponent {
     console.log(user);
   }
 
+  initRefreshParticipantsEventListener() {
+    fromEvent(document.getElementById('refresh_participants') as HTMLInputElement, 'click')
+    .pipe(
+      debounceTime(1000),
+      // distinctUntilChanged()
+    )
+    .subscribe(event => {
+      console.log("Event:" + JSON.stringify(event));
+      this.hssChatService.refreshParticipants();
+    });
+  }
 }
