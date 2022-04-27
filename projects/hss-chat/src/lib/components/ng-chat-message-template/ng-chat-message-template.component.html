@@ -7,7 +7,6 @@
 	    (mouseenter)="showChatMessageSetting = true;" (mouseleave)="showChatMessageSetting = false;">
 		<div class="left-arrow" *ngIf="message.fromId !== userId"><div></div></div>
 		<div class="right-arrow" *ngIf="message.fromId === userId"><div></div></div>
-		<!-- <ng-chat-message-setting *ngIf="showChatMessageSetting"></ng-chat-message-setting> -->
 		<div class="media-list">
 			<ng-container *ngFor="let media of message.medias | slice:0:4; index as indx;" [ngSwitch]="media.type">
 				<div *ngSwitchCase="MessageType.Image" class="media image"
