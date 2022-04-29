@@ -23,3 +23,9 @@ export class Message
     public newDateStarted?: boolean;
     public reactions?: any[]
 }
+
+export interface IMessageSeen {
+    destinataryId: string,
+    messages: Message[],
+    success: Function
+}

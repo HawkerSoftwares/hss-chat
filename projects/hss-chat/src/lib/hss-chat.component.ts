@@ -5,7 +5,7 @@ import { ChatAdapter } from './core/chat-adapter';
 import { IChatGroupAdapter } from './core/chat-group-adapter';
 import { User } from "./core/user";
 import { ParticipantResponse } from "./core/participant-response";
-import { Message } from "./core/message";
+import { IMessageSeen, Message } from "./core/message";
 import { MessageType } from "./core/message-type.enum";
 import { Window } from "./core/window";
 import { ChatParticipantStatus } from "./core/chat-participant-status.enum";
@@ -154,7 +154,7 @@ export class NgChat implements OnInit, IChatController {
     public onParticipantChatClosed: EventEmitter<IChatParticipant> = new EventEmitter<IChatParticipant>();
 
     @Output()
-    public onMessagesSeen: EventEmitter<Message[]> = new EventEmitter<Message[]>();
+    public onMessagesSeen: EventEmitter<IMessageSeen> = new EventEmitter<IMessageSeen>();
 
     private browserNotificationsBootstrapped: boolean = false;
 
@@ -375,7 +375,7 @@ export class NgChat implements OnInit, IChatController {
 
         if (window.hasFocus || forceMarkMessagesAsSeen)
         {
-            this.markMessagesAsRead(messages);
+            this.markMessagesAsRead(messages, window);
         }
     }
     
@@ -552,18 +552,17 @@ export class NgChat implements OnInit, IChatController {
     // Marks all messages provided as read with the current time.
     markMessagesAsRead(messages: Message[], window?: Window): void
     {
-        const currentDate = new Date();
-        const unseenMessages = [];
-        messages.forEach((msg)=>{
-            if (!msg.dateSeen) {
-                unseenMessages.push(msg);
-                msg.dateSeen = currentDate;
-            }
-        });
-        if (window) {
+        this.onMessagesSeen.emit({destinataryId: window.participant.id,messages, success: () => {
+            const currentDate = new Date();
+            const unseenMessages = [];
+            messages.forEach((msg)=>{
+                if (!msg.dateSeen) {
+                    unseenMessages.push(msg);
+                    msg.dateSeen = currentDate;
+                }
+            });
             window.messages = messages;
-        }
-        this.onMessagesSeen.emit(messages);
+        }});
     }
 
     // Buffers audio file (For component's bootstrapping)
@@ -690,8 +689,8 @@ export class NgChat implements OnInit, IChatController {
         }
     }
 
-    onWindowMessagesSeen(messagesSeen: Message[]): void {
-        this.markMessagesAsRead(messagesSeen);
+    onWindowMessagesSeen({messages, window}: {messages: Message[], window: Window}): void {
+        this.markMessagesAsRead(messages, window);
     }
 
     onWindowChatClosed(payload: { closedWindow: Window, closedViaEscapeKey: boolean }): void {
