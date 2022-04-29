@@ -58,7 +58,7 @@ export class NgChatWindowComponent implements OnInit, OnChanges {
     public onChatWindowClosed: EventEmitter<{ closedWindow: Window, closedViaEscapeKey: boolean}> = new EventEmitter();
 
     @Output()
-    public onMessagesSeen: EventEmitter<Message[]> = new EventEmitter();
+    public onMessagesSeen: EventEmitter<{messages: Message[], window: Window}> = new EventEmitter();
 
     @Output()
     public onMessageSent: EventEmitter<Message> = new EventEmitter();
@@ -216,14 +216,14 @@ export class NgChatWindowComponent implements OnInit, OnChanges {
             
             if (unreadMessages && unreadMessages.length > 0)
             {
-                this.onMessagesSeen.emit(unreadMessages);
+                this.onMessagesSeen.emit({messages: unreadMessages, window: this.window});
             }
         }
     }
 
     markMessagesAsRead(messages: Message[]): void 
     {
-        this.onMessagesSeen.emit(messages);
+        this.onMessagesSeen.emit({messages, window: this.window});
     }
 
     fetchMessageHistory(window: Window): void {

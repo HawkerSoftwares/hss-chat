@@ -13,7 +13,6 @@ import { NgChatWindowComponent } from './components/ng-chat-window/ng-chat-windo
 import { NGPrimeModule } from './modules/ngp.module';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { NgChatMessageTemplateComponent } from './components/ng-chat-message-template/ng-chat-message-template.component';
-import { NgChatMessageSettingComponent } from './components/ng-chat-message-setting/ng-chat-message-setting.component';
 import { LinkyModule } from 'ngx-linky';
 
 @NgModule({
@@ -25,7 +24,7 @@ import { LinkyModule } from 'ngx-linky';
     GroupMessageDisplayNamePipe, 
     NgChatOptionsComponent, 
     NgChatFriendsListComponent, 
-    NgChatWindowComponent, NgChatMessageTemplateComponent, NgChatMessageSettingComponent
+    NgChatWindowComponent, NgChatMessageTemplateComponent
   ],
   exports: [NgChat]
 })
