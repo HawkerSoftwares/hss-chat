@@ -663,7 +663,7 @@ export class NgChat implements OnInit, IChatController {
         this.windows.splice(index, 1);
 
         this.updateWindowsState(this.windows);
-
+        this.participantsInteractedWith = this.participantsInteractedWith.filter( participant => participant.id !== window.participant.id);
         this.onParticipantChatClosed.emit(window.participant);
     }
 
