@@ -65,4 +65,26 @@ $text-color: #FFF;
     {
         color: $text-color;
     }
+
+    
+    .left-arrow {
+        background: $primary-color;
+        border-top-color: $secondary-color;
+        &>div {
+            border-left-color: $secondary-color;
+        }
+    }
+
+    .right-arrow {
+        right: -10px;
+        background: $secondary-color;
+        border-top-color: $secondary-color;
+        &>div {
+            background: $secondary-color;
+        }
+    }
+
+    .emoji-block > span > svg {
+        fill: white;
+    }
 }

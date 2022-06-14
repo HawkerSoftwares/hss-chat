@@ -9,12 +9,12 @@
 		<div class="right-arrow" *ngIf="message.fromId === userId"><div></div></div>
 		<div class="media-list">
 			<ng-container *ngFor="let media of message.medias | slice:0:4; index as indx;" [ngSwitch]="media.type">
-				<div *ngSwitchCase="MessageType.Image" class="media image"
+				<div *ngSwitchCase="MessageType.Image" class="media image secondary-background"
 					(click)="viewImagesOnFullScreen = true;activeIndex = indx">
 					<img [src]="media.url" class="image-message" />
 					<div class="count-overlay" *ngIf="indx === 3">+ {{ message.medias.length - 4 }}</div>
 				</div>
-				<div *ngSwitchCase="MessageType.File" class="media file">
+				<div *ngSwitchCase="MessageType.File" class="media file secondary-background">
 					<div class="file-info">
 						<div class="file-message-icon">
 							<i class="paperclip-icon"></i>
@@ -55,9 +55,9 @@
 	<div class="chat-msg-footer">
 		<div class="reactions-list">
 			<ng-container *ngIf="message.reactions">
-				<div class="reaction" *ngFor="let reaction of message.reactions | slice:0:2" [innerHTML]="reaction">
+				<div class="reaction secondary-background" *ngFor="let reaction of message.reactions | slice:0:2" [innerHTML]="reaction">
 				</div>
-				<div class="reaction" *ngIf="message.reactions.length > 2">+ {{message.reactions.length - 2}}</div>
+				<div class="reaction secondary-background" *ngIf="message.reactions.length > 2">+ {{message.reactions.length - 2}}</div>
 			</ng-container>
 		</div>
 		<span *ngIf="showMessageDate && message.dateSent" class="message-sent-date">

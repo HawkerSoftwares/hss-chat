@@ -1,5 +1,5 @@
 import { AfterViewInit, Component } from '@angular/core';
-import { ChatParticipantStatus, ChatParticipantType, DEFAULT_CONFIG } from 'hss-chat';
+import { ChatParticipantStatus, ChatParticipantType, DEFAULT_CONFIG, Theme } from 'hss-chat';
 import { ChatAdapter, HSSChatConfig, HssChatService } from 'projects/hss-chat/src/public-api';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, fromEvent, switchMap } from 'rxjs';
 import { DemoAdapterPagedHistory } from './demo-adapter-paged-history';
@@ -10,7 +10,7 @@ import { DemoAdapterPagedHistory } from './demo-adapter-paged-history';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements AfterViewInit {
-  
+  theme = Theme.Dark;
   title = 'HSS Chat';
   ChatParticipantType = ChatParticipantType;
   ChatParticipantStatus = ChatParticipantStatus;
