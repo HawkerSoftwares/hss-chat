@@ -1,39 +1,230 @@
-# HssChat
+# hss-chat
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.2.4.
+[![npm](https://img.shields.io/npm/v/hss-chat.svg)](https://www.npmjs.com/package/hss-chat)
+[![npm downloads](https://img.shields.io/npm/dm/hss-chat.svg)](https://npmjs.org/hss-chat)
+[![Build Status](https://travis-ci.org/rpaschoal/hss-chat.svg?branch=development)](https://travis-ci.org/rpaschoal/hss-chat)
+[![codecov](https://codecov.io/gh/rpaschoal/hss-chat/branch/master/graph/badge.svg)](https://codecov.io/gh/rpaschoal/hss-chat)
 
-## Development server
+A simple facebook/linkedin lookalike chat module for Angular applications forked from [hss-chat](https://github.com/rpaschoal/hss-chat) by [rpaschoal](https://github.com/rpaschoal)
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+* [Online demo](https://hss-chat.azurewebsites.net)
+* [Online demo source code (ASP.NET core and Azure SignalR)](https://github.com/rpaschoal/hss-chat-netcoreapp)
+* [Node.js example](https://github.com/rpaschoal/hss-chat-nodejs)
 
-## Code scaffolding
+<a href="https://www.buymeacoffee.com/ixJwWB5bD" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Getting started
+### Installation
 
-## Build
+```
+npm install hss-chat
+```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+### Setup
+#### Import NgChatModule on your AppModule (EG: app.module.ts):
 
-## Running unit tests
+```
+...
+import { NgChatModule } from 'hss-chat';
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    HttpClientModule,
+    NgChatModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
+#### Add the component to your AppComponent template:
 
-## Running end-to-end tests
+```
+<hss-chat [adapter]="adapter" [userId]="userId"></hss-chat>
+```
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+#### And in your app.component.ts:
 
-## Further help
+```
+import { Component } from '@angular/core';
+import { ChatAdapter } from 'hss-chat';
+import { MyAdapter } from 'my-adapter';
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'app';
+  userId = 999;
 
+  public adapter: ChatAdapter = new MyAdapter();
+}
+```
 
-## Non-functional
-    CSS files migrated to SCSS
-    Angular version to 13.X
+__Required Settings__
+* [adapter]{object}: This will point to your adapter implementation ('MyAdapter' in the example above).
+* [userId]{any}: The unique id of the user that will be using the chat instance.
 
+__Additional Settings__
+* [title]{string}: The title to be displayed on the friends list. Default is "Friends".
+* [isDisabled]{boolean}: Indicates if hss-chat should be hidden. This stops poll requests to the friends list. Default is false.
+* [isCollapsed]{boolean}: If set to true the friends list will be rendered as collapsed by default. Default is false.
+* [pollFriendsList]{boolean}: If set to true the module will do a long poll on the "adapter.listFriends" method to keep the friends list updated. Default is false.
+* [pollingInterval]{number}: Configures the long poll interval in milliseconds. Default is 5000.
+* [searchEnabled]{boolean}: Enables the search bar on the friends list. Default is true.
+* [historyEnabled]{boolean}: Defines whether the component should call the "getMessageHistory" from the chat-adapter. Default is true.
+* [historyPageSize]{number}: Set the page size for each request if you are using the paged history chat adapter (Beta). Default is 10.
+* [emojisEnabled]{boolean}: Enables emoji parsing on the messages. Default is true.
+* [linkfyEnabled]{boolean}: Transforms links within the messages to valid HTML links. Default is true.
+* [audioEnabled]{boolean}: Enables audio notifications on received messages. Default is true.
+* [audioSource]{string}: WAV source of the audio notification. Default is a RAW github WAV content from hss-chat repository.
+* [persistWindowsState]{boolean}: Saves the state of current open windows on the local storage. Default is true.
+* [browserNotificationsEnabled]{boolean}: Enables browser notifications on received messages. Default is true.
+* [browserNotificationIconSource]{string}: Source URL of the icon displayed on the browser notification. Default is a RAW github PNG content from hss-chat repository.
+* [maximizeWindowOnNewMessage]{boolean}: If set to false new chat windows will render as collapsed when receiving new messages. Default is true.
+* [hideFriendsList]{boolean}: Hides the friends list. Chat windows can still be opened, closed and toggled by using `IChatController`. Default is false.
+* [hideFriendsListOnUnsupportedViewport]{boolean}: Hides the friends list if there isn't enough space for at least one chat window on the current viewport. Default is true.
+* [fileUploadAdapter]{IFileUploadAdapter}: Your custom implementation of IFileUploadAdapter for file uploads.
+* [fileUploadUrl]{string}: Defines a valid CORS enabled URL that can process a request form file and return a `FileMessage` for the destinatary user.
+* [theme]{hss-chat/core/theme.enum:Theme}: Defines the styling theme. There is a light (default) and a dark theme available. You can also supply this as a string.
+* [customTheme]{string}: Source URL of the stylesheet asset to use for custom CSS styles. Works with assets relative to the project using hss-chat.
+* [showMessageDate]{boolean}: Shows the date in which a message was sent. Default is true.
+* [messageDatePipeFormat]{string}: The format for the pipe that is used when rendering the date in which a message was sent. Default is "short".
+* [groupAdapter]{IChatGroupAdapter}: A group adapter implementation to enable group chat.
+* [isViewportOnMobileEnabled]{boolean}: Allow hss-chat to render and be displayed on mobile devices. Default is false.
 
-## Function Features:
-    Load more feature on friends list 
-    Remote Search for friends list
-    Showing recent text with friend name
+__Localization__
+* [messagePlaceholder]{string}: The placeholder that is displayed in the text input on each chat window. Default is "Type a message".
+* [searchPlaceholder]{string}: The placeholder that is displayed in the search input on the friends list. Default is "Search".
+* [localization]{Localization}: Contract defining all text that is rendered by this component. Supply your own object for full text localization/customization. Supplying this setting will override all  other localization settings.
+
+__Events__
+* (onParticipantClicked){IChatParticipant}: Event emitted every time a user/group is clicked on the chat window and a new chat window is opened.
+* (onParticipantChatOpened){IChatParticipant}: Event emitted every time a chat window is opened, regardless if it was due to a user/group click on the friends list or via new message received.
+* (onParticipantChatClosed){IChatParticipant}: Event emitted every time a chat window is closed.
+* (onMessagesSeen){Message[]}: Event emitted every time a chunk of unread messages are seen by a user.
+
+#### Implement your ChatAdapter:
+
+In order to instruct this module on how to send and receive messages within your software, you will have to implement your own ChatAdapter. The class that you will be implementing is the one that you must provide as an instance to the [adapter] setting of the module discussed above.
+
+This package exposes a ChatAdapter abstract class which you can import on your new class file definition:
+
+```
+import { ChatAdapter } from 'hss-chat';
+```
+
+After importing it to your custom adapter implementation (EG: MyAdapter.ts), you must implement at least 3 methods which are abstract in the ChatAdapter base class which are:
+
+```
+public abstract listFriends(): Observable<ParticipantResponse[]>;
+    
+public abstract getMessageHistory(destinataryId: any): Observable<Message[]>;
+
+public abstract sendMessage(message: Message): void;
+```
+These methods will be performed via the client integration. Apart from the client integration and actions, you must also instruct the adapter on how to receive push notifications from the server using the following methods:
+
+```
+public onMessageReceived(participant: IChatParticipant, message: Message): void
+public onFriendsListChanged(participantsResponse: ParticipantResponse[]): void
+```
+
+__Please note there is no need to override the 2 methods above. You must call them within your adapter implementation just to notify the module that a message was received or that the friends list was updated. The second one could be ignored if you decide to use the "pollFriendsList" feature.__
+
+If in doubt, here are 2 adapter example implementations:
+
+* [Offline Bot Adapter](https://github.com/rpaschoal/hss-chat-netcoreapp/blob/master/NgChatClient/ClientApp/src/app/demo-adapter.ts)
+* [SignalR Adapter](https://github.com/rpaschoal/hss-chat-netcoreapp/blob/master/NgChatClient/ClientApp/src/app/signalr-adapter.ts)
+
+#### Add support for group chat:
+
+An `IChatParticipant` can be a User or a Group but in order to enable group chat you must implement and supply to hss-chat an instance of `IChatGroupAdapter`. You will have to implement the following contract:
+
+```
+groupCreated(group: Group): void;
+```
+
+hss-chat generates a guid every time a new group is created and invokes the method above so you can handle it on your application to persist the newly generated Group (Id, Participants, etc).
+
+Once you have an implementation of `IChatGroupAdapter`, just supply it to your hss-chat instance:
+
+```
+<hss-chat [groupAdapter]="myGroupAdapterInstance" ... ></hss-chat>
+```
+
+#### File Upload:
+
+hss-chat supports attachment of any type of files. To do so you need to implement an API endpoint on your application that can receive a POST with a form file.
+
+On your hss-chat instance make sure you provide a valid URI for the `fileUploadUrl` parameter. This will enable the default file upload adapter and each chat window will render at the bottom right an attachment action which will trigger an input of type=file.
+
+Along with a request form file hss-chat will also send a field named as `hss-chat-destinatary-userid` containing the id of the user in which the file will be sent to. Make sure you use this value to compose a response message as your API endpoint will have to return a `FileMessage`. This `FileMessage` instance will be sent to the destinatary user automatically by hss-chat as soon as the file upload ends successfully.
+
+You can check some backend file upload implementation examples here:
+* [hss-chat-netcoreapp](https://github.com/rpaschoal/hss-chat-netcoreapp/blob/master/NgChatSignalR/Controllers/HomeController.cs)
+* [hss-chat-nodejs](https://github.com/rpaschoal/hss-chat-nodejs/blob/master/server.js) 
+
+#### Triggering hss-chat actions from elsewhere:
+
+Certain hss-chat actions can be triggered from your application by using the exported [IChatController](https://github.com/rpaschoal/hss-chat/blob/master/src/hss-chat/core/chat-controller.ts) interface.
+
+Assuming you have a hss-chat instance declared on your template file, add an Angular unique identifier to it:
+
+```
+<hss-chat #ngChatInstance ... />
+```
+
+Then on your component's code, declare a `ViewChild` property in order to bind your hss-chat instance:
+
+```
+@ViewChild('ngChatInstance')
+protected ngChatInstance: IChatController;
+```
+
+You can now trigger some hss-chat actions such as opening a chat window from elsewhere using the following code:
+
+```
+this.ngChatInstance.triggerOpenChatWindow(user);
+```
+
+#### Paged History Chat Adapter:
+
+This adapter is similar to `ChatAdapter` but provides a pagination button to load older messages from your message history. You have to implement one additional method: `getMessageHistoryByPage`. You can check a sample implementation for this under the demo project with the `DemoAdapterPagedHistory` class.
+
+If you like this feature and believe it should be the default behavior and implementation for hss-chat, please open an issue and vote for it here so we can potentially introduce it as the default chat adapter on subsequent versions of hss-chat.
+
+#### Showing an image as a message:
+
+If you'd like to display an image thumbnail on a chat window message just set the message type to `Image`. The content of the message should point to a valid image URL:
+
+```
+const imageMessage: Message = {
+    fromId: 1,
+    toId: 999,
+    type: MessageType.Image,
+    message: "https://valid.url/image.jpg",
+    dateSent: new Date()
+};
+```
+
+# Troubleshooting
+
+Please follow this guideline when reporting bugs and feature requests:
+
+1. Use [GitHub Issues](https://github.com/rpaschoal/hss-chat/issues) board to report bugs and feature requests.
+2. Please **always** write the steps to reproduce the error. This will make it easier to reproduce, identify and fix bugs.
+
+Thanks for understanding!
+
+### License
+
+The MIT License (see the [LICENSE](https://github.com/HawkerSoftwares/hss-chat/blob/master/LICENSE) file for the full text)
     
