@@ -2,6 +2,10 @@
 
 This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.2.0.
 
+
+# Note !! 
+#####  Original source of this repository is - [rpaschoal](https://www.npmjs.com/package/ng-chat)
+
 ## Code scaffolding
 
 Run `ng generate component component-name --project hss-chat` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project hss-chat`.

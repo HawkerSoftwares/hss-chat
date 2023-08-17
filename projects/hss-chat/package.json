@@ -1,6 +1,6 @@
 {
   "name": "hss-chat",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "peerDependencies": {
     "@angular/common": "^16.2.0",
     "@angular/core": "^16.2.0",
@@ -12,5 +12,19 @@
   },
   "dependencies": {
     "tslib": "^2.3.0"
+  },
+  "license": "MIT",
+  "author": "HSS",
+  "description": "A simple facebook/linkedin lookalike chat module for Angular applications. Angular version 16, 15, 14, 13, 12, 11, 10, 9,8,6,4 ",
+  "keywords": [
+    "angular 2",
+    "angular 4 chat module",
+    "chat module",
+    "angular chat module",
+    "gmail chat panel"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HawkerSoftwares/hss-chat"
   }
 }
