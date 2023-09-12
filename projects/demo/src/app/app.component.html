@@ -7,9 +7,9 @@
 <!-- [chatWindowHeaderTemplate]="chatWindowHeaderTemplate" -->
 <!-- [friendsListWindowHeaderTemplate]="friendsListWindowHeaderTemplate" -->
 
-<button (click)="isDisabled = !isDisabled;">Toggle Chat</button>
+<!-- <button (click)="isDisabled = !isDisabled;">Toggle Chat</button>
 <button (click)="updateConfig();" style="margin-left:20px;">Update Config</button>
-<button style="margin-left:20px;" id="refresh_participants">Refresh Participants</button>
+<button style="margin-left:20px;" id="refresh_participants">Refresh Participants</button> -->
 
 <ng-template #messageTemplate let-message="message">
 	<div [ngClass]="{'sent-chat-message-container': message.fromId == userId, 'received-chat-message-container': message.fromId != userId}">

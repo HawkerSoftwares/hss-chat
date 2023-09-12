@@ -1,0 +1,28 @@
+<section class="h-screen">
+    <section class="bg-primary">
+        <div class="flex justify-content-between align-items-center p-1 border-1 border-green-500 border-round">
+            <div class="flex col-3 justify-content-between">
+            <div class="toggle-chats">
+                <i class="pi pi-bars p-1" style="font-size: 1.5rem"></i>
+            </div>
+                <h2 class="m-0">HSS-Chat</h2>
+            </div>
+            <div class="p-inputgroup col-4">
+                <button type="button" pButton label="Search"></button>
+                <input type="text" pInputText placeholder="" />
+            </div>
+            <div class="">
+    
+                <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" styleClass="mr-2" size="large" shape="circle"></p-avatar>            </div>
+        </div>
+    </section>
+    <section class="flex chat-height">
+        <div class="list-height">
+            <p-listbox [options]="cities"  [(ngModel)]="selectedCity" optionLabel="name" [style]="{ width: '20rem' }" styleClass="h-full"></p-listbox>
+        </div>
+        <div class="col flex justify-content-center">
+            <h1 class="">dsfgjhghfdsasdfghg</h1>
+        </div>
+    </section>
+    
+</section>

@@ -1,5 +1,5 @@
 <link *ngIf="customTheme" rel="stylesheet" [href]='customTheme | sanitize'>
-
+<ng-chat-deshboard></ng-chat-deshboard>
 <div id="ng-chat" *ngIf="!isDisabled && isBootstrapped && !unsupportedViewport" [ngClass]="theme">
     <ng-chat-friends-list [ngStyle]="{'visibility': hideFriendsList ? 'hidden' : 'visible'}"
         [config]="config"

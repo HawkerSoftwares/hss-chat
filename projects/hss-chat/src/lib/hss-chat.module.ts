@@ -14,6 +14,7 @@ import { NGPrimeModule } from './modules/ngp.module';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { NgChatMessageTemplateComponent } from './components/ng-chat-message-template/ng-chat-message-template.component';
 import { LinkyModule } from 'ngx-linky';
+import { NgChatDeshboardComponent } from './components/ng-chat-deshboard/ng-chat-deshboard.component';
 
 @NgModule({
   imports: [CommonModule, FormsModule, HttpClientModule, NGPrimeModule, PickerModule, LinkyModule ],
@@ -24,7 +25,7 @@ import { LinkyModule } from 'ngx-linky';
     GroupMessageDisplayNamePipe, 
     NgChatOptionsComponent, 
     NgChatFriendsListComponent, 
-    NgChatWindowComponent, NgChatMessageTemplateComponent
+    NgChatWindowComponent, NgChatMessageTemplateComponent, NgChatDeshboardComponent
   ],
   exports: [NgChat]
 })
