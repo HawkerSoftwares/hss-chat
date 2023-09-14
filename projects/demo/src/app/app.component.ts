@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, Input } from '@angular/core';
 import { ChatParticipantStatus, ChatParticipantType, DEFAULT_CONFIG, Theme } from 'hss-chat';
 import { ChatAdapter, HSSChatConfig, HssChatService } from 'projects/hss-chat/src/public-api';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, fromEvent, switchMap } from 'rxjs';
@@ -10,12 +10,16 @@ import { DemoAdapterPagedHistory } from './demo-adapter-paged-history';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements AfterViewInit {
+  // selectedTheme:any=null;
   theme = Theme.Dark;
+  themeOptions = [{title: 'Dark', value:Theme.Dark},{title: 'Light', value:Theme.Light},{title: 'Custom', value:Theme.Custom}];
   title = 'HSS Chat';
   ChatParticipantType = ChatParticipantType;
   ChatParticipantStatus = ChatParticipantStatus;
   hssChatConfig: BehaviorSubject<HSSChatConfig> = new BehaviorSubject<HSSChatConfig>(DEFAULT_CONFIG);
   isDisabled = false;
+  @Input() dashboardView = true;
+  sidebarVisible: boolean = false;
   adapter: ChatAdapter = new DemoAdapterPagedHistory();
 
   constructor(private hssChatService: HssChatService) {
@@ -24,6 +28,17 @@ export class AppComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.initRefreshParticipantsEventListener();
+  }
+
+  themeChange(){
+    if(this.theme=Theme.Dark){
+      this.theme=Theme.Light}  
+    else if(this.theme=Theme.Light){
+      this.theme=Theme.Dark
+    }  
+    else{
+      this.theme=Theme.Custom
+    }
   }
   
   updateConfig() {

@@ -28,10 +28,6 @@ import { DEFAULT_CONFIG } from './constants/chat.config.const';
 import { HSSChatConfig } from './core/chat.config';
 import { BehaviorSubject } from 'rxjs';
 
-interface City {
-    name: string,
-    code: string
-}
 @Component({
     selector: 'ng-chat',
     templateUrl: 'hss-chat.component.html',
@@ -47,12 +43,9 @@ interface City {
 })
 
 export class NgChat implements OnInit, IChatController {
-    @Input() dashboardView = true;
+    @Input() dashboardView = false;
     @Input() hssChatConfig: BehaviorSubject<HSSChatConfig>;
     config: HSSChatConfig = DEFAULT_CONFIG; 
-    cities!: City[];
-
-    selectedCity!: City;
     // Exposes enums for the ng-template
     public ChatParticipantType = ChatParticipantType;
     public ChatParticipantStatus = ChatParticipantStatus;
@@ -207,13 +200,6 @@ export class NgChat implements OnInit, IChatController {
     }
 
     ngOnInit() {
-        this.cities = [
-            { name: 'New York', code: 'NY' },
-            { name: 'Rome', code: 'RM' },
-            { name: 'London', code: 'LDN' },
-            { name: 'Istanbul', code: 'IST' },
-            { name: 'Paris', code: 'PRS' }
-        ];
         if (this.hssChatConfig) {
             this.hssChatConfig.subscribe( cnfg => {
                 if (this.config) {

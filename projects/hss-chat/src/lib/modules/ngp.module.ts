@@ -8,6 +8,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { AvatarModule } from 'primeng/avatar';
 import { AvatarGroupModule } from 'primeng/avatargroup';
 import { TabViewModule } from 'primeng/tabview';
+import { SidebarModule } from 'primeng/sidebar';
 
 const NGBODULES = [
   GalleriaModule,
@@ -18,7 +19,8 @@ const NGBODULES = [
   InputTextModule,
   AvatarModule,
   AvatarGroupModule,
-  TabViewModule
+  TabViewModule,
+  SidebarModule
 ];
 
 @NgModule({

@@ -1,9 +1,20 @@
 $sidebarWidth: 280px;
+$topbarHeight: 50px;
 
 :host ::ng-deep {
     .hss-chat-dashboard {
         .dashboard-header {
-            height: 60px;
+            height: $topbarHeight;
+            .nav-color{
+                background-color: darkcyan;
+                color: white;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+            .button-color{
+                background-color: darkcyan;
+                border-color: white;
+                border: none;
+            }
             .sidebar-toggler:hover{
                 border-radius: 1rem;
                 background-color:black;	
@@ -12,14 +23,23 @@ $sidebarWidth: 280px;
         }
         
         .dashboard-container {
-            height: calc(100% - 60px);
+            height: calc(100% - $topbarHeight);
             .left-section {
                 width: $sidebarWidth;
                 #ng-chat-people {
+                    ul li:hover{
+                        border-style: solid;
+                        border-color: gainsboro;
+                        border-radius: 6px;
+                        background: aliceblue;
+                        border-width: 0px;
+                        padding: 1px;
+                    }
                     margin-right: 0;
                     height: 100%;
                     border: 0;
                 }
+
             }
             .right-section {
                 width: calc(100% - $sidebarWidth);
@@ -28,7 +48,233 @@ $sidebarWidth: 280px;
                     overflow: hidden;
                     overflow-y: auto;
                 }
+                .dashboard-chat-window {
+                    .ng-chat-footer {
+                        box-sizing: border-box;
+                        padding: 0;
+                        display: flex;
+                        height: calc(10%);
+                        width: 100%;
+                        border: none;
+                        border-top: 1px solid transparent;
+                        border-color: inherit;
+                        >input {
+                            font-size: 0.8em;
+                            box-sizing: border-box;
+                            padding: 0 5px;
+                            display: block;
+                            height: 100%;
+                            width: 100%;
+                            border: none;
+                        }
+                        >input.has-side-action {
+                            width: calc(100% - 30px);
+                        }
+                        .btn-add-file {
+                            position: absolute;
+                            right: 5px;
+                            bottom: 7px;
+                            height: 20px;
+                            width: 20px;
+                            cursor: pointer;
+                        }
+                        .loader {
+                            position: absolute;
+                            right: 14px;
+                            bottom: 8px;
+                        }
+                        .emoji-block {
+                            position: relative;
+                            cursor: pointer;
+                            display: flex;
+                            &> span{
+                              display: flex;
+                              padding: 5px 5px 5px 1px;
+                              svg {
+                                  opacity: .4;
+                                  margin: auto;
+                              }
+                            }
+                            .emoji-dropdown-content {
+                                display: none;
+                                z-index: 99;
+                                left: unset !important;
+                                right: -1px !important;
+                                bottom: 33px !important;
+                                position: absolute;
+                            }
+                            &.show {
+                                .emoji-dropdown-content {
+                                    display: block;
+                                }
+                            }
+                        }
+                        .predefined-messages-block {
+                            position: relative;
+                            cursor: pointer;
+                            display: flex;
+                            &> span{
+                              display: flex;
+                              padding: 5px 5px 5px 1px;
+                              i {
+                                margin: auto;
+                                font-size: 1em;
+                                opacity: .8;
+                              }
+                            }
+                            .predefined-messages-dropdown-content {
+                                z-index: 99;
+                                left: unset!important;
+                                right: -25px!important;
+                                bottom: 37px!important;
+                                position: absolute;
+                                min-width: 155px;
+                                max-width: 300px;
+                                width: max-content;
+                                max-height: 360px;
+                                overflow-y: auto;
+                                box-shadow: 0px 0px 0px #888, 0px -2px 8px #888;
+                                background-color: #fff;
+                                min-height: 40px;
+                
+                                .loader {
+                                    position: absolute;
+                                    right: 0;
+                                    left: 0;
+                                    top: 10px;
+                                }
+                            }
+                        }
+                    }
+                    .ng-chat-load-history {
+                        height: 30px;
+                        text-align: center;
+                        font-size: 0.8em;
+                        >a {
+                            border-radius: 15px;
+                            cursor: pointer;
+                            padding: 5px 10px;
+                        }
+                    }
+                    .ng-chat-messages {
+                        padding: 10px 13px;
+                        width: 100%;
+                        height: calc(90% - 30px);
+                        box-sizing: border-box;
+                        position: relative;
+                        overflow-y: auto;
+                        overflow-x: hidden;
+                        display: grid;
+                        scroll-behavior: smooth;
+                        .messages-date {
+                            text-align: center;
+                            padding: 8px;
+                            font-weight: bold;
+                            font-size: .8em;
+                        }
+                        .unread-messages {
+                            text-align: center;
+                            width: 60%;
+                            margin: 5px auto 10px;
+                            background: #ecb5ac52;
+                            box-shadow: 0 0 2px #cbc6c6;
+                            border-radius: 10px;
+                            font-size: 12px;
+                            padding: 1px;
+                        }
+                        .ng-chat-message {
+                            clear: both;
+                            >img.avatar {
+                                position: absolute;
+                                left: 10px;
+                                border-radius: 25px;
+                            }
+                            >.icon-wrapper {
+                                position: absolute;
+                                left: 10px;
+                                border-radius: 25px;
+                                background-color: #BABABA;
+                                overflow: hidden;
+                                width: 30px;
+                                height: 30px;
+                                padding: 0;
+                                >i {
+                                    color: #FFF;
+                                    transform: scale(0.7);
+                                }
+                            }
+                        }
+                        .ng-chat-message.ng-chat-message-received {
+                            div.received-chat-message-container {
+                                float: left;
+                                padding-top: 7px;
+                                padding-bottom: 7px;
+                                border-style: solid;
+                                border-width: 1px;
+                                margin-top: 0;
+                                margin-bottom: 5px;
+                                border-top-left-radius: 0;
+                            }
+                        }
+                    }
+                    .ng-chat-title {
+                        .icon-wrapper {
+                            background-color: #BABABA;
+                            overflow: hidden;
+                            width: 25px;
+                            height: 25px;
+                            border-radius: 500%;
+                            margin-top: 1px;
+                            margin-right: 5px;
+                            .user-icon {
+                                width: 27px;
+                                height: 18px;
+                                color: #FFF;
+                                transform: scale(0.6);
+                                background-color: #FFF;
+                            }
+                        }
+                        .user-profile-img {
+                            float: left;
+                            border-radius: 50%;
+                            margin: 0 6px;
+                            margin-top: 2px;
+                        }
+                        &.hss-chat-window-header {
+                            display: flex !important;
+                            cursor: pointer;
+                            .ng-chat-title-visibility-toggle-area {
+                                width: 82%;
+                                display: flex;
+                            }
+                            .toggle-chat-window {
+                                margin: auto;
+                            }
+                            .close-chat-window {
+                                margin: auto;
+                                margin-right: 3px;
+                            }
+                            .pi {
+                                font-size: .8rem;
+                            }
+                            .ng-chat-unread-messages-count {
+                                margin: auto;
+                                margin-left: 10px;
+                                padding: 0 10px;
+                                line-height: 22px;
+                                height: 22px;
+                                display: flex;
+                                i.pi {
+                                    font-size: 0.6rem;
+                                    margin: auto;
+                                    margin-left: 2px;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
+    
 }

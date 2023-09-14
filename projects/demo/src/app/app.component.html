@@ -1,18 +1,14 @@
-
-<ng-chat *ngIf="adapter" [adapter]="adapter" [userId]="999" [historyEnabled]="true" [hideFriendsList]="false"
-  (onMessagesSeen)="messageSeen($event)" [isViewportOnMobileEnabled]="true" [emojisEnabled]="true" 
-  [hssChatConfig]="hssChatConfig" [isDisabled]="isDisabled" [theme]="theme">
+<ng-chat *ngIf="adapter" [dashboardView]="dashboardView" [adapter]="adapter" [userId]="999" [historyEnabled]="true"
+	[hideFriendsList]="false" (onMessagesSeen)="messageSeen($event)" [isViewportOnMobileEnabled]="true"
+	[emojisEnabled]="true" [hssChatConfig]="hssChatConfig" [isDisabled]="isDisabled" [ngClass]="theme" [theme]="theme">
 </ng-chat>
 <!-- [friendsListWindowHeaderTemplate]="friendsListWindowHeaderTemplate" -->
 <!-- [chatWindowHeaderTemplate]="chatWindowHeaderTemplate" -->
 <!-- [friendsListWindowHeaderTemplate]="friendsListWindowHeaderTemplate" -->
 
-<!-- <button (click)="isDisabled = !isDisabled;">Toggle Chat</button>
-<button (click)="updateConfig();" style="margin-left:20px;">Update Config</button>
-<button style="margin-left:20px;" id="refresh_participants">Refresh Participants</button> -->
-
 <ng-template #messageTemplate let-message="message">
-	<div [ngClass]="{'sent-chat-message-container': message.fromId == userId, 'received-chat-message-container': message.fromId != userId}">
+	<div
+		[ngClass]="{'sent-chat-message-container': message.fromId == userId, 'received-chat-message-container': message.fromId != userId}">
 		<img [src]="message.mediaUrl" class="image-message" />
 		<span [innerHtml]="message.message"></span>
 	</div>
@@ -24,16 +20,19 @@
 			<div *ngIf="!self.getChatWindowAvatar(chatWindowRef.participant)" class="icon-wrapper">
 				<i class="user-icon"></i>
 			</div>
-			<img *ngIf="self.getChatWindowAvatar(chatWindowRef.participant)" alt="" class="avatar user-profile-img" height="25"
-				width="25" [src]="self.getChatWindowAvatar(chatWindowRef.participant)" />
-			<strong [title]="chatWindowRef.participant.displayName" [innerText]="chatWindowRef.participant.displayName" (click)="onDisplayNameClick(self);"></strong>
+			<img *ngIf="self.getChatWindowAvatar(chatWindowRef.participant)" alt="" class="avatar user-profile-img"
+				height="25" width="25" [src]="self.getChatWindowAvatar(chatWindowRef.participant)" />
+			<strong [title]="chatWindowRef.participant.displayName" [innerText]="chatWindowRef.participant.displayName"
+				(click)="onDisplayNameClick(self);"></strong>
 			<span
 				[ngClass]="{'ng-chat-participant-status': true, 'online': chatWindowRef.participant.status == ChatParticipantStatus.Online, 'busy': chatWindowRef.participant.status == ChatParticipantStatus.Busy, 'away': chatWindowRef.participant.status == ChatParticipantStatus.Away, 'offline': chatWindowRef.participant.status == ChatParticipantStatus.Offline}"
 				[title]="self.chatParticipantStatusDescriptor(chatWindowRef.participant.status, self.localization)"></span>
 			<span *ngIf="self.unreadMessagesTotal(chatWindowRef).length > 0"
-				class="ng-chat-unread-messages-count unread-messages-counter-container primary-text" [innerText]="self.unreadMessagesTotal(chatWindowRef)"></span>
+				class="ng-chat-unread-messages-count unread-messages-counter-container primary-text"
+				[innerText]="self.unreadMessagesTotal(chatWindowRef)"></span>
 		</div>
-		<i class="pi pi-chevron-{{chatWindowRef.isCollapsed ? 'up' : 'down'}} toggle-chat-window" (click)="self.onChatWindowClicked(chatWindowRef)"></i>
+		<i class="pi pi-chevron-{{chatWindowRef.isCollapsed ? 'up' : 'down'}} toggle-chat-window"
+			(click)="self.onChatWindowClicked(chatWindowRef)"></i>
 		<i class="pi pi-times close-chat-window" (click)="self.onCloseChatWindow()"></i>
 	</div>
 </ng-template>
@@ -42,8 +41,8 @@
 	<a href="javascript:void(0);" class="ng-chat-title secondary-background shadowed"
 		style="display: flex;justify-content: space-between;">
 		<span [innerText]="self.config.participants?.headerTitle"></span>
-		<i class="pi pi-chevron-{{self.isCollapsed ? 'up' : 'down'}} toggle-chat-window" (click)="self.onChatTitleClicked()"
-			style="margin: auto 0;font-size: 0.8rem;"></i>
+		<i class="pi pi-chevron-{{self.isCollapsed ? 'up' : 'down'}} toggle-chat-window"
+			(click)="self.onChatTitleClicked()" style="margin: auto 0;font-size: 0.8rem;"></i>
 	</a>
 	<div *ngIf="currentActiveOption" class="ng-chat-people-actions" (click)="self.onFriendsListActionCancelClicked()">
 		<a href="javascript:void(0);" class="ng-chat-people-action">
@@ -54,3 +53,24 @@
 		</a>
 	</div>
 </ng-template>
+<p-sidebar [(visible)]="sidebarVisible" position="right">
+	<ng-template pTemplate="header">Change Config</ng-template>
+	
+	<div class="flex flex-wrap  mt-2">
+		<p-button label="Toggle Chat" (click)="isDisabled = !isDisabled;" styleClass="m-1 p-button-raised p-button-help p-button-sm"></p-button>
+		<p-button label="Toggle View" styleClass="m-1 p-button-raised p-button-help  p-button-sm" (click)="dashboardView = !dashboardView"></p-button>
+		<p-button label="Update Config" (click)="updateConfig();" styleClass="m-1 p-button-raised p-button-help p-button-sm"></p-button>
+		<p-button label="Refresh" id="refresh_participants" styleClass="m-1 p-button-raised p-button-help p-button-sm"></p-button>
+		<!-- <p-button label="Change Theme" styleClass="m-1 p-button-raised p-button-help  p-button-sm" (click)="themeChange()"></p-button> -->
+		<div>
+			<h3 class="mb-0 text-center ">Change Theme</h3>
+			<div class="flex flex-wrap justify-content-center gap-3 mt-2">
+				<div class="flex align-items-center" *ngFor="let item of themeOptions;index as i">
+					<p-radioButton name="item" [value]="item.value" [(ngModel)]="theme" inputId="item.value"></p-radioButton>
+					<label [for]="item" class="ml-2">{{item.title}}</label>
+				</div>
+			</div>
+		</div>
+	</div>
+</p-sidebar>
+<p-button type="button"  styleClass="absolute top-50 right-0 " (click)="sidebarVisible = true" icon="pi pi-cog"></p-button>

@@ -6,7 +6,6 @@
             <ng-contaier *ngTemplateOutlet="friendsListTemplate"></ng-contaier>
         </div>
         <div class="right-section">
-            <div class="card">
                 <p-tabView id="closableTabView">
                     <ng-container *ngFor="let window of windows; let i = index">
                         <p-tabPanel [header]="window.participant.displayName" [closable]="true">
@@ -16,7 +15,6 @@
                         </p-tabPanel>
                     </ng-container>
                 </p-tabView>
-            </div>
         </div>
     </ng-chat-deshboard>
     

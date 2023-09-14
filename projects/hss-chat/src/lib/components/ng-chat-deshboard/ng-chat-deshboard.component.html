@@ -1,6 +1,6 @@
 <section class="h-screen hss-chat-dashboard">
-    <section class="dashboard-header bg-primary">
-        <div class="flex justify-content-between align-items-center p-1 border-1 border-green-500 border-round h-full">
+    <section class="dashboard-header ">
+        <div class="flex justify-content-between align-items-center p-1 border-1 nav-color border-round h-full">
             <div class="flex col-3 justify-content-between">
                 <div class="sidebar-toggler">
                     <i class="pi pi-bars p-1" style="font-size: 1.5rem"></i>
@@ -8,7 +8,7 @@
                 <h2 class="m-0">Chat</h2>
             </div>
             <div class="p-inputgroup col-4">
-                <button type="button" pButton label="Search"></button>
+                <button type="button" class="button-color"pButton label="Search"></button>
                 <input type="text" pInputText placeholder="" />
             </div>
             <div class="">
@@ -20,5 +20,3 @@
     <section class="flex dashboard-container">
         <ng-content></ng-content>
     </section>
-
-</section>
