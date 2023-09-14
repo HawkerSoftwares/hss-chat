@@ -9,6 +9,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { AvatarGroupModule } from 'primeng/avatargroup';
 import { TabViewModule } from 'primeng/tabview';
 import { SidebarModule } from 'primeng/sidebar';
+import { BadgeModule } from 'primeng/badge';
 
 const NGBODULES = [
   GalleriaModule,
@@ -20,7 +21,8 @@ const NGBODULES = [
   AvatarModule,
   AvatarGroupModule,
   TabViewModule,
-  SidebarModule
+  SidebarModule,
+  BadgeModule
 ];
 
 @NgModule({

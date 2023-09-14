@@ -1,14 +1,17 @@
 <link *ngIf="customTheme" rel="stylesheet" [href]='customTheme | sanitize'>
 
 <ng-container *ngIf="!isDisabled && isBootstrapped && !unsupportedViewport" >
-    <ng-chat-deshboard *ngIf="dashboardView" [windows]="windows" [ngClass]="theme">
+    <ng-chat-deshboard *ngIf="dashboardView" [windows]="windows" class="chat-dashboard-view {{theme}}">
         <div class="left-section">
             <ng-contaier *ngTemplateOutlet="friendsListTemplate"></ng-contaier>
         </div>
         <div class="right-section">
                 <p-tabView id="closableTabView">
                     <ng-container *ngFor="let window of windows; let i = index">
-                        <p-tabPanel [header]="window.participant.displayName" [closable]="true">
+                        <p-tabPanel [closable]="true">
+                            <ng-template pTemplate="header">
+                                <span pBadge [value]="2">{{window.participant.displayName}}</span>
+                            </ng-template>
                             <div class="dashboard-chat-window">
                                 <ng-contaier *ngTemplateOutlet="chatWindowTemplate;context:{window:window}"></ng-contaier>
                             </div>
@@ -18,7 +21,7 @@
         </div>
     </ng-chat-deshboard>
     
-    <div *ngIf="!dashboardView" id="ng-chat" [ngClass]="theme">
+    <div *ngIf="!dashboardView" class="chat-window-view {{theme}}">
         <ng-contaier *ngTemplateOutlet="friendsListTemplate"></ng-contaier>   
         <div *ngFor="let window of windows; let i = index" [ngClass]="{'ng-chat-window': true, 'primary-outline-color': true, 'ng-chat-window-collapsed': window.isCollapsed}" [ngStyle]="{'right': (!hideFriendsList ? friendsListWidth : 0) + 20 + windowSizeFactor * i + 'px'}">
             <ng-contaier *ngTemplateOutlet="chatWindowTemplate;context:{window:window}"></ng-contaier>

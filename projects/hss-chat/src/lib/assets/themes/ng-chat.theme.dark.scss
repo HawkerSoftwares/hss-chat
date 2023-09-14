@@ -6,7 +6,9 @@ $text-color: #FFF;
     color: $text-color;
     font-family: sans-serif;
 }
-#ng-chat.dark-theme
+
+.chat-window-view.dark-theme,
+.chat-dashboard-view.dark-theme
 {
     @extend %text-definition;
 
