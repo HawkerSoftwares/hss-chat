@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { Window } from '../../core/window';
 interface City {
   name: string,
   code: string
@@ -7,21 +8,13 @@ interface City {
 @Component({
   selector: 'ng-chat-deshboard',
   templateUrl: './ng-chat-deshboard.component.html',
-  styleUrls: ['./ng-chat-deshboard.component.css']
+  styleUrls: ['./ng-chat-deshboard.component.scss']
 })
 export class NgChatDeshboardComponent {
-  cities!: City[];
-  selectedCity!: City;
+  @Input() windows: Window[] = [];
 
   ngOnInit() {
  
-  this.cities = [
-      { name: 'New York', code: 'NY' },
-      { name: 'Rome', code: 'RM' },
-      { name: 'London', code: 'LDN' },
-      { name: 'Istanbul', code: 'IST' },
-      { name: 'Paris', code: 'PRS' }
-  ];
-} 
+  } 
 
 }

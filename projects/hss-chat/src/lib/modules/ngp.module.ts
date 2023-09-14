@@ -7,6 +7,7 @@ import {ListboxModule} from 'primeng/listbox';
 import { InputTextModule } from 'primeng/inputtext';
 import { AvatarModule } from 'primeng/avatar';
 import { AvatarGroupModule } from 'primeng/avatargroup';
+import { TabViewModule } from 'primeng/tabview';
 
 const NGBODULES = [
   GalleriaModule,
@@ -16,7 +17,8 @@ const NGBODULES = [
   ListboxModule,
   InputTextModule,
   AvatarModule,
-  AvatarGroupModule
+  AvatarGroupModule,
+  TabViewModule
 ];
 
 @NgModule({

@@ -47,6 +47,7 @@ interface City {
 })
 
 export class NgChat implements OnInit, IChatController {
+    @Input() dashboardView = true;
     @Input() hssChatConfig: BehaviorSubject<HSSChatConfig>;
     config: HSSChatConfig = DEFAULT_CONFIG; 
     cities!: City[];

@@ -1,0 +1,34 @@
+$sidebarWidth: 280px;
+
+:host ::ng-deep {
+    .hss-chat-dashboard {
+        .dashboard-header {
+            height: 60px;
+            .sidebar-toggler:hover{
+                border-radius: 1rem;
+                background-color:black;	
+                cursor: pointer;
+            }
+        }
+        
+        .dashboard-container {
+            height: calc(100% - 60px);
+            .left-section {
+                width: $sidebarWidth;
+                #ng-chat-people {
+                    margin-right: 0;
+                    height: 100%;
+                    border: 0;
+                }
+            }
+            .right-section {
+                width: calc(100% - $sidebarWidth);
+                .dashboard-chat-window {
+                    max-height: calc(100vh - 10.5em);
+                    overflow: hidden;
+                    overflow-y: auto;
+                }
+            }
+        }
+    }
+}

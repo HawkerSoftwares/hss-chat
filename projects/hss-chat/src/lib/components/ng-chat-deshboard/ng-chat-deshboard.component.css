@@ -1,8 +1,0 @@
-.toggle-chats:hover{
-    border-radius: 1rem;
-    background-color:black;	
-    cursor: pointer;
-}
-.chat-height{
-    height: calc(100% - 73px);
-}

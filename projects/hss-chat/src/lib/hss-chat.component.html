@@ -1,6 +1,35 @@
 <link *ngIf="customTheme" rel="stylesheet" [href]='customTheme | sanitize'>
-<ng-chat-deshboard></ng-chat-deshboard>
-<div id="ng-chat" *ngIf="!isDisabled && isBootstrapped && !unsupportedViewport" [ngClass]="theme">
+
+<ng-container *ngIf="!isDisabled && isBootstrapped && !unsupportedViewport" >
+    <ng-chat-deshboard *ngIf="dashboardView" [windows]="windows" [ngClass]="theme">
+        <div class="left-section">
+            <ng-contaier *ngTemplateOutlet="friendsListTemplate"></ng-contaier>
+        </div>
+        <div class="right-section">
+            <div class="card">
+                <p-tabView id="closableTabView">
+                    <ng-container *ngFor="let window of windows; let i = index">
+                        <p-tabPanel [header]="window.participant.displayName" [closable]="true">
+                            <div class="dashboard-chat-window">
+                                <ng-contaier *ngTemplateOutlet="chatWindowTemplate;context:{window:window}"></ng-contaier>
+                            </div>
+                        </p-tabPanel>
+                    </ng-container>
+                </p-tabView>
+            </div>
+        </div>
+    </ng-chat-deshboard>
+    
+    <div *ngIf="!dashboardView" id="ng-chat" [ngClass]="theme">
+        <ng-contaier *ngTemplateOutlet="friendsListTemplate"></ng-contaier>   
+        <div *ngFor="let window of windows; let i = index" [ngClass]="{'ng-chat-window': true, 'primary-outline-color': true, 'ng-chat-window-collapsed': window.isCollapsed}" [ngStyle]="{'right': (!hideFriendsList ? friendsListWidth : 0) + 20 + windowSizeFactor * i + 'px'}">
+            <ng-contaier *ngTemplateOutlet="chatWindowTemplate;context:{window:window}"></ng-contaier>
+        </div>
+    </div>
+    
+</ng-container>
+
+<ng-template #friendsListTemplate>
     <ng-chat-friends-list [ngStyle]="{'visibility': hideFriendsList ? 'hidden' : 'visible'}"
         [config]="config"
         [adapter]="adapter"
@@ -18,9 +47,10 @@
         (onOptionPromptConfirmed)="onOptionPromptConfirmed($event)"
     >
     </ng-chat-friends-list>
+</ng-template>
 
-    <div *ngFor="let window of windows; let i = index" [ngClass]="{'ng-chat-window': true, 'primary-outline-color': true, 'ng-chat-window-collapsed': window.isCollapsed}" [ngStyle]="{'right': (!hideFriendsList ? friendsListWidth : 0) + 20 + windowSizeFactor * i + 'px'}">
-        <ng-chat-window
+<ng-template #chatWindowTemplate let-window="window">
+    <ng-chat-window
             #chatWindow
             [config]="config"
             [fileUploadAdapter]="fileUploadAdapter"
@@ -41,6 +71,5 @@
             (onOptionTriggered)="onWindowOptionTriggered($event)"
             (onLoadHistoryTriggered)="fetchMessageHistory($event)"
         >
-        </ng-chat-window>
-    </div>
-</div>
+    </ng-chat-window>
+</ng-template>
