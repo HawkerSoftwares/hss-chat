@@ -1,24 +1,14 @@
 <link *ngIf="customTheme" rel="stylesheet" [href]='customTheme | sanitize'>
 
 <ng-container *ngIf="!isDisabled && isBootstrapped && !unsupportedViewport" >
-    <ng-chat-deshboard *ngIf="dashboardView" [windows]="windows" class="chat-dashboard-view {{theme}}">
-        <div class="left-section">
-            <ng-contaier *ngTemplateOutlet="friendsListTemplate"></ng-contaier>
-        </div>
-        <div class="right-section">
-                <p-tabView id="closableTabView">
-                    <ng-container *ngFor="let window of windows; let i = index">
-                        <p-tabPanel [closable]="true">
-                            <ng-template pTemplate="header">
-                                <span pBadge [value]="2">{{window.participant.displayName}}</span>
-                            </ng-template>
-                            <div class="dashboard-chat-window">
-                                <ng-contaier *ngTemplateOutlet="chatWindowTemplate;context:{window:window}"></ng-contaier>
-                            </div>
-                        </p-tabPanel>
-                    </ng-container>
-                </p-tabView>
-        </div>
+    <ng-chat-deshboard *ngIf="dashboardView"
+        [theme]="theme" 
+        [windows]="windows"
+        [chatWindowTemplate]="chatWindowTemplate" 
+        [friendsListTemplate]="friendsListTemplate"
+        (onChatWindowClosed)="onWindowChatClosed($event)"
+        [config]="config"
+        [userId]="userId">
     </ng-chat-deshboard>
     
     <div *ngIf="!dashboardView" class="chat-window-view {{theme}}">

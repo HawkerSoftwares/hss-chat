@@ -18,7 +18,7 @@ import { RadioButtonModule } from 'primeng/radiobutton';
     BrowserAnimationsModule,
     SidebarModule,
     ButtonModule,
-RadioButtonModule
+    RadioButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]

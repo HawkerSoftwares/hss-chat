@@ -53,24 +53,23 @@
 		</a>
 	</div>
 </ng-template>
+
 <p-sidebar [(visible)]="sidebarVisible" position="right">
-	<ng-template pTemplate="header">Change Config</ng-template>
+	<ng-template pTemplate="header">Configuration</ng-template>
 	
 	<div class="flex flex-wrap  mt-2">
-		<p-button label="Toggle Chat" (click)="isDisabled = !isDisabled;" styleClass="m-1 p-button-raised p-button-help p-button-sm"></p-button>
-		<p-button label="Toggle View" styleClass="m-1 p-button-raised p-button-help  p-button-sm" (click)="dashboardView = !dashboardView"></p-button>
+		<p-button label="Update View" styleClass="m-1 p-button-raised p-button-help  p-button-sm" (click)="dashboardView = !dashboardView;updateState('dashboardView', dashboardView);"></p-button>
 		<p-button label="Update Config" (click)="updateConfig();" styleClass="m-1 p-button-raised p-button-help p-button-sm"></p-button>
-		<p-button label="Refresh" id="refresh_participants" styleClass="m-1 p-button-raised p-button-help p-button-sm"></p-button>
-		<!-- <p-button label="Change Theme" styleClass="m-1 p-button-raised p-button-help  p-button-sm" (click)="themeChange()"></p-button> -->
 		<div>
-			<h3 class="mb-0 text-center ">Change Theme</h3>
 			<div class="flex flex-wrap justify-content-center gap-3 mt-2">
 				<div class="flex align-items-center" *ngFor="let item of themeOptions;index as i">
-					<p-radioButton name="item" [value]="item.value" [(ngModel)]="theme" inputId="item.value"></p-radioButton>
+					<p-radioButton name="item" [value]="item.value" [(ngModel)]="theme" inputId="item.value" (onClick)="updateState('theme', item.value);"></p-radioButton>
 					<label [for]="item" class="ml-2">{{item.title}}</label>
 				</div>
 			</div>
 		</div>
 	</div>
 </p-sidebar>
-<p-button type="button"  styleClass="absolute top-50 right-0 " (click)="sidebarVisible = true" icon="pi pi-cog"></p-button>
+<p-button type="button" styleClass="sidebar-toggler absolute top-50 right-0" 
+ (click)="sidebarVisible = true;" icon="pi pi-cog">
+</p-button>

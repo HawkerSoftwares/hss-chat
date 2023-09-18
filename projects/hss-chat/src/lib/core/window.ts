@@ -4,6 +4,7 @@ import { ChatParticipantType } from "./chat-participant-type.enum";
 import { ChatParticipantStatus } from "./chat-participant-status.enum";
 import { Group } from "./group";
 import { IChatParticipant } from "./chat-participant";
+import { MessageCounter } from "./message-counter";
 
 export class Window
 {
@@ -29,4 +30,22 @@ export class Window
     public hasFocus: boolean = false;
     public hasMoreMessages: boolean = true;
     public historyPage: number = 0;
+
+
+    unreadMessagesTotal(userId: string): string {           
+        return MessageCounter.unreadMessagesTotal(this, userId);
+    }
+
+    getChatWindowAvatar(message?: Message): string | null {
+        if (this.participant.participantType == ChatParticipantType.User){
+            return this.participant.avatar;
+        } else if (this.participant.participantType == ChatParticipantType.Group) {
+            let group = this.participant as Group;
+            let userIndex = group.chattingTo.findIndex(x => x.id == message.fromId);
+
+            return group.chattingTo[userIndex >= 0 ? userIndex : 0].avatar;
+        }
+        return null;
+    }
+
 }

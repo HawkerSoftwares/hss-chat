@@ -129,23 +129,6 @@ export class NgChatWindowComponent implements OnInit, OnChanges {
         return false;
     }
 
-    getChatWindowAvatar(participant: IChatParticipant, message?: Message): string | null
-    {
-        if (participant.participantType == ChatParticipantType.User)
-        {
-            return participant.avatar;
-        }
-        else if (participant.participantType == ChatParticipantType.Group)
-        {
-            let group = participant as Group;
-            let userIndex = group.chattingTo.findIndex(x => x.id == message.fromId);
-
-            return group.chattingTo[userIndex >= 0 ? userIndex : 0].avatar;
-        }
-
-        return null;
-    }
-
     isUploadingFile(window: Window): boolean
     {
         const fileUploadInstanceId = this.getUniqueFileUploadInstanceId(window);
@@ -164,9 +147,8 @@ export class NgChatWindowComponent implements OnInit, OnChanges {
         return 'ng-chat-file-upload';
     }
 
-    unreadMessagesTotal(window: Window): string
-    {           
-        return MessageCounter.unreadMessagesTotal(window, this.userId);
+    unreadMessagesTotal(): string {           
+        return this.window.unreadMessagesTotal(this.userId);
     }
 
     // Scrolls a chat window message flow to the bottom
@@ -245,25 +227,9 @@ export class NgChatWindowComponent implements OnInit, OnChanges {
    {
        switch (event.keyCode)
        {
-           case 13:
-               if (window.newMessage && window.newMessage.trim() != "")
-               {
-                   let message = new Message();
-            
-                   message.fromId = this.userId;
-                   message.toId = window.participant.id;
-                   message.message = window.newMessage;
-                   message.dateSent = new Date();
-       
-                   window.messages.push(message);
-       
-                   this.onMessageSent.emit(message);
-       
-                   window.newMessage = ""; // Resets the new message input
-       
-                   this.scrollChatWindow(window, ScrollDirection.Bottom);
-               }
-               break;
+        //    case 13:
+        //        this.sendMessage(window);
+        //        break;
            case 9:
                event.preventDefault();
 
@@ -275,6 +241,25 @@ export class NgChatWindowComponent implements OnInit, OnChanges {
 
                break;
        }
+   }
+
+   sendMessage(window) {
+    if (window.newMessage && window.newMessage.trim() != "") {
+        let message = new Message();
+ 
+        message.fromId = this.userId;
+        message.toId = window.participant.id;
+        message.message = window.newMessage.replace(/\n/g, "<br>");
+        message.dateSent = new Date();
+
+        window.messages.push(message);
+
+        this.onMessageSent.emit(message);
+
+        window.newMessage = ""; // Resets the new message input
+
+        this.scrollChatWindow(window, ScrollDirection.Bottom);
+    }
    }
 
     // Toggles a chat window visibility between maximized/minimized

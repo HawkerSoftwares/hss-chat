@@ -15,7 +15,7 @@
 			<div *ngIf="message.newDateStarted && message.formattedDate" class="messages-date"
 				[innerText]="message.formattedDate"></div>
 
-			<div  id="unreadMessages" class="unread-messages" *ngIf="i > 0 && !message.dateSeen && window.messages[i - 1].dateSeen && unreadMessagesTotal(window).length > 0"> {{unreadMessagesTotal(window)}} Unread messages</div>
+			<div  id="unreadMessages" class="unread-messages" *ngIf="i > 0 && !message.dateSeen && window.messages[i - 1].dateSeen && unreadMessagesTotal().length > 0"> {{unreadMessagesTotal()}} Unread messages</div>
 
 			<div [ngClass]="{'ng-chat-message': true, 'ng-chat-message-received': message.fromId != userId}">
 				<ng-chat-message-template [message]="message" [showMessageDate]="showMessageDate"
@@ -28,11 +28,11 @@
 	</div>
 
 	<div class="ng-chat-footer primary-outline-color primary-background">
-		<input #chatWindowInput type="text" [ngModel]="window.newMessage | emojify:emojisEnabled"
+		<textarea #chatWindowInput type="text" [ngModel]="window.newMessage | emojify:emojisEnabled"
 			(ngModelChange)="window.newMessage=$event" [placeholder]="config.participantChat?.inputPlaceholder"
 			[ngClass]="{'chat-window-input': true, 'has-side-action': fileUploadAdapter}"
 			(keydown)="onChatInputTyped($event, window)" (blur)="toggleWindowFocus(window)"
-			(focus)="toggleWindowFocus(window);emojiPopupDisplay = false;preDefineMessagesPopup = false;" />
+			(focus)="toggleWindowFocus(window);emojiPopupDisplay = false;preDefineMessagesPopup = false;" ></textarea>
 
 		<!-- File Upload -->
 		<ng-container *ngIf="fileUploadAdapter">
@@ -70,24 +70,27 @@
 					[sheetSize]="sheetSize" [showPreview]="false" *ngIf="emojiPopupDisplay"></emoji-mart>
 			</div>
 		</div>
+		<div class="emoji-block custom-dropdown" [class.disabled]="!(window.newMessage && window.newMessage.trim())">
+			<span title="Emoji" (click)="sendMessage(window)" class="pi pi-send"></span>
+		</div>
 	</div>
 </ng-container>
 
 <ng-template #defaultChatWindowHeaderTemplate let-chatWindowRef="window" let-self="self">
 	<div class="ng-chat-title secondary-background hss-chat-window-header">
 		<div class="ng-chat-title-visibility-toggle-area">
-			<div *ngIf="!self.getChatWindowAvatar(chatWindowRef.participant)" class="icon-wrapper">
+			<div *ngIf="!chatWindowRef.getChatWindowAvatar()" class="icon-wrapper">
 				<i class="user-icon"></i>
 			</div>
-			<img *ngIf="self.getChatWindowAvatar(chatWindowRef.participant)" alt="" class="avatar user-profile-img" height="25"
-				width="25" [src]="self.getChatWindowAvatar(chatWindowRef.participant)" />
+			<img *ngIf="chatWindowRef.getChatWindowAvatar()" alt="" class="avatar user-profile-img" height="25"
+				width="25" [src]="chatWindowRef.getChatWindowAvatar()" />
 			<strong [title]="chatWindowRef.participant.displayName" [innerText]="chatWindowRef.participant.displayName"></strong>
 			<span *ngIf="self.config.showAvailabilityStatus"
 				[ngClass]="{'ng-chat-participant-status': true, 'online': chatWindowRef.participant.status == ChatParticipantStatus.Online, 'busy': chatWindowRef.participant.status == ChatParticipantStatus.Busy, 'away': chatWindowRef.participant.status == ChatParticipantStatus.Away, 'offline': chatWindowRef.participant.status == ChatParticipantStatus.Offline}"
 				[title]="self.chatParticipantStatusDescriptor(chatWindowRef.participant.status)"></span>
-			<span *ngIf="self.unreadMessagesTotal(chatWindowRef).length > 0"
+			<span *ngIf="self.unreadMessagesTotal().length > 0"
 				class="ng-chat-unread-messages-count unread-messages-counter-container primary-text" (click)="self.scrollDownToUnseenMessages()">
-				{{ self.unreadMessagesTotal(chatWindowRef) }}
+				{{ self.unreadMessagesTotal() }}
 				<i class="pi pi-arrow-down"></i>
 			</span>
 		</div>

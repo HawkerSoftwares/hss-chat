@@ -1,8 +1,8 @@
-<section class="h-screen hss-chat-dashboard">
-    <section class="dashboard-header secondary-background">
+<div class="h-screen hss-chat-dashboard chat-dashboard-view {{theme}}">
+    <div class="dashboard-header secondary-background">
         <div class="flex justify-content-between align-items-center p-1 h-full">
             <div class="flex col-1 justify-content-between">
-                <div class="sidebar-toggler">
+                <div class="sidebar-toggler" (click)="sidebarVisible = !sidebarVisible;">
                     <i class="pi pi-bars p-1" style="font-size: 1.5rem"></i>
                 </div>
                 <h2 class="m-0">Chat</h2>
@@ -12,7 +12,31 @@
                     size="medium" shape="circle"></p-avatar>
             </div>
         </div>
-    </section>
-    <section class="flex dashboard-container">
-        <ng-content></ng-content>
-    </section>
+    </div>
+    <div class="flex dashboard-container">
+        <div class="left-section" *ngIf="sidebarVisible">
+            <ng-contaier *ngTemplateOutlet="friendsListTemplate"></ng-contaier>
+        </div>
+        <div class="right-section" [class.w-full]="!sidebarVisible">
+            <p-tabView *ngIf="windows?.length" (onClose)="onCloseWindow($event);" [scrollable]="true">
+                <ng-container *ngFor="let window of windows; let i = index;">
+                    <p-tabPanel [closable]="true">
+                        <ng-template pTemplate="header">
+                            <p-avatar icon="{{window.getChatWindowAvatar() ? '' : 'pi pi-user'}}"
+                                [image]="window.getChatWindowAvatar()" styleClass="mr-1" shape="circle"></p-avatar>
+                            <span *ngIf="config.showAvailabilityStatus"
+                                [ngClass]="{'ng-chat-participant-status': true, 'online': window.participant.status == chatParticipantStatus.Online, 'busy': window.participant.status == chatParticipantStatus.Busy, 'away': window.participant.status == chatParticipantStatus.Away, 'offline': window.participant.status == chatParticipantStatus.Offline}"
+                                [title]="chatParticipantStatusDescriptor(window.participant.status)"></span>
+
+                            <span class="pr-3 mr-2" [title]="window.participant.displayName"
+                                [innerText]="window.participant.displayName"></span>
+                        </ng-template>
+                        <div class="dashboard-chat-window primary-text">
+                            <ng-contaier *ngTemplateOutlet="chatWindowTemplate;context:{window:window}"></ng-contaier>
+                        </div>
+                    </p-tabPanel>
+                </ng-container>
+            </p-tabView>
+        </div>
+    </div>
+</div>

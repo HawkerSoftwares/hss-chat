@@ -72,7 +72,7 @@ $text-color: #FFF;
         background: $primary-color;
         border-top-color: $secondary-color;
         &>div {
-            border-left-color: $secondary-color;
+            border-left-color: $secondary-color !important;
         }
     }
 
@@ -81,11 +81,52 @@ $text-color: #FFF;
         background: $secondary-color;
         border-top-color: $secondary-color;
         &>div {
-            background: $secondary-color;
+            background: $secondary-color !important;
         }
     }
 
     .emoji-block > span > svg {
         fill: white;
+    }
+
+    .ng-chat-friends-list-container {
+        border-bottom: 1px solid $secondary-color;
+        &:hover {
+            background: $secondary-color;
+        }
+    }
+
+}
+
+
+.chat-dashboard-view.dark-theme {
+
+    .ng-chat-title {
+        background-color: $primary-color;
+    }
+
+    .dashboard-header {
+        border-bottom: 1px solid $secondary-color;
+    }
+
+    .p-tabview {
+        .p-tabview-nav {
+            background: $primary-color;
+            border-color: $secondary-color;
+        }
+        .p-tabview-nav-link {
+            border: none;
+            border-bottom: solid $secondary-color;
+            border-color: transparent transparent $secondary-color transparent;
+            background: $primary-color;
+            color: $secondary-color;
+        }
+        li.p-highlight, li:hover {
+            .p-tabview-nav-link {
+                background: $text-color;
+                border-bottom-color: $text-color !important;
+                color: $primary-color;
+            }
+        }
     }
 }

@@ -19,19 +19,20 @@
 		display: flex;
 		height: calc(10%);
 		width: 100%;
-		border: none;
-		border-top: 1px solid transparent;
+		border: 1px solid transparent;
 		border-color: inherit;
-		>input {
+		>input, textarea {
 			font-size: 0.8em;
 			box-sizing: border-box;
-			padding: 0 5px;
+			padding: 5px;
 			display: block;
 			height: 100%;
 			width: 100%;
-			border: none;
+			border: none !important;
+			outline: none !important;
+			resize: none;
 		}
-		>input.has-side-action {
+		>input.has-side-action, textarea.has-side-action {
 			width: calc(100% - 30px);
 		}
 		.btn-add-file {
@@ -53,11 +54,16 @@
 			display: flex;
 			&> span{
 			  display: flex;
-			  padding: 5px 5px 5px 1px;
+			  padding: 8px 8px 8px 2px;
+              margin: auto 2px;
 			  svg {
 				  opacity: .4;
 				  margin: auto;
 			  }
+			}
+			&.disabled {
+				pointer-events: none;
+				opacity: 0.2;
 			}
 			.emoji-dropdown-content {
 				display: none;

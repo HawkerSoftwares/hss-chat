@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { ChatParticipantStatus, ChatParticipantType, DEFAULT_CONFIG, Theme } from 'hss-chat';
 import { ChatAdapter, HSSChatConfig, HssChatService } from 'projects/hss-chat/src/public-api';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, fromEvent, switchMap } from 'rxjs';
@@ -9,7 +9,7 @@ import { DemoAdapterPagedHistory } from './demo-adapter-paged-history';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent implements OnInit, AfterViewInit {
   // selectedTheme:any=null;
   theme = Theme.Dark;
   themeOptions = [{title: 'Dark', value:Theme.Dark},{title: 'Light', value:Theme.Light},{title: 'Custom', value:Theme.Custom}];
@@ -26,7 +26,14 @@ export class AppComponent implements AfterViewInit {
     
   }
 
+  ngOnInit() {
+    
+  }
+
   ngAfterViewInit(): void {
+    const {theme, dashboardView} = this.getState();
+    this.theme = theme;
+    this.dashboardView = dashboardView;
     this.initRefreshParticipantsEventListener();
   }
 
@@ -76,4 +83,15 @@ export class AppComponent implements AfterViewInit {
       this.hssChatService.refreshParticipants();
     });
   }
+
+  updateState(key, value) {
+    const config = this.getState();
+    config[key] = value;
+    localStorage.setItem('HSS-CHAT-CONFIG', JSON.stringify(config));
+  }
+
+  getState() {
+    return JSON.parse(localStorage.getItem('HSS-CHAT-CONFIG') || '{}');
+  }
+
 }

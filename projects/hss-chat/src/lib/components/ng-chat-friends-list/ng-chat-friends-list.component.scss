@@ -15,6 +15,7 @@
 #ng-chat-search_friend {
 	display: block;
 	padding: 7px 10px;
+	border-width: 1px;
 	margin: 0 auto;
 	width: calc(100% - 20px);
 	margin-top: 10px;
@@ -22,7 +23,6 @@
 	-webkit-appearance: searchfield;
 }
 #ng-chat-users {
-	padding: 0 10px;
 	list-style: none;
 	margin: 0;
 	overflow: auto;
@@ -31,6 +31,7 @@
 	bottom: 0;
 	width: 100%;
 	box-sizing: border-box;
+	padding: 0px;
 	.ng-chat-load-participants {
 		height: 30px;
 		text-align: center;
@@ -48,16 +49,15 @@
 	}
 	li {
 		clear: both;
-		margin-bottom: 10px;
 		overflow: hidden;
 		cursor: pointer;
-		max-height: 30px;
 		>.ng-chat-friends-list-selectable-offset {
 			margin-left: 22px;
 		}
 		.ng-chat-friends-list-container {
 			display: inline-block;
 			width: 100%;
+			padding: 5px 10px;
 			>img.avatar {
 				float: left;
 				margin-right: 5px;
@@ -80,7 +80,6 @@
 				float: left;
 				font-size: 0.8em;
 				width: 70%;
-				max-height: 30px;
 				overflow: hidden;
 				white-space: nowrap;
 				text-overflow: ellipsis;
