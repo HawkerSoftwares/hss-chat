@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChange, TemplateRef } from '@angular/core';
 import { Window } from '../../core/window';
 import { ChatParticipantStatus } from '../../core/chat-participant-status.enum';
 import { chatParticipantStatusDescriptor } from '../../core/chat-participant-status-descriptor';
@@ -20,12 +20,12 @@ export class NgChatDeshboardComponent {
   @Input() config: HSSChatConfig;
   @Input() userId: any;
   @Input() theme: string;
+  @Input() activeChatWindowIndex;
+  @Input() dashboardHeaderTempleteRef: TemplateRef<any>;
   @Output() onChatWindowClosed: EventEmitter<{ closedWindow: Window, closedViaEscapeKey: boolean}> = new EventEmitter();
   chatParticipantStatus = ChatParticipantStatus;
   chatParticipantStatusDescriptor = chatParticipantStatusDescriptor;
   sidebarVisible = true;
-
-  ngOnInit() {} 
   
   onCloseWindow({index}) {
     this.onChatWindowClosed.emit({ closedWindow: this.windows[index], closedViaEscapeKey: false });

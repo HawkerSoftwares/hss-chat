@@ -6,6 +6,10 @@ export const DEFAULT_CONFIG: HSSChatConfig = {
       title: 'New message from',
       icon: ''
     },
+    dashboard: {
+      title: 'HSS Chat',
+      profileImage: 'https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png'
+    },
     participants: {
       polling: true,
       interval: 30000,

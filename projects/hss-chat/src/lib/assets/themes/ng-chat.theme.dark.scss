@@ -121,6 +121,11 @@ $text-color: #FFF;
             background: $primary-color;
             color: $secondary-color;
         }
+        .p-tabview-nav-btn {
+            background: $secondary-color;
+            color: $text-color;
+            box-shadow: none;
+        }
         li.p-highlight, li:hover {
             .p-tabview-nav-link {
                 background: $text-color;

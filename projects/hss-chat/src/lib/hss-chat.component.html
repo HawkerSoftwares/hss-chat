@@ -8,7 +8,9 @@
         [friendsListTemplate]="friendsListTemplate"
         (onChatWindowClosed)="onWindowChatClosed($event)"
         [config]="config"
-        [userId]="userId">
+        [userId]="userId"
+        [activeChatWindowIndex]="activeChatWindowIndex"
+        [friendsListWindowHeaderTemplate]="friendsListWindowHeaderTemplate">
     </ng-chat-deshboard>
     
     <div *ngIf="!dashboardView" class="chat-window-view {{theme}}">

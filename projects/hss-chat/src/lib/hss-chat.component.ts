@@ -45,6 +45,7 @@ import { BehaviorSubject } from 'rxjs';
 export class NgChat implements OnInit, IChatController {
     @Input() dashboardView = false;
     @Input() hssChatConfig: BehaviorSubject<HSSChatConfig>;
+    activeChatWindowIndex = 0;
     config: HSSChatConfig = DEFAULT_CONFIG; 
     // Exposes enums for the ng-template
     public ChatParticipantType = ChatParticipantType;
@@ -56,6 +57,7 @@ export class NgChat implements OnInit, IChatController {
     @Input() messageTemplate: TemplateRef<any>;
     @Input() chatWindowHeaderTemplate: TemplateRef<any>;
     @Input() friendsListWindowHeaderTemplate: TemplateRef<any>;
+    @Input() dashboardHeaderTempleteRef: TemplateRef<any>;
     @Input()
     get isDisabled(): boolean {
         return this._isDisabled;
@@ -445,6 +447,11 @@ export class NgChat implements OnInit, IChatController {
 
     onParticipantClickedFromFriendsList(participant: IChatParticipant): void {
         this.openChatWindow(participant, true, true);
+        const openedWindowIndex = this.windows.findIndex(x => x.participant.id == participant.id);
+        this.activeChatWindowIndex = openedWindowIndex + 1;
+        setTimeout(() => {
+            this.activeChatWindowIndex = openedWindowIndex < 0 ? 0 : openedWindowIndex;
+        },100)
     }
 
     private cancelOptionPrompt(): void {
@@ -480,27 +487,24 @@ export class NgChat implements OnInit, IChatController {
     private openChatWindow(participant: IChatParticipant, focusOnNewWindow: boolean = false, invokedByUserClick: boolean = false): [Window, boolean]
     {
         // Is this window opened?
-        const openedWindow = this.windows.find(x => x.participant.id == participant.id);
+        const openedWindowIndex = this.windows.findIndex(x => x.participant.id == participant.id);
 
         // Hide friendlist on mobile when specific chat window is opened
         this.hideFriendsList = this.isMobileViewPort;
-        
-        if (!openedWindow)
-        {
-            if (invokedByUserClick)
-            {
+        let newChatWindow: Window;
+        if (openedWindowIndex < 0) {
+            if (invokedByUserClick) {
                 this.onParticipantClicked.emit(participant);
             }
 
             // Refer to issue #58 on Github
             const collapseWindow = invokedByUserClick ? false : !this.maximizeWindowOnNewMessage;
 
-            const newChatWindow: Window = new Window(participant, this.historyEnabled, collapseWindow);
+            newChatWindow = new Window(participant, this.historyEnabled, collapseWindow);
 
             // Loads the chat history via an RxJs Observable
-            if (this.historyEnabled)
-            {
-                this.fetchMessageHistory({window: newChatWindow, polling: false});
+            if (this.historyEnabled) {
+                this.fetchMessageHistory({ window: newChatWindow, polling: false });
             }
 
             this.windows.unshift(newChatWindow);
@@ -514,21 +518,14 @@ export class NgChat implements OnInit, IChatController {
 
             this.updateWindowsState(this.windows);
 
-            if (focusOnNewWindow && !collapseWindow)
-            {
+            if (focusOnNewWindow && !collapseWindow) {
                 this.focusOnWindow(newChatWindow);
             }
 
             this.participantsInteractedWith.push(participant);
             this.onParticipantChatOpened.emit(participant);
-
-            return [newChatWindow, true];
         }
-        else
-        {
-            // Returns the existing chat window
-            return [openedWindow, false];
-        }
+        return openedWindowIndex < 0 ? [this.windows[openedWindowIndex], false] : [this.windows[openedWindowIndex], true];
     }
 
     // Focus on the input element of the supplied window
