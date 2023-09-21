@@ -73,18 +73,22 @@
 
 .ng-chat-participant-status.online {
     background-color: #92A400;
+    border-color: #92A400;
 }
 
 .ng-chat-participant-status.busy {
     background-color: #F91C1E;
+    border-color: #F91C1E;
 }
 
 .ng-chat-participant-status.away {
     background-color: #F7D21B;
+    border-color: #F7D21B;
 }
 
 .ng-chat-participant-status.offline {
     background-color: #BABABA;
+    border-color: #BABABA;
 }
 
 .ng-chat-unread-messages-count {

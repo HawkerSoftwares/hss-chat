@@ -21,7 +21,7 @@ export class NgChatDeshboardComponent {
   @Input() userId: any;
   @Input() theme: string;
   @Input() activeChatWindowIndex;
-  @Input() dashboardHeaderTempleteRef: TemplateRef<any>;
+  @Input() dashboardHeaderTemplete: TemplateRef<any>;
   @Output() onChatWindowClosed: EventEmitter<{ closedWindow: Window, closedViaEscapeKey: boolean}> = new EventEmitter();
   chatParticipantStatus = ChatParticipantStatus;
   chatParticipantStatusDescriptor = chatParticipantStatusDescriptor;

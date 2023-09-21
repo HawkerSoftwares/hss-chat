@@ -57,19 +57,17 @@
 <p-sidebar [(visible)]="sidebarVisible" position="right">
 	<ng-template pTemplate="header">Configuration</ng-template>
 	
-	<div class="flex flex-wrap  mt-2">
-		<p-button label="Update View" styleClass="m-1 p-button-raised p-button-help  p-button-sm" (click)="dashboardView = !dashboardView;updateState('dashboardView', dashboardView);"></p-button>
-		<p-button label="Update Config" (click)="updateConfig();" styleClass="m-1 p-button-raised p-button-help p-button-sm"></p-button>
-		<div>
-			<div class="flex flex-wrap justify-content-center gap-3 mt-2">
-				<div class="flex align-items-center" *ngFor="let item of themeOptions;index as i">
-					<p-radioButton name="item" [value]="item.value" [(ngModel)]="theme" inputId="item.value" (onClick)="updateState('theme', item.value);"></p-radioButton>
-					<label [for]="item" class="ml-2">{{item.title}}</label>
-				</div>
-			</div>
+	<div class="flex p-1">
+		<p-button class="mr-1" label="Update View" styleClass="m-1 p-1 p-button-raised p-button-help  p-button-sm" (click)="dashboardView = !dashboardView;updateState('dashboardView', dashboardView);"></p-button>
+		<p-button label="Update Config" (click)="updateConfig();" styleClass="m-1 p-1 p-button-raised p-button-help p-button-sm"></p-button>
+	</div>
+	<div class="flex p-1">
+		<div class="flex p-1" *ngFor="let item of themeOptions;index as i">
+			<p-radioButton name="item" [value]="item.value" [(ngModel)]="theme" inputId="item.value" (onClick)="updateState('theme', item.value);"></p-radioButton>
+			<label [for]="item" class="m-1">{{item.title}}</label>
 		</div>
 	</div>
 </p-sidebar>
-<p-button type="button" styleClass="sidebar-toggler absolute top-50 right-0" 
+<p-button type="button" styleClass="sidebar-toggler" 
  (click)="sidebarVisible = true;" icon="pi pi-cog">
 </p-button>

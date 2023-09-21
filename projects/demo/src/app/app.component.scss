@@ -1,6 +1,52 @@
 :host ::ng-deep {
     .sidebar-toggler {
+        position: absolute;
+        top:0;
+        bottom: 0;
+        right: 0;
+        margin: auto;
+        height: 40px;
         border-bottom-right-radius: 0;
         border-top-right-radius: 0;
+    }
+    .mr-1 {
+        margin-right: .25rem;
+    }
+    .h-full {
+        height: 100%;
+    }
+    .flex {
+        display: flex;
+    }
+    .col-6 {
+        width: 50%;
+    }
+    .m-0 {
+        margin: 0;
+    }
+    .my-auto {
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+    .p-1 {
+        padding: .25rem;
+    }
+    .p-2 {
+        padding: .5rem;
+    }
+    .m-1 {
+        padding: .25rem;
+    }
+    .justify-content-between {
+        justify-content: space-between;
+    }
+    .justify-content-start {
+        justify-content: start;
+    }
+    .justify-content-end {
+        justify-content: end;
+    }
+    .align-items-center {
+        text-align: center;
     }
 }

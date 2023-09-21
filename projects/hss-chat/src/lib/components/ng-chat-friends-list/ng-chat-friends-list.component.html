@@ -23,7 +23,7 @@
 				<div class="meta">
 					<strong class="name" title="{{user.displayName}}">{{user.displayName}}</strong>
 					<ng-container *ngIf="participantsMeta.has(user.id) && participantsMeta.get(user.id).recentMessage">
-						<br /><span class="ng-chat-recent-message">{{recentMessage(user)}}</span>
+						<br /><span class="ng-chat-recent-message" [innerHtml]="recentMessage(user)"></span>
 					</ng-container>
 				</div>
 				<span *ngIf="config.showAvailabilityStatus"

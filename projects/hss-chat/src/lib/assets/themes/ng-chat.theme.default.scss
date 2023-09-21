@@ -50,10 +50,16 @@ $text-color: #5C5C5C;
         background-color:$secondary-color;
         border-color: $secondary-color;
     }
+    .right-arrow {
+        background-color:$secondary-color;
+    }
     .received-chat-message-container, .file-message-container.received
     {
-        background-color:$primary-color;
+        background-color: #fafafa;
         border-color: $secondary-color;
+    }
+    .left-arrow {
+        background-color: #fafafa;
     }
 
     .ng-chat-friends-list-container {

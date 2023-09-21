@@ -7,7 +7,7 @@
 	    (mouseenter)="showChatMessageSetting = true;" (mouseleave)="showChatMessageSetting = false;">
 		<div class="left-arrow" *ngIf="message.fromId !== userId"><div></div></div>
 		<div class="right-arrow" *ngIf="message.fromId === userId"><div></div></div>
-		<div class="media-list">
+		<div class="media-list" *ngIf="message?.medias?.length">
 			<ng-container *ngFor="let media of message.medias | slice:0:4; index as indx;" [ngSwitch]="media.type">
 				<div *ngSwitchCase="MessageType.Image" class="media image secondary-background"
 					(click)="viewImagesOnFullScreen = true;activeIndex = indx">
@@ -35,6 +35,9 @@
 		</div>
 		<span class="message-text" [innerHtml]="message.message | emojify:emojisEnabled | linky"></span>
 		<ng-container *ngTemplateOutlet="msgFooterTemplate; context: {message}"></ng-container>
+		<span *ngIf="showMessageDate && message.dateSent" class="message-sent-date">
+			{{message.dateSent | date:messageDatePipeFormat}}
+		</span>
 	</div>
 	<p-dialog *ngIf="viewImagesOnFullScreen" [(visible)]="viewImagesOnFullScreen" [modal]="true" [style]="{width: '100vw', height: '100vh'}"
 		[baseZIndex]="10000" [draggable]="false" [resizable]="false" [showHeader]="false"
@@ -52,7 +55,7 @@
 </ng-template>
 
 <ng-template #msgFooterTemplate let-message="message">
-	<div class="chat-msg-footer">
+	<div class="chat-msg-footer" *ngIf="message?.reactions?.length">
 		<div class="reactions-list">
 			<ng-container *ngIf="message.reactions">
 				<div class="reaction secondary-background" *ngFor="let reaction of message.reactions | slice:0:2" [innerHTML]="reaction">
@@ -60,8 +63,5 @@
 				<div class="reaction secondary-background" *ngIf="message.reactions.length > 2">+ {{message.reactions.length - 2}}</div>
 			</ng-container>
 		</div>
-		<span *ngIf="showMessageDate && message.dateSent" class="message-sent-date">
-			{{message.dateSent | date:messageDatePipeFormat}}
-		</span>
 	</div>
 </ng-template>
