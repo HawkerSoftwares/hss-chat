@@ -8,7 +8,12 @@ export const DEFAULT_CONFIG: HSSChatConfig = {
     },
     dashboard: {
       title: 'HSS Chat',
-      profileImage: 'https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png'
+      profileImage: 'https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png',
+      emptyState: {
+        title: 'Welcome',
+        description: `Ready? Set. Chat! Let's jump right into things.`,
+        image: 'https://image.freepik.com/free-vector/men-carry-things-concept-illustration-landing-page_273648-38.jpg'
+      }
     },
     participants: {
       polling: true,

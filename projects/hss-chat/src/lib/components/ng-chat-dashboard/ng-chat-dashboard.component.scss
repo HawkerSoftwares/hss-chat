@@ -73,6 +73,18 @@ $topbarHeight: 50px;
                         outline: none !important;
                     }
                 }
+                .no-chat-exist > .welcome-box {
+                    height: auto;
+                    width: auto;
+                    margin: auto;
+                    text-align: center;
+                    .welcome-title {
+                        font-size: 30px;
+                    }
+                    img {
+                        max-width: 280px;
+                    }
+                }
             }
         }
     }

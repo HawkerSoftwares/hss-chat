@@ -1,7 +1,7 @@
 <link *ngIf="customTheme" rel="stylesheet" [href]='customTheme | sanitize'>
 
 <ng-container *ngIf="!isDisabled && isBootstrapped && !unsupportedViewport" >
-    <ng-chat-deshboard *ngIf="dashboardView"
+    <ng-chat-dashboard *ngIf="dashboardView"
         [theme]="theme" 
         [windows]="windows"
         [chatWindowTemplate]="chatWindowTemplate" 
@@ -11,8 +11,10 @@
         [userId]="userId"
         [activeChatWindowIndex]="activeChatWindowIndex"
         [friendsListWindowHeaderTemplate]="friendsListWindowHeaderTemplate"
-        [dashboardHeaderTemplete]="dashboardHeaderTemplete">
-    </ng-chat-deshboard>
+        [dashboardHeaderTemplete]="dashboardHeaderTemplete"
+        [dashboardChatHeaderTemplete]="dashboardChatHeaderTemplete"
+        [noChatExistTemplate]="noChatExistTemplate">
+    </ng-chat-dashboard>
     
     <div *ngIf="!dashboardView" class="chat-window-view {{theme}}">
         <ng-contaier *ngTemplateOutlet="friendsListTemplate"></ng-contaier>   
