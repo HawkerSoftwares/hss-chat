@@ -1,9 +1,9 @@
 <div class="hss-chat-dashboard chat-dashboard-view {{theme}}">
     <div class="dashboard-header secondary-background">
-        <ng-container *ngTemplateOutlet="dashboardChatHeaderTemplete ? dashboardChatHeaderTemplete : defaultDashboardHeaderTempleteRef;context:{self: this}"></ng-container>
+        <ng-container *ngTemplateOutlet="dashboardHeaderTemplete ? dashboardHeaderTemplete : defaultDashboardHeaderTempleteRef;context:{self: this}"></ng-container>
     </div>
     <div class="flex dashboard-container">
-        <div class="left-section" *ngIf="sidebarVisible">
+        <div class="left-section" [class.d-none]="!sidebarVisible">
             <ng-contaier *ngTemplateOutlet="friendsListTemplate"></ng-contaier>
         </div>
         <div class="right-section" [class.w-full]="!sidebarVisible">
@@ -12,7 +12,7 @@
                 <ng-container *ngFor="let window of windows; let i = index;">
                     <p-tabPanel [closable]="true">
                         <ng-template pTemplate="header">
-                            <ng-container *ngTemplateOutlet="noChatExistTemplate ? noChatExistTemplate : defaultDashboardChatHeaderTempleteRef;context:{window:window}"></ng-container>
+                            <ng-container *ngTemplateOutlet="dashboardChatHeaderTemplete ? dashboardChatHeaderTemplete : defaultDashboardChatHeaderTempleteRef;context:{window:window}"></ng-container>
                         </ng-template>
                         <div class="dashboard-chat-window primary-text">
                             <ng-contaier *ngTemplateOutlet="chatWindowTemplate;context:{window:window}"></ng-contaier>

@@ -3,6 +3,7 @@ import { Window } from '../../core/window';
 import { ChatParticipantStatus } from '../../core/chat-participant-status.enum';
 import { chatParticipantStatusDescriptor } from '../../core/chat-participant-status-descriptor';
 import { HSSChatConfig } from '../../core/chat.config';
+import { Theme } from '../../core/theme.enum';
 interface City {
   name: string,
   code: string
@@ -19,7 +20,7 @@ export class NgChatDashboardComponent {
   @Input() chatWindowTemplate: TemplateRef<any>;
   @Input() config: HSSChatConfig;
   @Input() userId: any;
-  @Input() theme: string;
+  @Input() theme: Theme;
   @Input() activeChatWindowIndex;
   @Input() dashboardHeaderTemplete: TemplateRef<any>;
   @Input() dashboardChatHeaderTemplete: TemplateRef<any>;

@@ -329,10 +329,10 @@ export class NgChat implements OnInit, IChatController {
         }
     }
 
-    fetchMessageHistory({window, polling}: any) {
+    fetchMessageHistory({window, polling}: {window: Window, polling: boolean}) {
         // Not ideal but will keep this until we decide if we are shipping pagination with the default adapter
         if(polling) {
-            const messages = window.messages;
+            const messages: any[] = window.messages;
             this.adapter.getRecentMessages(window.participant.id, messages[(messages.length > 1) ? (messages.length - 1) : (messages.length ? messages[0] : null)])
             .pipe(
                 map((messages: Message[]) => {

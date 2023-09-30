@@ -67,7 +67,8 @@
 			</span>
 			<div class="emoji-dropdown-content">
 				<emoji-mart [style]="{ width: '302px'}" (emojiClick)="addEmoji($event, window)" [exclude]="[]"
-					[sheetSize]="sheetSize" [showPreview]="false" *ngIf="emojiPopupDisplay"></emoji-mart>
+					[sheetSize]="sheetSize" [showPreview]="false" *ngIf="emojiPopupDisplay"
+					[darkMode]="theme == 'dark-theme'"></emoji-mart>
 			</div>
 		</div>
 		<div class="emoji-block custom-dropdown" [class.disabled]="!(window.newMessage && window.newMessage.trim())">

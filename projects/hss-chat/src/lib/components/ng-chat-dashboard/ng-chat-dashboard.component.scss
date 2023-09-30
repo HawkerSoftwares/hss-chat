@@ -16,6 +16,7 @@ $topbarHeight: 50px;
         
         .dashboard-container {
             height: calc(100% - $topbarHeight);
+            overflow: hidden;
             .left-section {
                 height: 100%;
                 width: $sidebarWidth;
@@ -68,6 +69,7 @@ $topbarHeight: 50px;
                 .ng-chat-footer {
                     height: 60px;
                     padding: 0 2%;
+                    min-width: 250px;
                     textarea {
                         border: none !important;
                         outline: none !important;
@@ -126,5 +128,8 @@ $topbarHeight: 50px;
     }
     .align-items-center {
         text-align: center;
+    }
+    .d-none {
+        display: none;
     }
 }

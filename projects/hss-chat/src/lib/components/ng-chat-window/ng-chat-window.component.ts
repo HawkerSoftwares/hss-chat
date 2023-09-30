@@ -14,6 +14,7 @@ import { chatParticipantStatusDescriptor } from '../../core/chat-participant-sta
 import { ChatAdapter } from '../../core/chat-adapter';
 import { HSSChatConfig } from '../../core/chat.config';
 import { interval, takeWhile, timer } from 'rxjs';
+import { Theme } from '../../core/theme.enum';
 
 @Component({
     selector: 'ng-chat-window',
@@ -29,7 +30,7 @@ export class NgChatWindowComponent implements OnInit, OnChanges {
     @Input() chatWindowHeaderTemplate: TemplateRef<any>;
     @Input()
     public fileUploadAdapter: IFileUploadAdapter;
-
+    @Input() theme: Theme;
     @Input()
     public window: Window;
 
