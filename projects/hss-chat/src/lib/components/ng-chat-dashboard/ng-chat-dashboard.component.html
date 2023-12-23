@@ -1,0 +1,64 @@
+<div class="hss-chat-dashboard chat-dashboard-view {{theme}}">
+    <div class="dashboard-header secondary-background">
+        <ng-container *ngTemplateOutlet="dashboardHeaderTemplete ? dashboardHeaderTemplete : defaultDashboardHeaderTempleteRef;context:{self: this}"></ng-container>
+    </div>
+    <div class="flex dashboard-container">
+        <div class="left-section" [class.d-none]="!sidebarVisible">
+            <ng-contaier *ngTemplateOutlet="friendsListTemplate"></ng-contaier>
+        </div>
+        <div class="right-section" [class.w-full]="!sidebarVisible">
+            <p-tabView *ngIf="windows?.length" [scrollable]="true"
+            (onClose)="onCloseWindow($event);" [(activeIndex)]="activeChatWindowIndex">
+                <ng-container *ngFor="let window of windows; let i = index;">
+                    <p-tabPanel [closable]="true">
+                        <ng-template pTemplate="header">
+                            <ng-container *ngTemplateOutlet="dashboardChatHeaderTemplete ? dashboardChatHeaderTemplete : defaultDashboardChatHeaderTempleteRef;context:{window:window}"></ng-container>
+                        </ng-template>
+                        <div class="dashboard-chat-window primary-text">
+                            <ng-contaier *ngTemplateOutlet="chatWindowTemplate;context:{window:window}"></ng-contaier>
+                        </div>
+                    </p-tabPanel>
+                </ng-container>
+            </p-tabView>
+            <ng-container *ngIf="!windows?.length">
+                <ng-container *ngTemplateOutlet="noChatExistTemplate ? noChatExistTemplate : defaultNoChatExistTemplateRef"></ng-container>
+            </ng-container>
+        </div>
+    </div>
+</div>
+
+<ng-template #defaultDashboardHeaderTempleteRef let-self="self">
+    <div class="flex justify-content-between align-items-center p-2 h-full">
+        <div class="flex col-6 justify-content-start">
+            <div class="dashboard-sidebar-toggler my-auto" (click)="self.sidebarVisible = !self.sidebarVisible;">
+                <i class="pi pi-bars p-1" style="font-size: 1.5rem"></i>
+            </div>
+            <strong class="my-auto">{{config.dashboard?.title}}</strong>
+        </div>
+        <div class="flex col-6 justify-content-end">
+            <p-avatar [image]="config?.dashboard?.profileImage" [icon]="config?.dashboard?.profileIcon" styleClass="mr-2"
+                size="medium" shape="circle"></p-avatar>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #defaultNoChatExistTemplateRef>
+    <div class="no-chat-exist h-full w-full flex" *ngIf="config.dashboard?.emptyState">
+        <div class="welcome-box">
+            <strong class="welcome-title" [innerText]="config.dashboard.emptyState?.title"></strong>
+            <p class="welcome-description" [innerText]="config.dashboard.emptyState?.description"></p>
+            <img [src]="config.dashboard.emptyState?.image">
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #defaultDashboardChatHeaderTempleteRef let-window="window">
+    <p-avatar icon="{{window.getChatWindowAvatar() ? '' : 'pi pi-user'}}"
+        [image]="window.getChatWindowAvatar()" styleClass="mr-1" shape="circle"></p-avatar>
+    <span *ngIf="config.showAvailabilityStatus"
+        [ngClass]="{'ng-chat-participant-status': true, 'online': window.participant.status == chatParticipantStatus.Online, 'busy': window.participant.status == chatParticipantStatus.Busy, 'away': window.participant.status == chatParticipantStatus.Away, 'offline': window.participant.status == chatParticipantStatus.Offline}"
+        [title]="chatParticipantStatusDescriptor(window.participant.status)"></span>
+
+    <span class="pr-3 mr-2" [title]="window.participant.displayName"
+        [innerText]="window.participant.displayName"></span>
+</ng-template>

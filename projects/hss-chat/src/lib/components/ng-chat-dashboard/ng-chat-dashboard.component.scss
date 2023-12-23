@@ -1,0 +1,135 @@
+$sidebarWidth: 280px;
+$topbarHeight: 50px;
+
+:host ::ng-deep {
+    .hss-chat-dashboard {
+        height: 100vh;
+        width: 100vw;
+        .dashboard-header {
+            width: 100%;
+            height: $topbarHeight;
+            .dashboard-sidebar-toggler:hover{
+                border-radius: 1rem;
+                cursor: pointer;
+            }
+        }
+        
+        .dashboard-container {
+            height: calc(100% - $topbarHeight);
+            overflow: hidden;
+            .left-section {
+                height: 100%;
+                width: $sidebarWidth;
+                #ng-chat-people {
+                    margin-right: 0;
+                    height: 100%;
+                    border: 0;
+                    .toggle-chat-window {
+                        display: none;
+                    }
+                    #ng-chat-users {
+                        li {
+                            .ng-chat-friends-list-container {
+                                padding: 5px 10px;
+                                .icon-wrapper, img {
+                                    margin-top: 5px;
+                                }
+                                .meta {
+                                    line-height: 1.5;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            .right-section {
+                height: 100%;
+                width: calc(100% - $sidebarWidth);
+                .p-tabview-nav-link {
+                    padding: .5rem;
+                    box-shadow: none !important;
+                    height: 50px;
+                    text-wrap: nowrap;
+                    .ng-chat-participant-status {
+                        position: absolute;
+                        top: -1px;
+                        left: 40px;
+                    }
+                }
+                .p-tabview-panels {
+                    padding: 5px !important;
+                }
+                .hss-chat-window-header {
+                    display: none !important;
+                }
+                .ng-chat-messages {
+                    height: calc(100vh - 10.7em);
+                    padding: 20px 10%;
+                }
+                .ng-chat-footer {
+                    height: 60px;
+                    padding: 0 2%;
+                    min-width: 250px;
+                    textarea {
+                        border: none !important;
+                        outline: none !important;
+                    }
+                }
+                .no-chat-exist > .welcome-box {
+                    height: auto;
+                    width: auto;
+                    margin: auto;
+                    text-align: center;
+                    .welcome-title {
+                        font-size: 30px;
+                    }
+                    img {
+                        max-width: 280px;
+                    }
+                }
+            }
+        }
+    }
+
+
+    .mr-1 {
+        margin-right: .25rem;
+    }
+    .h-full {
+        height: 100%;
+    }
+    .w-full {
+        width: 100% !important;
+    }
+    .flex {
+        display: flex;
+    }
+    .col-6 {
+        width: 50%;
+    }
+    .m-0 {
+        margin: 0;
+    }
+    .my-auto {
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+    .p-1 {
+        padding: .25rem;
+    }
+    .justify-content-between {
+        justify-content: space-between;
+    }
+    .justify-content-start {
+        justify-content: start;
+    }
+    .justify-content-end {
+        justify-content: end;
+    }
+    .align-items-center {
+        text-align: center;
+    }
+    .d-none {
+        display: none;
+    }
+}

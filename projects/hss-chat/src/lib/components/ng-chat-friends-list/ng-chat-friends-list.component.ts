@@ -143,7 +143,7 @@ export class NgChatFriendsListComponent implements OnInit, OnChanges, OnDestroy,
         let openedWindow = this.windows.find(x => x.participant.id == participant.id);
 
         if (openedWindow) {
-            return MessageCounter.unreadMessagesTotal(openedWindow, this.userId);
+            return openedWindow.unreadMessagesTotal(this.userId);
         }
         else {
             let totalUnreadMessages = this.participantsResponse

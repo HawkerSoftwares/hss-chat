@@ -1,10 +1,10 @@
 {
   "name": "hss-chat",
-  "version": "0.0.14",
+  "version": "1.1.0",
   "peerDependencies": {
     "@angular/common": "^16.2.0",
     "@angular/core": "^16.2.0",
-    "@ctrl/ngx-emoji-mart": "6.2.0",
+    "@ctrl/ngx-emoji-mart": "9.2.0",
     "primeicons": "^5.0.0",
     "primeng": "^16.2.0",
     "ngx-linky": "^4.0.0",

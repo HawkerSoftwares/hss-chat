@@ -24,6 +24,16 @@ export interface HSSChatConfig {
         title: string,
         icon: string;
     };
+    dashboard?: {
+        title: string,
+        profileIcon?: string;
+        profileImage?: string,
+        emptyState?: {
+            title?: string,
+            description?: string,
+            image?: string
+        }
+    }
     participants?: HSSParticipantsWindowConfig;
     participantChat?: HSSParticipantChatWindowConfig
 }
